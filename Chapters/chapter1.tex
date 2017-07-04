@@ -2,4 +2,62 @@
 \label{chapter1}
 
 \section{Starting section}
-\lipsum[1-1] \cite{parikh1980adaptive}
+
+\newtheorem{w-algorithm}{The W Detection Algorithm is Correct.}
+
+\begin{proof}
+After running the BFS twice we obtain two vertices $u$ and $v$ such that:
+\begin{equation}
+    \label{eq:su_all}
+    w(s, u) \ge w(s, t), \forall t \in V(T)
+\end{equation}
+
+\begin{equation}
+    \label{eq:uv_all}
+    w(u, v) \ge w(u, t), \forall t \in V(T)
+\end{equation}
+
+Furthermore let $a$ and $b$ be two leaves that define a W Path. Consequently $a$ and $b$ we know that:
+$$w(a, b) \ge w(c, d), \forall c, d \in V(T) $$
+
+As $w(u, v) \le w(a, b)$, our end goal here is to bound $w(u, v)$ from bellow in terms of $w(a, b)$. Let also $t$ be the first vertex in the path between $a$ and $b$ that the first BFS starting at $s$ discovers. Clearly $t$ cannot be $a$ or $b$ unless $s$ is equal to $a$ or $b$.
+
+\newpage
+This splits into several cases: \linebreak
+
+{\em Case 1. When the path from $a$ to $b$ does not share any vertices with the path from $s$ to $u$.}
+
+{\em Case 1.1. When the path from $u$ to $t$ goes through $s$.}
+
+As $s \rightsquigarrow u$ is a subpath of $t \rightsquigarrow u$ then $w(t, u) \ge w(s, u)$. We also have that $w(s, u) \ge w(s, a)$ by equation \ref{eq:uv_all}. We can therefore conclude that $w(t, u) \ge w(s, a) \ge w(a, t)$ as $s \rightsquigarrow a$ is a subpath of $t \rightsquigarrow a$.
+
+
+Now via path decomposition we have that:
+
+$$ w(a, b) = w(b, t) + w(t, a) + x  $$
+$$ w(u, b) = w(b, t) + w(t, u) + y .$$
+
+Where $x, y \in \{0, 1\}$ depending on whether there is a kink at $t$ for the path from $a$ to $b$ and from $u$ to $b$ respectively. As $w(t, u) \ge w(a, t)$ we can show that:
+
+
+$$ w(u, b) \ge w(b, t) + w(t, a) + y $$
+$$ w(u, b) \ge w(b, t) + w(t, a) + x - x + y $$
+$$ w(u, b) \ge w(a, b) - x + y $$
+$$ w(u, b) \ge w(a, b) + (y - x) $$
+
+But as $w(u, v) \ge w(u, b)$ (by equation \ref{eq:uv_all}) we obtain that:
+$$ w(u, v) \ge w(a, b) + (y - x) $$
+
+Considering all possible values $x$ and $y$ can take, we can see that the minimum value for the right hand side of the equation is at $y = 0$ and $x = 1$. The final conclusion we may draw is that $w(u, v) \ge w(a, b) -1$.
+
+
+
+%$a\rightsquigarrow b$
+
+{\em Case 1.2. When the path from $u$ to $t$ does not go through $s$.}
+
+{\em Case 2. When the path from $a$ to $b$ shares at least one vertex with the path from $s$ to $u$.}
+
+\end{proof}
+
+\cite{parikh1980adaptive}
