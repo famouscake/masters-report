@@ -83,7 +83,7 @@ $$ w(b, a) = w(b, t) + w(t, a) + z  $$
 $$ w(b, u) = w(b, t) + w(t, u) + w  $$
 $$ w(b, u) \ge w(b, t) + w(t, a) + (x - y) + w $$
 $$ w(b, u) \ge (w(b, t) + w(t, a) + z) - z + (x - y) + w $$
-$$ w(b, u) \ge w(a, b) - z (x - y) + w $$
+$$ w(b, u) \ge w(a, b) - z + (x - y) + w $$
 $$ w(b, u) \ge w(a, b) + (x - y) + (w - z) $$
 
 The minimum value for the right hand side of this equation is at $x, w = 0$ and $y, z = 1$. Now as $w(u, v) \ge w(u, b)$ we finally obtain that:
@@ -101,7 +101,7 @@ We can do a path decomposition as follows:
 $$ w(s, u) = w(s, t) + w(t, u) + x $$
 $$ w(s, a) = w(s, t) + w(t, a) + y $$
 
-As $w(s, u) \ge w(s, a)$ we obtain that:
+As $w(s, u) \ge w(s, a)$ (by equation \ref{eq:uv_all})we obtain that:
 
 $$ w(t, u) \ge w(t, a) + (y - x) $$
 
