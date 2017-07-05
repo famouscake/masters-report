@@ -17,12 +17,15 @@ After running the BFS twice we obtain two vertices $u$ and $v$ such that:
     w(u, v) \ge w(u, t), \forall t \in V(T)
 \end{equation}
 
-Furthermore let $a$ and $b$ be two leaves that define a W Path. Consequently $a$ and $b$ we know that:
-$$w(a, b) \ge w(c, d), \forall c, d \in V(T) $$
+Furthermore let $a$ and $b$ be two leaves that define a W diameter. Consequently $a$ and $b$ we know that:
+
+\begin{equation}
+    \label{eq:ab_all}
+    w(a, b) \ge w(c, d), \forall c, d \in V(T)
+\end{equation}
 
 As $w(u, v) \le w(a, b)$, our end goal here is to bound $w(u, v)$ from bellow in terms of $w(a, b)$. Let also $t$ be the first vertex in the path between $a$ and $b$ that the first BFS starting at $s$ discovers. Clearly $t$ cannot be $a$ or $b$ unless $s$ is equal to $a$ or $b$.
 
-\newpage
 This splits into several cases: \linebreak
 
 {\em Case 1. When the path from $a$ to $b$ does not share any vertices with the path from $s$ to $u$.}
@@ -30,7 +33,6 @@ This splits into several cases: \linebreak
 {\em Case 1.1. When the path from $u$ to $t$ goes through $s$.}
 
 As $s \rightsquigarrow u$ is a subpath of $t \rightsquigarrow u$ then $w(t, u) \ge w(s, u)$. We also have that $w(s, u) \ge w(s, a)$ by equation \ref{eq:uv_all}. We can therefore conclude that $w(t, u) \ge w(s, a) \ge w(a, t)$ as $s \rightsquigarrow a$ is a subpath of $t \rightsquigarrow a$.
-
 
 Now via path decomposition we have that:
 
@@ -48,7 +50,7 @@ $$ w(u, b) \ge w(a, b) + (y - x) $$
 But as $w(u, v) \ge w(u, b)$ (by equation \ref{eq:uv_all}) we obtain that:
 $$ w(u, v) \ge w(a, b) + (y - x) $$
 
-Considering all possible values $x$ and $y$ can take, we can see that the minimum value for the right hand side of the equation is at $y = 0$ and $x = 1$. The final conclusion we may draw is that $w(u, v) \ge w(a, b) -1$.
+Considering all possible values that $x$ and $y$ can take, we can see that the minimum value for the right hand side of the equation is at $y = 0$ and $x = 1$. The final conclusion we may draw is that $w(u, v) \ge w(a, b) -1$.
 
 
 
@@ -56,7 +58,73 @@ Considering all possible values $x$ and $y$ can take, we can see that the minimu
 
 {\em Case 1.2. When the path from $u$ to $t$ does not go through $s$.}
 
+If the path from $u$ to $t$ does not go through $s$ then the paths $s \rightsquigarrow t$ and $s \rightsquigarrow u$ have a common subpath. Let $s'$ be the last vertex in that subpath. We may wish to reduce this proof to the previous case, but it may be the case that the vertex $s'$ is a kink for one of the paths and not the other. We must account for that. We know that $w(t, u) \ge w(s', u)$ as a subpath. Through path decomposition we obtain that:
+
+$$ w(s, a) = w(s, s') + w(s', a) + x $$
+$$ w(s, u) = w(s, s') + w(s', u) + y $$
+
+We know that $w(s, u) \ge w(s, a)$ and therefore:
+
+$$ w(s, s') + w(s', u) + y \ge w(s, s') + w(s', a) + x  $$ 
+$$ w(s', u) + y \ge w(s', a) + x $$ 
+$$ w(s', u) \ge w(s', a) + (x - y)$$ 
+
+Since $w(t, u) \ge w(s', u)$ we can further conclude that:
+
+$$ w(t, u) \ge w(s', a) + (x - y)$$ 
+
+From the fact that $t \rightsquigarrow a$ is a subpath of $s' \rightsquigarrow a$ it follows that $w(s', a) \ge w(t, a)$. This lets us obtain that:
+
+$$ w(t, u) \ge w(t, a) + (x - y)$$ 
+
+Now we are ready to proceed in a similar fashion as the previous case. We will decompose the paths from $b$ to $a$ and from $b$ to $u$ at the vertex $t$ as follows:
+
+$$ w(b, a) = w(b, t) + w(t, a) + z  $$
+$$ w(b, u) = w(b, t) + w(t, u) + w  $$
+$$ w(b, u) \ge w(b, t) + w(t, a) + (x - y) + w $$
+$$ w(b, u) \ge (w(b, t) + w(t, a) + z) - z + (x - y) + w $$
+$$ w(b, u) \ge w(a, b) - z (x - y) + w $$
+$$ w(b, u) \ge w(a, b) + (x - y) + (w - z) $$
+
+The minimum value for the right hand side of this equation is at $x, w = 0$ and $y, z = 1$. Now as $w(u, v) \ge w(u, b)$ we finally obtain that:
+
+$$ w(u, v) \ge w(a, b) - 2 $$
+
+
 {\em Case 2. When the path from $a$ to $b$ shares at least one vertex with the path from $s$ to $u$.}
+
+% @TODO This is not complete!
+%As we already know $w(s, u) \ge w(s, a)$. Furthermore $w(s, u) \ge w(t, u)$ and $w(s, a) \ge w(t, a)$ as they are subpaths of $s \rightsquigarrow u$ and $s \rightsquigarrow a$ respectively. Therefore $w(t, u) \ge w(t, a)$. We can now decompose the paths from $b$ to $a$ and from $b$ to $u$ at the vertex $t$ as follows:
+
+We can do a path decomposition as follows:
+
+$$ w(s, u) = w(s, t) + w(t, u) + x $$
+$$ w(s, a) = w(s, t) + w(t, a) + y $$
+
+As $w(s, u) \ge w(s, a)$ we obtain that:
+
+$$ w(t, u) \ge w(t, a) + (y - x) $$
+
+This again leads us to:
+
+$$ w(b, a) = w(b, t) + w(t, a) + z  $$
+$$ w(b, u) = w(b, t) + w(t, u) + w  $$
+$$ w(b, u) \ge w(b, t) + w(t, a) + (x - y) + w $$
+$$ w(b, u) \ge (w(b, t) + w(t, a) + z) - z + (x - y) + w $$
+$$ w(b, u) \ge w(a, b) - z (x - y) + w $$
+$$ w(b, u) \ge w(a, b) + (x - y) + (w - z) $$
+
+Where similarly to the previous case we obtain that:
+
+$$ w(u, v) \ge w(a, b) - 2 $$
+
+
+Based on these cases we can conclude that for any input tree the algorithms will produce a path that is at most -2 away from the actual maximum path.
+
+%$$ w(b, a) = w(b, t) + w(t, a) + x  $$
+%$$ w(b, u) = w(b, t) + w(t, u) + y  $$
+
+
 
 \end{proof}
 
