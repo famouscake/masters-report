@@ -1,0 +1,48 @@
+Chapter 1 - Introduction
+    - Contour Tree
+
+    - Survey of Contour Tree Algorithms
+
+    - Simplifications of trees
+
+Chapter 2 - W Detector Theory
+
+    - Definition of a W Diameter
+
+    - Survey of Tree Diameter Algorithms
+
+    - 2xBFS Algorithm
+        -- Pseudocode and proof.
+        -- Pathological cases.
+        -- Work on overcoming pathological cases.
+
+    - DP Algorithm
+        -- Psudocode and proof.
+
+    - Comparison of both algorithms.
+
+
+Chapter 3 - W Detector Practice.
+
+    - Overview of survey on given datasets.
+
+    - Correlation of Ws with diameter. Show why it's a more important bound.
+
+    - Smallest W in a data set.
+
+    - Thoughs on Ws from raw data and things like that.
+
+Chapter 4 - Homology.
+    - Definition of Homology.
+
+    - Persistent Homology.
+
+    - Extended Persistence.
+
+    - Extended Persistence vs Branch Decomposition.
+
+    - Homology and CTs.
+
+Chapter 5 - Unification.
+
+    - Workers of the bolshevik party unite! You have nothing to lose but you chains!
