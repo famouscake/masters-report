@@ -1,4 +1,50 @@
+% @TODO Change this
 \chapter{Introduction}
-\label{chapter1}
+\label{chapter2}
 
-\section{Contour Tree Preliminaries}
+\section{Contour Trees}
+
+\begin{lem} In a tree with no vertices of degree two at least half of the vertices are leaves. \end{lem}
+
+\begin{proof}
+    Let $T = (V, E)$ be a tree with no vertices of degree two and let $L \subseteq V$ be the set of all leaves. As all leaves have degree one we have that $L = \{u \in V: d(u) = 1\}$. Furthermore for any tree we know that $|E| = |V| - 1$. Let us now use the handshake lemma:
+
+    $$ \sum_{u \in V}{d(u)} = 2|E| = 2(|V| - 1) = 2|V| - 2.$$
+
+    We will not separe the sum on the leftmost hand side of the equation in two parts. One for the vertices vertices in $L$ and one for the vertices in $V\textbackslash L$.
+
+
+    $$ \sum_{u \in L}{d(u)} + \sum_{u \in V\textbackslash L}{d(u)} = 2|V| - 2.$$
+
+    All the vertices in $L$ are leaves. By definition the degree of a leaf is one. Therefore $\sum_{u \in L}{d(u)} = |L|$. This leads us to the following:
+
+    $$  |L| + \sum_{u \in V\textbackslash L}{d(u)} = 2|V| - 2$$
+    $$  |L|  = 2|V| - 2 - \sum_{u \in V\textbackslash L}{d(u)}.$$
+
+    There are no vertices in $T$ of degree two and all vertices of degree one are in $L$. This means that all vertices in $V \textbackslash T$ have degree at least three. We can conclude that:
+    $$\sum_{u \in V\textbackslash L}{d(u)} \ge \delta(T - L).|V\textbackslash L| = 3(|V| - |L|) $$
+
+    Combining this with the previous equation we obtain that:
+
+    $$  |L| \le 2|V| - 2 - 3(|V| - |L|)$$
+    $$  |L| \le 2|V| - 2 - 3|V| + 3|L|$$
+    $$  -2|L| \le -|V| - 2$$
+    $$  |L| \ge \frac{|V|}{2} + 1$$
+
+    Which is exactly what we set out to proove.
+
+
+\end{proof}
+
+For future reference we would also like to present a claim that is more general than this. Notice that we could have required that $T$ has no vertices of degree less than $n \in \{3, 4, 5, ...\}$. If we make the substitution accordingly we obain that:
+
+    $$\sum_{u \in V\textbackslash L}{d(u)} \ge n(|V| - |L|) $$
+
+    $$  |L| \ge \frac{n - 2}{n - 1}|V| + \frac{2}{n - 1}$$
+
+    As $n$ gets larger we have that $ \lim_{n \to \infty}\frac{2}{n - 1} = 0$ and by L'Hopital's rule:
+    
+    $$\lim_{n \to \infty} \frac{n - 2}{n - 1} = \lim_{x \to \infty} \frac{(n - 2)'}{(n - 1)'} = 1$$
+
+    This means that for sufficiently large $n$ almost all of the vertices in a tree are leaves. Even for $n = 11$ we already have that at least $8/10$ of the vertices are leaves. This result will come in handy in one of the proofs in the second chapter.
+ 

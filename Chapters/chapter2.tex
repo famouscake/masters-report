@@ -296,7 +296,6 @@ Based on these cases we can conclude that for any input tree the algorithm will 
     Completely analogous to the standard BFS algorithm, this algorithm uses the same amount of memory in the standard memory model.
 \end{proof}
 
-\subsection{Dynamic Programming Approach}
 
 \subsection{Attempts at resolving the accuracy of 2xBFS}
 
@@ -309,5 +308,45 @@ While it is completely possible that this might lead us to a better "vantage poi
 Another idea is to run the algorithm multiple times from different starting points and keep the maximum value found. This again is problematic as shown in fig[]. That artificial example shows that there can simply be too few starting points which would produce the w-diameter.
 
 What we do know is that starting at any vertex $s$ let the vertices $U = \{u_1, u_2, ..., u_n\}$ be the furthest away and $W = \{w_1, w_2, ..., w_n\}$ be the ones second furthest away. By the proof of the algorithm we know that not necessarily all vertices in those sets would produce a w-diameter. Thus lets us define $R \subseteq U \cup W$ the set of vertices which are an endpoint of a w-diameter. As we have shown we can construct an example where $|R| = 2$ and $|U \cup W|$ is arbitrarily large. Can we than find some property of the vertices in $R$ and pick them out in the first phase? This I will leave open for the future generations to ponder. I hope in doing so all people of the world will unite unite and end all wars and prejudices in order to work towards this common good!
+
+\subsection{Dynamic Programming Approach}
+
+We can apply the same optimisation strategy with the w-diameter. We just have to make two changes. Instead of the function $h$ that computes the height of a subtree we will use the function $w(u)$ that stores the longest w-length path that starts at the root of the subtree. The other function $W(u)$ we define analogously as the value of the optimal solution for the subtree rooted at $u$. To summarise $W(u)$ returns the length of the largest w-path in the subtree $T_u$ and $w(u)$ the length of the largest w-path in $T_u$ that starts at $u$.
+
+The recursive formula for the optimal solution is as follows:
+
+$$ W(v) = max\bigg\{ \max\limits_{u \in N(v)}\bigg(W(u)\bigg), \max\limits_{u, t \in N(v)}\bigg(w(u) + w(t) + w_{u, t}(v)\bigg) \bigg\}. $$
+
+Where $w_{u, t}(v)$ can take a value in the range of $\{0, 1, 2, 3\}$ depending on whether $u, t \text{ or } v$ are kinks in the newly combined path. While this may seem terribly simillar to the original problem solution, combining paths takes another dimension of complexity. To combine paths we are required to run a double loop for all neighbours of all vertices and to loop through all children of all children of all vertices. The time complexity of this proposed solution is:
+
+$$ O\bigg( |V| + |E| + \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} + \sum_{u \in V}{d(u)^2}  \bigg) $$
+
+Firstly we can show that:
+
+$$ O\bigg( \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} \bigg) = O(|V|) $$
+
+This is because as we are in tree, every vertex will be visited exactly once as a child of a child. If it were visited twice then there would be two distinct paths to that vertex which would mean a cycle. 
+
+The other argument is more difficult to bound. One thing that is clear is that 
+
+$$ \sum_{u \in V}{d(u)^2} \ge \sum_{u \in V}{d(u)} = 2|E|$$
+
+This is true because the degree of a vertex is a positive integer and for any $x \in Z^+, x^2 \ge x$. This lower bound shows that it may be possible to obtain linear time complexity. I will demonstrate how we can bound it from above. 
+
+As trees have no cycles they must also be triangle free. Therefore for any edge in a tree $uv \in E(T)$ we have that $d(u) + d(v) \le |V|$. Indeed, if we do not have an induced triangle there are no vertices that $d(u)$ and $d(v)$ count twice. Summing over all edges we get that:
+
+$$ \sum_{uv \in E(T)}{d(u) + d(v)} \le |E|.|V| $$
+
+The key to solving this is to notice is that if we expand the summation every term $d(u)$ will be present exactly $d(u)$ times (one for each of it's edges). This allows us to obtain that:
+
+$$ \sum_{u \in V(T)}{d(u)^2} \le |E|.|V| $$
+
+Combining all we have done so far the time complexity of the algorithm is:
+
+
+$$ O\big( |V| + |E| + |V| + |V|.|E|  \big) = O\big(|V|.|E|\big) $$
+
+This is of course quadratic and is theoretically no better than the brute force exhaustive search. I claim that it will perform better in practice. I base my claim on that fact that the worst case is only valid for small size graphs. As the bottlenect of this algorithm is the double loop on all neighbours we must note that there will not be sufficiently enough neighbours for this to slow the computation significantly. Consider the extended proof we presented in Chapter 1. There we stated that the more vertices we have of large degree in a tree the more the number of leaves increases. And the all leaves we require no computation because they are the base case of the computation.
+
 
 \cite{parikh1980adaptive}
