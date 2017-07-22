@@ -73,7 +73,57 @@ This deceptively simple looking definition actually holds the overarching method
 
 Notice that in this definition we have implied surjectivity. Indeed if $X, Y$ are topological spaces such that $X$ is path-connected and $Y$ is not and $f : X \to Y$ is a continuous function then 
 
+Lastly we must explore how topological spaces are viewed by topologist. After all if two spaces share all of their topological properties should they be considered different? See coffee mug and dognut example []. We shall make this precise with the notions homeomorphism and homotopy equivalence.
 
+\begin{defn} Two topological spaces $X$ and $Y$ are said to be homeomorphic when there exists a bijetion $f : X \to Y$, such that $f$ and $f^{-1}$ are continuous. Furthermore the function $f$ is called a homeomorphism between $X$ and $Y$.  \end{defn}
+
+Homeomorphism is the appropriate equivalence relation for topological spaces. For example if we have two homoemorphic topological spaces $X$ and $Y$ and we know one them has a particular topological property, the necessarily the other one will have it as well. Conversely if we know that a space is path connected and another one isn't, then they are not homeomorphic.
+
+In the realm of algebraic topology there is another equivalence relation that is more flexible than this and still preserve the algebraic invariants of spaces. Before presenting it we must first introduce homotopy of functions.
+
+
+\begin{defn} Let $X$ and $Y$ be two topological spaces. Let $f, g: X \to Y$ be two continuous functions. We say that $f$ and $g$ are homotopic when there exists a third continuous function $H:X \times [0, 1] \to Y$ such that:  \end{defn}
+
+\begin{itemize}
+    \item $H(x, 0) = f(x), \forall x\in X$
+    \item $H(x, 1) = g(x), \forall x\in X$
+\end{itemize}
+
+We can think of homotopy as a one parameter family of functions $\{f_t\}_{t \in [0, 1]}$ such that $f_0 = f$ and $f_1 = g$. Homotopy defines an equivalence relation on all continuous functions between $X$ and $Y$. This notion can be extended to topological spaces as follows:
+
+
+\begin{defn} Two topological spaces $X$ and $Y$ are said to be homotopy equivalent if there exist two continuous functions $f: X \to Y$ and $g: Y \to X$ such that:  \end{defn}
+\begin{itemize}
+    \item $f \circ g$ is homotopic to $i_X$ 
+    \item $g \circ f$ is homotopic to $i_Y$,
+\end{itemize}
+
+where $i_X$ and $i_Y$ are the identity functions on $X$ and $Y$ respectively.
+
+Intuitively we can think of homotopy as a continuous deformation of the image of one of the functions to the image of the other. One can readily observe that every homeomorphism is a homotopy equivalence. Let $g = f^{-1}$, then $f \circ g = i_X$ and $g \circ f = i_Y$ as $f$ is a bijection and every function is homotopic to itself. However the converse is not true and a homotopy equivalence is not a homeomorphism.
+
+In a way very similar to abstract algebra continuous function play the role of homomorphisms and homeomorphisms play the role of isomorphisms. Also note that homotopy equivalence does not necessarily preserve all topological properties of a topological space. They do however preserse those which we care about such as path-connected and algebraic structures defined on the topological spaces. We will prefer to use them instead of homeomorphisms. 
+
+\section{Building Blocks}
+
+The most basic building blocks in Computational Algebraic Topology are Abstract Simplical Complexes (ASC). An ASC is a generalisation of a discrete graph and is defined as follows.
+
+
+\begin{defn} Given a set $V$, an Algebraic Siplicial Complex called $\Delta$ on $V$ is a collection of subsets of $V$ such that if $\sigma \in \Delta$ and $\delta \subseteq \sigma$ then $\delta \in \Delta$.  \end{defn}
+
+As we are considering these for computational purposes we will only consider ACS of finite sets. Elements of $\Delta$ are called simplices. The dimension of a simplex is it's cardinality. We will denote by $\Delta_n$ all simplices in $\Delta$ of dimension $n$. Analogous to graph theory simplices of dimension one are called vertices and simplices of dimension two are called edges. To generalise further 2-dimensional simplices are called triangles and 3-dimensional simplices are called polyhedra. Simplices of higher dimension lose their geometric flavour, so will avoid naming them altogether.
+
+\begin{ex} Show a simple example of an abstract simplical complex. \end{ex}
+
+While ASC are a purely combinatorial construct, like graphs they do have a geometric realisation.
+
+% Comb Topo Book
+\begin{defn} The standard geometric n-simplex is the convex hull of the set of endpoints of the standard basis $[1, 0, ..., 0], [0, 1, ..., 0], ..., [0, 0, ..., 1]$ in $\mathbb{R}^{n+1}$ defined as: \end{defn}
+
+    % From Hatcher
+    $$ \Delta^n = \{(t_0, t_1, ..., t_n) \in \mathbb{R}^{n+1} : \sum_{i = 0}^{n} t_i  = 1 \text{ and } t_i \ge 0, \forall i = 0, 1, ..., n \} $$
+
+\begin{ex} Show an example of the basic simplices. \end{ex}
 
 \section{Contour Trees}
 
