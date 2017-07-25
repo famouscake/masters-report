@@ -4,32 +4,32 @@
 
 \section{Height graphs}
 
-A height graph is a graph $G = (V, E)$ together with a real valued function $h$ defined on the vertices of $G$. In the case of heights graphs that are Contour Trees we will impose the Morse Theory restriction that all vertices have unique heights. In other words $h(u) \ne h(v)$ for all $u ,v \in V(G)$ where $u \ne v$. The function $h$ naturally induces a total ordering on the vertices. From now on we will assume the vertices of $G$ are given in ascending order. That is to say, $V(G) = \{v_1, v_2, ... , v_n\}$ where $h(v_1) < h(v_2) < ... < h(v_n)$. This lets us work with the indices of the vertices without having to constantly compare their heights. In this notation $h(v_i) < h(v_j)$ when $i < j$.
+A height graph is a graph $G = (V, E)$ together with a real valued function $h$ defined on the vertices of $G$. In the case of heights graphs that are Contour Trees we will impose the Morse Theory restriction that all vertices have unique heights. In other words $h(u) \ne h(v)$ for all $u ,v \in V(G)$ where $u \ne v$. The function $h$ naturally induces a total ordering on the vertices. From now on we will assume the vertices of $G$ are given in ascending order. That is to say, $V(G) = \{v_1, v_2, ... , v_n\}$ where $h(v_1) < h(v_2) < ... < h(v_n)$. This lets us work with the indices of the vertices without having to compare their heights directly. In this notation $h(v_i) < h(v_j)$ when $i < j$.
 
 %@TODO Remove this if you will not use it.
 
-Introducing the height function allows us to talk about ascending and descending paths. A path in the graph is a sequence of vertices $(u_1, u_2, ... , u_k)$ where $u_i \in V(G)$ for $i \in \{1, 2, ..., k\}$ and $u_iu_{i+1} \in E(G)$ for $i \in \{1, 2, ..., k-1\}$. Furthermore this path is ascending whenever $h(u_1) < h(u_2) < ... < h(u_k)$. Conversely if we traverse the path in the opposite direction it would be descending. We will simply call these path monotone when we wish to avoid committing to a specific direction of travel.
+Introducing the height function allows us to talk about ascending and descending paths. A path in the graph is a sequence of vertices $(u_1, u_2, ... , u_k)$ where $u_i \in V(G)$ for $i \in \{1, 2, ..., k\}$ and $u_iu_{i+1} \in E(G)$ for $i \in \{1, 2, ..., k-1\}$. Furthermore a path in a height graph is ascending whenever $h(u_1) < h(u_2) < ... < h(u_k)$. Conversely if we traverse the path in the opposite direction it would be descending. We will simply call these path monotone whenever we wish to avoid committing to a specific direction of travel.
 
 What we are interested in are the paths in the height tree which form a zigzag pattern. As shown in fig[] they can be decomposed into monotone paths of alternating direction that share exactly one vertex. More formally, if $P$ is a path in a height tree we can always decompose it into vertexwise maximal monotone subpaths $(P_1, P_2, ..., P_k)$ such that $P_i \subseteq P$, $|P_i \cap P_{i+1}| = 1$ and $P_i \cup P_{i+1}$ is not a monotone path for $i \in \{1, 2, ..., k-1\}$ and $k \ge 1$. 
 
-One way to characterise paths in a height tree is by the number of subpaths in their monotone path decomposition. The maximum path with respect to this property is precisely the lower bound on the parallel algorithm introduced in []. As a special case we must note that paths that can be decomposed into less than four monotone paths do not pose an algorithmic problem. To simplify this characterisation note that the number of subpaths in the monotone decomposition is exactly the number of vertices in which we change direction as we traverse the path. We shall name those special vertices - kinks.
+One way to characterise paths in a height tree is by the number of subpaths in their monotone path decomposition. The maximum path with respect to this property is precisely the lower bound on the parallel algorithm introduced in []. As a special case we must note that paths that can be decomposed into less than four monotone paths do not pose an algorithmic problem. To simplify this characterisation note that the number of subpaths in the monotone decomposition is exactly the number of vertices in which we change direction as we traverse the path. We shall name those special vertices kinks.
 
 A kink in a path is a vertex whose two neighbours are either both higher or both lower. Given the path $(u_1, u_2, ... , u_k)$ an inside vertex $u_i \ne u_1, u_k$ is a kink when $h(u_i) \notin \big( min(h(u_{i-1}),~h(u_{i+1}),~max(h(u_{i-1}),~h(u_{i+1}) \big)$. To avoid cumbersome notation in this context we shall adopt a slight abuse of notation and in the future write similar statements as $h(u_i) \notin $ or $ \in $ $\big(h(u_{i-1}),~h(u_{i+1}) \big)$ where it will be understood that the lower bound of the interval is the smaller of the two and the upper bound the larger.
 
-We can use the number of kinks in a path to define a metric on it. Intuitively this is similar to how the length of a path measures the number of edges between it's vertices. We will make an analogous definition of the w-length of a path as the number of inside vertices which are kinks. Let us denote a path from $u$ to $v$ as $u \rightsquigarrow v$ and with $d(u \rightsquigarrow v)$ measure the length of the longest path between $u$ and $v$ and with $w(u \rightsquigarrow v)$ the path with the largest number of kinks. One immediate observation we can make is that $w(u \rightsquigarrow v) < d(u \rightsquigarrow v)$ for any two vertices in any graph. This follows from that fact that the longest path between $u$ and $v$ also has the largest number of vertices. A path with $k$ vertices has length $k-1$ and at most $k-2$ internal vertices which may be kinks.
+We can use the number of kinks in a path to define a metric on it. Intuitively this is similar to how the length of a path measures the number of edges between it's vertices. We will make an analogous definition of the w-length of a path as the number of inside vertices which are kinks. Let us denote a path from $u$ to $v$ as $u \rightsquigarrow v$ and with $d(u \rightsquigarrow v)$ measure the length of the longest path between $u$ and $v$ and with $w(u \rightsquigarrow v)$ the path with the largest number of kinks (or the longest w-path). One immediate observation we can make is that $w(u \rightsquigarrow v) < d(u \rightsquigarrow v)$ for any two vertices in any graph. This follows from that fact that the longest path between $u$ and $v$ also has the largest number of vertices. A path with $k$ vertices has length $k-1$ and $k-2$ internal vertices which may or may not be kinks.
 
 
 \section{Height trees}
 
 We will not restrict our attention to height trees. Those are unsurprisingly height graph which are trees. The first key property of trees will make use of is that there is a unique path between any two vertices. This allows us to slightly simplify some of our notation.  Instead of  $d(u \rightsquigarrow v)$ and $w(u \rightsquigarrow v)$ we will write $d(u, v)$ and $w(u, v)$ respectively.  
 
-We are fully prepared to unveil that which we seek - the path in a tree that has the largest w-length. There is a unique path between any two vertices this can be posed as an optimisation problem as follows:
+We are now fully prepared to unveil that which we seek - the longest w-path in a tree (the one with the most kinks). As there is a unique path between any two vertices this can be posed as an optimisation problem as follows:
 
 $$ \max_{u, v \in V(T)}\{ w(u \rightsquigarrow v) \} =  \max_{u, v \in V(T)}\{ w(u, v) \} $$
 
-As the search space is quadratic in the number of vertices this can be computed by running a modified version of Breadth First Search (BFS) from every vertex in the tree. This modified BFS computes the w-distances from a starting vertex to all others. The presudocode for this modification is presented in []. The running time for this is $O(n^2)$ and is far from satisfactory given that the actual algorithm for construction the contour tree runs in time $O(n\alpha(n))$. This is because in practical terms a $O(n^2)$ algorithm is completely unusable on datasets which a near linear time algorithm can compute.
+The search space is quadratic in the number of vertices and this can be computed by running a modified version of Breadth First Search (BFS) from every vertex in the tree. This modified BFS computes the w-distances from a starting vertex to all others. The presudocode for this modification is presented in []. The running time for this is $O(n^2)$ and is far from satisfactory given that the actual algorithm for construction the contour tree runs in time $O(n\alpha(n))$. This is because in practical terms a $O(n^2)$ algorithm is completely unusable on datasets which a near linear time algorithm can process.
 
-And indeed we can do better. As the reader may have noticed the definitions we have made so far are analogous to the task of computing the longest path between any two vertices of a tree. This is completely intentional as we will demonstrate how algorithms for computing the longest path in a tree can be modified to produce the longest w-path instead. Finding the longest path of a graph in the general case is an \em NP-hard\em. Fortunately the Contour Tree is a tree. The longest path in a tree is known in the literature as it's diameter and has a polynomial time algorithm. The two most popular linear time algorithms found in the literature I will denote as Double Breadth First Search (2xBFS) and Dynamic Programming (DP). We will now take a look at how these algorithms work and hint at how we can proceed to modify them.
+And indeed we can do better. As the reader may have noticed the definitions we have made so far are analogous to the task of computing the longest path between any two vertices of a tree. This is completely intentional as we will demonstrate how algorithms for computing the longest path in a tree can be modified to produce the longest w-path instead. Finding the longest path of a graph in the general case is an \em NP-hard\em. Fortunately the Contour Tree is a tree. The longest path in a tree is known in the literature as it's diameter and has a polynomial time algorithm. The two most popular linear time algorithms found in the literature I will denote as Double Breadth First Search (2xBFS) and Dynamic Programming (DP). We will now take a look at how these algorithms work and hint at how they can be adapted in the next chapter.
 
 
 \subsection{Double Breadth First Search}
@@ -57,7 +57,7 @@ The second approach is based on the Dynamic Programming paradigm. It is most oft
 \end{enumerate}
 
 
-Naturally, trees exhibit optimal substructure through their subtrees. For our intents and purposes we shall define a subtree as a connected subgraph of a tree. As we will only consider rooted trees and we must analogously define rooted subtrees. In a rooted tree let $v$ and $u$ be two vertices such that $v$ is the parent and $u$ is the child. We shall define the subtree rooted at $u$ as the maximal (vertex-wise) subgraph of $T$ that contains $u$ but does not contain $v$. We will denote it as $T_u$. Clearly the rooted subtree at $u$ is smaller than $T$ as it does not contain at least one of the vertices of the $T$ namely - $v$. This definition will allows us to recursively consider all subtrees of a rooted tree $\{T_u\}_{u \in V(G)}$. Also note that if all vertices in $T_u$ except $u$ inherit their parent from $T$ then $T_u$ is also a rooted subtree - it's root being $u$.
+Naturally, trees exhibit optimal substructure through their subtrees. For our intents and purposes we shall define a subtree as a connected subgraph of a tree. We will only consider rooted trees in the context of this algorithm and we must define the analogously. In a rooted tree let $v$ and $u$ be two vertices such that $v$ is the parent and $u$ is the child. We shall define the subtree rooted at $u$ as the maximal (vertex-wise) subgraph of $T$ that contains $u$ but does not contain $v$. We will denote it as $T_u$. Clearly the rooted subtree at $u$ is smaller than $T$ as it does not contain at least one of the vertices of the $T$ namely - $v$. This definition will allows us to recursively consider all subtrees of a rooted tree $\{T_u\}_{u \in V(G)}$. Also note that if all vertices in $T_u$ except $u$ inherit their parent from $T$ then $T_u$ is also a rooted subtree - it's root being $u$.
 
 To continue we will need to define two functions on the vertices $T$. Let $h(u)$ be the height of the subtree rooted at $u$. The height is defined as the longest path in $T_u$ from $u$ to one of the leaves of $T_u$. We will also define $D(u)$ longest path in $T_u$. The function we will maximize is $D(s)$ where $s$ is the root of $T$. With these two function we are now ready to recursively define the value of the optimal solution:
 
@@ -72,11 +72,9 @@ This algorithm can be implemented in linear time through Depth First Search (DFS
 \section{W Diameter Detector}
 
 
-\subsection{Linear Time Algorithm - 2xBFS}
+\subsection{Linear Time Algorithm - W-BFS}
 
-We shall first explore how we can modify the Double Breadth First Search algorithm to computer the w-diameter of a height tree. The new algorithm will follow exactly the same steps, except it will run the modified BFS that computes w-distance []. What the algorithm does is it runs a BFS from any vertex in the graph and records the leaf that is farthest in terms of w-length. This furthest leaf if guaranteed to be either the endpoint of a path in the whose w-length least that of the actual w-diameter of the tree minus two. 
-
-The algorithms works as follows:
+We shall first explore how we can modify the Double Breadth First Search algorithm to computer the w-diameter of a height tree. The new algorithm will follow exactly the same steps, except it will run a modified version of BFS that computes w-distance [see algorithm next page]. What the algorithm does is it runs a BFS from any vertex in the graph and records the leaf that is farthest in terms of w-length. This furthest leaf is guaranteed to be either the endpoint of a path in the whose w-length least that of the actual w-diameter of the tree minus two. 
 
 
 \begin{algorithm}
@@ -102,7 +100,7 @@ The algorithms works as follows:
         \ForAll {v $\in$ T.$Adj$[u]} 
             \If {v.$\pi$ == $\emptyset$}
                 \State v.$\pi$ = u
-                \If {u $\notin$ \big(v,~u.$\pi$\big)}
+                \If {h(u) $\notin$ \big(h(v),~h(u.$\pi$)\big)}
                     \State v.d = u.d + 1
                 \Else
                     \State v.d = u.d
@@ -286,8 +284,8 @@ Based on these cases we can conclude that for any input tree the algorithm will 
 \begin{lem} The time complexity of the algorithm is $O(|V|)$. \end{lem}
 
 \begin{proof}
-    The modified BFS function has the same time complexity of BFS as all we have added is an "\em if, then, else\em"~statement. The time complexity of BFS if $O(|V| + |E|)$, but in a tree $|E| = |V| - 1$, so the overall complexity is $O(2|V| - 1) = O(|V|)$. 
-    Running the modifies BFS function twice is still linear, thus the overall complexity of the algorithm is linear as well.
+    The modified BFS function has the same time complexity of BFS as all we have added is an "\em if, then, else\em"~statement. The time complexity of BFS is $O(|V| + |E|)$, but in a tree $|E| = |V| - 1$, so the overall complexity is $O(2|V| - 1) = O(|V|)$. 
+    Running the modified BFS function twice is still linear, thus the overall complexity of the algorithm is linear as well.
 \end{proof}
 
 \begin{lem} The space complexity of the algorithm is $O(|V|)$. \end{lem}
@@ -299,27 +297,117 @@ Based on these cases we can conclude that for any input tree the algorithm will 
 
 \subsection{Attempts at resolving the accuracy of 2xBFS}
 
-For the intents of purpose of this dissertation the accuracy of this algorithm is sufficient. Indeed in large enough data sets this estimate provides enough insight to correlate the observed iterations needed to collapse the split and join trees and the resulting w-diameter of the tree. This is demonstrated in the following section. Regardless of such practical considerations it is still of inherent theoretical interest to understand how we may be able to obtain an accurate linear time algorithm for computing the w-diameter.
+For the intents of purpose of this dissertation the accuracy of this algorithm is sufficient. In large enough data sets this estimate provides enough insight to correlate the observed iterations needed to collapse the split and join trees and the resulting w-diameter of the tree. This is demonstrated in the following section. Regardless of such practical considerations it is still of inherent theoretical interest to understand how we may be able to obtain an accurate linear time algorithm for computing the w-diameter.
 
-One key observation we can make is that on the second run of the BFS we get a path that is necessarily bigger or equal to the previous on in terms of w-length. A natural question to ask is where running the BFS a third, fourth or for that matter nth time would result in the actual w-diameter. On every successive iteration we get a path that is bigger or equal to the previous one as w-length is a symmetric path property ($w(a, b) = w(b, a)$) and we would end up getting the same path in the worst case.
+One key observation we can make is that on the second run of the BFS we get a w-path that is necessarily longer or equal to one found in the first BFS search. A natural question to ask is whether running the BFS a third, fourth or for that matter nth time would result in the actual w-diameter. On every successive iteration we get a w-path that is longer or equal to the previous one, because w-length is a symmetric path property ($w(a, b) = w(b, a)$). By doing this we can hope that we will eventually obtain a w-path closer to the w-diameter. However there is no guarantee that this will happen. In fact in some cases it is possible that each successive BFS will return the same path over and over again. Obverse how in @TODO fig[] all iterations of BFS go from the vertex $u$ to the vertex $v$ and then from $v$ to $u$ and so on. 
 
-While it is completely possible that this might lead us to a better "vantage point" and leads us to the actual w-diameter (fig[]) it is also completely possible that every iteration would return the same path over and over again. This would leave us stuck in a perpetual loop as shown in fig[]. We will never be close to the w-diameter.
 
-Another idea is to run the algorithm multiple times from different starting points and keep the maximum value found. This again is problematic as shown in fig[]. That artificial example shows that there can simply be too few starting points which would produce the w-diameter.
+Another this we can do is to run the algorithm multiple times from different starting points and keep the maximum value found. This approach unreliable as well as show in @TODO fig[]. That artificial example shows that there can simply be too few starting points which would produce the w-diameter.
 
-What we do know is that starting at any vertex $s$ let the vertices $U = \{u_1, u_2, ..., u_n\}$ be the furthest away and $W = \{w_1, w_2, ..., w_n\}$ be the ones second furthest away. By the proof of the algorithm we know that not necessarily all vertices in those sets would produce a w-diameter. Thus lets us define $R \subseteq U \cup W$ the set of vertices which are an endpoint of a w-diameter. As we have shown we can construct an example where $|R| = 2$ and $|U \cup W|$ is arbitrarily large. Can we than find some property of the vertices in $R$ and pick them out in the first phase? This I will leave open for the future generations to ponder. I hope in doing so all people of the world will unite unite and end all wars and prejudices in order to work towards this common good!
+What we do know is that starting at any vertex $s$ let the vertices $U = \{u_1, u_2, ..., u_n\}$ be the furthest away and $W = \{w_1, w_2, ..., w_n\}$ be the ones second furthest away. By the proof of the algorithm we know that not necessarily all vertices in those sets would produce a w-diameter. Thus lets us define $R \subseteq U \cup W$ the set of vertices which are an endpoint of a w-diameter. As we have shown we can construct an example where $|R| = 2$ and $|U \cup W|$ is arbitrarily large. Can we then find some property of the vertices in $R$ and pick them out in the first phase? This I will leave open for the future generations to ponder. I hope in doing so all people of the world will unite unite and end all wars and prejudices in order to work towards this common good!
 
 \subsection{Dynamic Programming Approach}
 
-We can apply the same optimisation strategy with the w-diameter. We just have to make two changes. Instead of the function $h$ that computes the height of a subtree we will use the function $w(u)$ that stores the longest w-length path that starts at the root of the subtree. The other function $W(u)$ we define analogously as the value of the optimal solution for the subtree rooted at $u$. To summarise $W(u)$ returns the length of the largest w-path in the subtree $T_u$ and $w(u)$ the length of the largest w-path in $T_u$ that starts at $u$.
+*Idea redefine $N(u) = N(u) / u.\pi$ so you can simplify notation.
 
-The recursive formula for the optimal solution is as follows:
+While it is encouraging that we have obtained an algorithm that bounds the w-diameter it is also quite unsatisfactory that we were not able to directly obtain it. To remedy this we will resort to modifying the second tree diameter algorithm that we outlined previously. We will use the same optimisation strategy i.e. dynamic programming. We need only make two key changes. Instead of the function $h(u)$ that computes the height of a subtree with root $u$ we will use the function $w(u)$ that stores the longest w-path that starts at the root of the subtree. We will remane the function that stores the value of the optimal solution for subroblems from $D(u)$ to $W(u)$ accordingly. To summarise $W(u)$ returns the length of the largest w-path in the subtree $T_u$ and $w(u)$ the length of the largest w-path in $T_u$ that starts at $u$.
 
-$$ W(v) = max\bigg\{ \max\limits_{u \in N(v)}\bigg(W(u)\bigg), \max\limits_{u, t \in N(v)}\bigg(w(u) + w(t) + w_{u, t}(v)\bigg) \bigg\}. $$
+This may seem like a simple substitution at first glance, but the devil is in the details. As in the previous modification all additional difficulties stem from the difference in combining path lengths and path w-lengths. In the tree diameter scenario path combination is straightforward. For a tree with root $s$ we will first find two distinct children $u, v \in N(s)$ of $s$ such that $h(u)$ and $h(v)$ is maximum amongst all children. Next we will combine them to obtain the longest path that goes through $s$. This path combination yield the sum $h(u) + h(v) + 2$, where we account for the two additional edges $us, sv \in E(T_s)$. This reasoning of course extends to all subtrees in $T$.
 
-Where $w_{u, t}(v)$ can take a value in the range of $\{0, 1, 2, 3\}$ depending on whether $u, t \text{ or } v$ are kinks in the newly combined path. While this may seem terribly simillar to the original problem solution, combining paths takes another dimension of complexity. To combine paths we are required to run a double loop for all neighbours of all vertices and to loop through all children of all children of all vertices. The time complexity of this proposed solution is:
+In the latter case of w-path combinations we must be vigilant of which vertices become kinks in the path combinations. Let us observe a similar scenario where $s$ is the root the tree and $u, v \in V(T_s)$ are two of the children with maximal values for $h(u)$ and $h(v)$. We would ideally like to combine $w(u)$ and $w(v)$ like so: $w(u) + w(v) + w_{u, v}(s)$. This however is not correct! There is a hidden assumption in the sum that the only vertex that can become a kink in this path combination is $s$. Contrary to this, in fact $u$ and $v$ can also become kinks. Observe that $w(u) \text{ and } w(v)$ are the w-length of two paths - one starting at $u$ and ending in a leaf of $T_u$ and one starting at $v$ and ending in a leaf of $T_v$. In the new path both $u$ and $v$ become inside vertices and depending on whether they become kinks or not the sum may further increase by two. To account for this we must also look at the children of $u$ and $v$. 
+
+Let us focus on the children of $u$ and without loss of generality later apply the same reasoning to the children of $v$. We need a way of detecting the potential of $u$ to become a kink or it's potential w-height. Let $\{u_1, u_2, ..., u_k\}$ be all children of $u$. We must pick out the with the maximum w-height $u'$ such that $u$ will form a kink with $u'$ and $s$. If one such exists then the potential w-height $p(u)$ of $u$ is $h(u) + 1$ and $h(u)$ otherwise. In summary $p(u) = \max\limits_{i \in \{1, 2, ..., k\}}\big(h(u_i) + w_{u_i, s}(u)\big)$.
+
+After computing the potential w-height of all children of $s$ we are not ready to compute the maximum w-path passing through $s$. This is exactly the path combination with two of the children of $s$ - $u, v \in T_u$ such that $p(u) + p(v) + w_{u, v}(s)$ is maximum. Armed with the means of combining subproblems we are finally ready to present the recursive formula for the optimal solution of the problem.
+
+
+$$ W(s) = max\Bigg\{ \max\limits_{u \in N(s)}\bigg(W(u)\bigg), \max\limits_{u, v \in N(s)}\bigg( \max\limits_{u' \in N(u)}\Big(w(u') + w_{u', s}(u)\Big) + \max\limits_{v' \in N(v)}\Big(w(v') + w_{v', s}(v)\Big) + w_{u, v}(s)\bigg) \Bigg\}. $$
+
+
+% @TODO 
+Which one looks better?
+$$
+W(s) = max
+\left\{
+	\begin{array}{ll}
+                \max\limits_{u \in N(s)}\bigg(W(u)\bigg),\\
+                \max\limits_{u, v \in N(s)}\bigg( \max\limits_{u' \in N(u)}\Big(w(u') + w_{u', s}(u)\Big) + \max\limits_{v' \in N(v)}\Big(w(v') + w_{v', s}(v)\Big) + w_{u, v}(s)\bigg)
+	\end{array}
+\right\}
+$$
+
+\begin{algorithm}
+\caption{Computing the W Diameter of a Height Tree.}
+
+\begin{algorithmic}[1]
+
+\Function{W\_DFS}{T, s}
+
+    % If we are at a leaf
+    \If {|T.$Adj$[s]| == 1 AND s.$\pi \ne $ s}
+        \State s.W = 0
+        \State s.w = 0
+        \State return
+    \EndIf
+
+    % Forwards DFS visit
+    \ForAll {u $\in$ T.$Adj$[s]} 
+        \If {u.$\pi$ == $\emptyset$}
+            \State u.$\pi$ = s
+            \State W\_DFS(T, u)
+        \EndIf
+    \EndFor
+
+    % Backtracking
+    \\
+    \State $Array$ p
+    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
+        \State p[u] = 0
+        \ForAll {v $\in$ T.$Adj$[u]$/u$} 
+            \State p[u] = max(p[u], v.h + $w_{v, s}(u)$) 
+        \EndFor
+    \EndFor
+
+    \State maxCombine = 0
+    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
+        \ForAll {v $\in$ T.$Adj$[s]$/s.\pi$} 
+        \State maxCombine = max(maxCombine, p[u] + p[v] + $w_{u, v}(s)$)
+        \EndFor
+    \EndFor
+
+    \\
+    \State maxSubsolution = 0
+    \ForAll {u $\in$ T.$Adj$[s]} 
+        \State maxSubsolution = max(maxSubsolution, u.W)
+    \EndFor
+    \\
+    \State s.W = max(s.maxCombine, s.maxSubsolution)
+
+\EndFunction
+
+\Function{Calculate\_W\_Diameter}{T}
+    \State s = <any vertex>
+    \State s.$\pi$ = s
+    \State W\_DFS(T, s)
+    \State return s.W
+\EndFunction
+
+\end{algorithmic}
+\end{algorithm}
+
+\begin{lem} The Algorithm produces the w-diameter of a height tree. \end{lem}
+
+
+\begin{proof}
+    TBA
+\end{proof}
+
+
+The complexity of the proposed solution is:
 
 $$ O\bigg( |V| + |E| + \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} + \sum_{u \in V}{d(u)^2}  \bigg) $$
+
+Where $\sum_{u \in V}{\sum_{v \in N(u)}{d(v)}}$ is the loop over all children of children and $\sum_{u \in V}{d(u)^2}$ is the double loop over all children in the final path combination.
 
 Firstly we can show that:
 
@@ -333,20 +421,25 @@ $$ \sum_{u \in V}{d(u)^2} \ge \sum_{u \in V}{d(u)} = 2|E|$$
 
 This is true because the degree of a vertex is a positive integer and for any $x \in Z^+, x^2 \ge x$. This lower bound shows that it may be possible to obtain linear time complexity. I will demonstrate how we can bound it from above. 
 
-As trees have no cycles they must also be triangle free. Therefore for any edge in a tree $uv \in E(T)$ we have that $d(u) + d(v) \le |V|$. Indeed, if we do not have an induced triangle there are no vertices that $d(u)$ and $d(v)$ count twice. Summing over all edges we get that:
+A triangle is the complete graph on three vertices. As trees have no cycles they cannot have induced triangles. Therefore for any edge in a tree $uv \in E(T)$ we have that $d(u) + d(v) \le |V|$. Indeed, if we do not have an induced triangle there are no vertices that $d(u)$ and $d(v)$ count twice. Summing over all edges we get that:
 
 $$ \sum_{uv \in E(T)}{d(u) + d(v)} \le |E|.|V| $$
 
 The key to solving this is to notice is that if we expand the summation every term $d(u)$ will be present exactly $d(u)$ times (one for each of it's edges). This allows us to obtain that:
 
-$$ \sum_{u \in V(T)}{d(u)^2} \le |E|.|V| $$
+$$ 2|E| \le \sum_{u \in V(T)}{d(u)^2} \le |E|.|V| $$
 
-Combining all we have done so far the time complexity of the algorithm is:
+Overall for the two sums we have shown that:
+
+$$ O\bigg( \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} \bigg) = O(|V|)  , ~~ O\bigg( \sum_{u \in V(T)}{d(u)^2} \bigg) = O(|V|.|E|).$$
+
+Therefore the time complexity of the dynamic programming solution is:
+
+$$ O\big( |V| + |E| + |V| + |V|.|E|  \big) = O\big(|V|.|E|\big).$$
 
 
-$$ O\big( |V| + |E| + |V| + |V|.|E|  \big) = O\big(|V|.|E|\big) $$
-
-This is of course quadratic and is theoretically no better than the brute force exhaustive search. I claim that it will perform better in practice. I base my claim on that fact that the worst case is only valid for small size graphs. As the bottlenect of this algorithm is the double loop on all neighbours we must note that there will not be sufficiently enough neighbours for this to slow the computation significantly. Consider the extended proof we presented in Chapter 1. There we stated that the more vertices we have of large degree in a tree the more the number of leaves increases. And the all leaves we require no computation because they are the base case of the computation.
+% @TODO Add a reference for the lemma
+The running time is quadratic. Theoretically this is no better than a brute force exhaustive search. Despite this we have reasons to believe that it has the potential for better practical performance. The main reason that leads us to this conclusion is that the quadratic behaviour comes from the double loop on the children of all vertices. We know from the \textbf{lemma in previous chapter}  that in any tree for any vertex of degree $d$ there are at least $d$ distinct leaves. Therefore for any vertex of high degree there will be as many vertices which are base cases for the recursion and will take constant processing time. This behaviour is/is not demonstrated in the next chapter where implementations of both w-diameter algorithms are compared empirically.
 
 
 \cite{parikh1980adaptive}
