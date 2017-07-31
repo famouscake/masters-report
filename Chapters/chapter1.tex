@@ -109,6 +109,9 @@ Intuitively we can think of homotopy as a continuous deformation of the image of
 
 In a way very similar to abstract algebra continuous function play the role of homomorphisms and homeomorphisms play the role of isomorphisms. Also note that homotopy equivalence does not necessarily preserve all topological properties of a topological space. They do however preserse those which we care about such as path-connected and algebraic structures defined on the topological spaces. We will prefer to use them instead of homeomorphisms. 
 
+
+\begin{defn}{Topological Invairant}   \end{defn}
+
 *I will add more things to this chapter later if I need to*
 
 
@@ -246,11 +249,46 @@ Luckily in $\mathbb{R}^n$ we have the following theorem: $\mathbb{R}^n / \mathbb
 
 $$ \mathbb{R}^3 {\longrightarrow} \mathbb{R}^2 {\longrightarrow} \mathbb{R}^4 $$
 
-\section{Homology}
+
+\section{Manifolds}
+
+\section{Differential Topology}
+
+\section{Algebraic Topology}
+
+
+% @TODO Define a topological invariant.
+% @TODO Make sure you have the definition of n-cycle
+Algebraic Topology concerns itself with topological invariants of algebraic nature. These invariants are obtained through the extraction of algebraic structures like groups, rings, vector fields or modules from a topological space. The fact that they are topological invariants is demonstrated by the fact that a homeomorphic image of that space produces an isomorphic algebraic structure of the same kind. In practical terms these algebraic structures measure properties of a topological space such as connected components, number of holes (1-cyles), number of voids (2-cycles) or more generally number of n-cycles. This section will focus on developing the mathematical apparatus by which homology is built.
+
+\subsection{Euler Characteristic}
+
+The first topological invariant of algebraic nature we shall encounter is the Euler Characteristic. It is denoted as $\chi$ and it assigns an integer to suitably nice spaces through a generalisation of counting \cite{elementary-applied-topology}. The concept was originally defined for polyhedra as a alternating sum of the form $|V| - |E| + |F|$, where $V$ is the set of vertices, $E$ the set of edges and $F$ the set of faces. This allowed for the classification of the Platonic solids [fig].
+
+
+% @TODO Define CW complexes
+The Euler Characteristic can be generalized to all spaces that can be decomposed into a finite number of cells. Let us first consider CW-complexes because they generalise polyhedra. The natural generalisation of the alternating sum is to continue it indefinitely by the number of 3-cells, then 4-cells, etc., as follows
+
+$$ \chi = k_0 - k_1 + k_2 - ... = \sum_{i}{(-1)^i~k_i}  $$,
+
+where all $k_i = 0$ for $i > n$ and all $k_i$ for $i \le n$ are positive integers. This sum of course works perfectly fine for simplical complexes as well.
+
+
+Even more generally given a topological space $X$ that can be decomposed into the disjoint union of a finite number of open cells $X = \coprod_{\alpha}\sigma_{\alpha}$ where each k-cell $\sigma_{\alpha}$ is homeomorphic to $\mathbb{R}^k$ we can apply the same formula as above \cite{elementary-applied-topology}. 
+
+$$ \chi(X) = \sum_{\sigma}{(-1)^{dim(\sigma)}} .$$
+
+MAYBE TALK ABOUT TAME FUNCTIONS?
+
+
+\begin{lem}   The Euler Characteristic is homotopy invariant. \end{lem}
+
+This results allows to compute in practice $\chi$ considering a finite triangulation of a manifold. As there is a homeomorphism between a manifold and it's triangulation $\chi$ will not change. We will be well advised to pick a tringulation with the least number of simplices to improve computational efficiency. For example the octahedron is a triangulation of a sphere. We will omit the process by which this is done in detail and refer the reader to [].
+
+\subsection{Homology}
+
 
 \section{Reeb Graph \& Contour Tree}
-
-
 
 
 \section{Contour Trees}

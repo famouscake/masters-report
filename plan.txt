@@ -1,9 +1,9 @@
 Chapter 1 - Introduction
+    - Topology
+    - Simplicial Complexes
     - Contour Tree
-
-    - Survey of Contour Tree Algorithms
-
-    - Simplifications of trees
+    - Survey of CT Algorithms, Serial and Parallel
+    - Simplifications of CT
 
 Chapter 2 - W Detector Theory
 
@@ -21,18 +21,22 @@ Chapter 2 - W Detector Theory
 
     - Comparison of both algorithms.
 
-
 Chapter 3 - W Detector Practice.
 
     - Overview of survey on given datasets.
+
+    - Comparison of DP and BFS algorithms in practice.
 
     - Correlation of Ws with diameter. Show why it's a more important bound.
 
     - Smallest W in a data set.
 
-    - Thoughs on Ws from raw data and things like that.
+    - Thoughts on Ws from raw data and things like that.
+
+    - Whatever else I find.
 
 Chapter 4 - Homology.
+
     - Definition of Homology.
 
     - Persistent Homology.
@@ -46,3 +50,5 @@ Chapter 4 - Homology.
 Chapter 5 - Unification.
 
     - Workers of the bolshevik party unite! You have nothing to lose but you chains!
+
+    - Shot and a PH of an Ascending(Descending) Filtration is equivalent to 
