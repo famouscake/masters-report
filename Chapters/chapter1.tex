@@ -297,11 +297,15 @@ Homology is built around the interplay between two key concepts of \textbf{cycle
 
 Notice also that the paths formed by the edges $bc, ca, ab$ and $ca, ab, bc$ are also cycles. The only difference is which vertex they start and end at. We would like to disregard the choice of starting point completely because those three paths represent the same structure in the simplical complex and. To this end we shall introduce additive algebraic notation. In this notation the same cycle would be written as $ab + bc + ca$.  We will soon demonstrate that additive notation is not only used to illustrate the point of disregarding edge order. Its more important aspect is that it allows us to treat sums of edges as linear combinations in an abstract vector space.
 
+
+% @TODO Finish this.
+Talk about how the face covers a boundary. Talk about the problem of finding cycles that are not closed by boundaries. Those are exactly the holes in the space.
+
 Let us be more formal now. To begin with, for simplicity, we will operate with vector spaces over the field of coefficients $\mathbb{Z}_2 = \{0, 1\}$ together with the standard operations of addition and multiplication modulo two. The building blocks of the homology of a simplical complex $X$ are:
 
 
 \begin{itemize}
-    \item The \textbf{n-chains} of $X$. These are denoted at $C_n(X)$ and are an abstract vector space with basis all the n-simplices of $X$.
+    \item The vector space of \textbf{n-chains} of $X$. This is denoted as $C_n(X)$. It is an abstract vector space with basis all the n-simplices of $X$.
     \item The \textbf{boundary maps} of the n-chains of $X$. These are linear maps between the n-chains denoted as $\partial_n : C_n(X) \to C_{n-1}(X)$.
 \end{itemize}
 
@@ -317,6 +321,54 @@ Linear functions commute with vector addition and scalar multiplication. This al
 
 
 $$ \partial\bigg(\sum_{\sigma}a_{\sigma}\sigma\bigg) = \partial\bigg(\sum_{\sigma}{a_{\sigma}[v_{\sigma_0}, v_{\sigma_1}, ..., v_{\sigma_n}]}\bigg) = \sum_{\sigma}{a_{\sigma} \sum_{i=0}^{n}[v_{\sigma_0},..., \hat{v}_{\sigma_i}, ..., v_{\sigma_n}]} .$$
+
+What we have thus obtained is a collection of vector spaces together with linear maps beteen. This is what called a chain complex. This is the quiver representation of a chain complex of a simplicat comples of dimension n.
+
+
+%$$ 0 \longrightarrow ... \longrightarrow 0 \longrightarrow V_1 \overset{f_1}{\longrightarrow} V_2 \overset{f_2}{\longrightarrow} ... \overset{f_{n-1}}{\longrightarrow} V_n  \longrightarrow 0 \longrightarrow ... \longrightarrow 0$$
+
+$$ C_n(X) \longrightarrow C_{n-1}(X) \longrightarrow ... \longrightarrow C_1(X) \overset{f_1}{\longrightarrow} C_0(X) $$
+
+For conveninece we will extend this chain on both sided with the zero dimentional vector space as follows:
+
+$$ 0 \overset{\partial_{n+1}}{\longrightarrow} C_n(X) \overset{\partial_{n}}{\longrightarrow} C_{n-1}(X) \overset{\partial_{n-1}}{\longrightarrow} ... \longrightarrow C_1(X) \overset{\partial_1}{\longrightarrow} C_0(X) \overset{\partial_0}{\longrightarrow} 0. $$
+
+In this sequence $\partial_{n+1} \text{ and } \partial_{0}$ are zero maps. In the case of $\partial_{n+1}$ it maps the zero vector of $0$ to the zero vector of $C_n(X)$ and $\partial_0$ maps all vectors in $C_0(X)$ to the zero vector in $0$.
+
+In this context we would like a simple method of recognising cyles and boundaries. The boundaries are provided to use by the boundary maps. Thus the set of all boundaries in $C_n(X)$ is given by the image of $C_{n+1}(X)$ under $\partial_{n+1}$ or $im(\partial_{n+1})$. The cycles in $C_n(X)$ are given by all the vector in $C_n(X)$ that go to the zero vector of $C_{n-1}(X)$ under $\partial_n$. Intuitively the boundary of an n-chain is zero exactly when all of the faces of the simplices in the n-chain cancel out. The set of all vectors that go to the zero vector under the boundary map $\partial$ is called the kernel of $\partial$ or $ker(\partial)$.
+
+From linear algebra we know that for a linear function $f: V \to W$ $ker(f)$ is a linear subspace of $V$ and $im(f)$ is a subspace of $W$. In the context of chain complexes this means that the images and kernels of all the boudary maps are linear subspaces of their appropriate n-chains. What we would like ot learn about is of the relation of the cycles and boundaries in this algebraic context. We have defined the boundary operator in a very special way. We have defined it so that whenever we apply it two consecutive times we obtain the 0 vector.
+
+
+\begin{lem} Fundamental Lemma of Homology. $(\partial_{n-1} \circ \partial_n) (\sigma) = 0, \text{ for every } \sigma \in C_{n}(X)$. \end{lem}
+
+\begin{proof}
+    We will only sketch the intuitive outline of the proof and refer the reader to \cite{algebraic-topology} for a more complete version.
+
+    Let us consider the boundary of $\sigma$ which is $\partial_n(\sigma)$. It contains all of the n-1 faces of $\sigma$. Furthermore every n-2 face of $\sigma$ belongs to exactly two n-1 faces of sigma. Therefore those will cancel out in the second boundary operation.
+\end{proof}
+
+
+\begin{cor}  For every two consecutive boundary maps $\partial_n$ and $\partial_{n-1}$ in a chain complex $im(\partial_n) \subseteq ker(\partial_{n-1})$. \end{cor}
+
+\begin{proof}
+    If the image of $\partial_n$ were not in the kernel of $\partial_{n-1}$ then there would be at least one n-chain $\sigma$ for which $(\partial_{n-1} \circ \partial_n) (\sigma) \ne 0$. By the Fundamental Lemma of Homology this is not possible.
+\end{proof}
+
+Now, how do we only take into account the cycles that are not covered by a boundary? Take the quotient of the two. Because of the way how the quotient space is constructed the only cycles that do not go to the zero coset under the quotient projection map are the ones that entirely linear combinations of boundaries of higher dimensional simplicies. This is precicely how we define the n-th homology of a chain map.
+
+
+\begin{defn} The n-th homology of a chain map is $H_n(X) = ker(\partial_{n+1})\big/im(\partial_n)$. \end{defn}
+
+I will now give you some example of homology computations.
+
+
+%What we have essentially done is to translate a topological problem to the language linear algebra. We will now take a step back from the topology and work only with the algebra to see what useful information we can extract.
+
+
+
+
+%Chain maps have a very particular structure that may not otherwise be exhibited in a simillar sequence of vector spaces and linear maps.
 
 
 \section{Reeb Graph \& Contour Tree}
