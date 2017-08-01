@@ -360,7 +360,39 @@ Now, how do we only take into account the cycles that are not covered by a bound
 
 \begin{defn} The n-th homology of a chain map is $H_n(X) = ker(\partial_{n+1})\big/im(\partial_n)$. \end{defn}
 
-I will now give you some example of homology computations.
+*I will now give you some example of homology computations.*
+
+Now that we have ventured into the algebra and computed something based on the topology of the space it is time to interpret those results. There is a theorem saying that quotients of vector spaces are also vector spaces. For example $\mathbb{Z}_2^m \big/ \mathbb{Z}_2^n \simeq \mathbb{Z}_2^{m - n}$ where we have slightly abused notation as $\mathbb{Z}_2^n$ is not a subspace of $\mathbb{Z}_2^m$, but a subspace isomorphic to it. This means that all of the homology groups are isomorhpic to $\mathbb{Z}_n$ for some $n \in \mathbb{Z}^+$.
+
+What we are most interested is the dimension of the homology groups. The dimension of a finite dimensional vector space is the number of vector in a basis of that vector space. Thus if $H_n(X) \simeq \mathbb{Z}_2^m$ then $dim(H_n(X)) = m$. The dimensions of the homology groups are also known as the Betti numbers. The Betti numbers have the following topological interpretation.
+
+
+\begin{itemize}
+    \item Betti zero - $b_0$ is the number of connected components
+    \item Betti one - $b_1$ is the number one dimentional holes in a space or holes.
+    \item Betti two - $b_3$ is the number two dimentional holes in a space or voids.
+\end{itemize}
+
+
+% @TODO What is nice enough?
+The higher order Betti numbers represent the number of higher dimensional holes. Given a nice enough topological space we can expect the Betting numbers from a point onwards to all be zero. This of course means that the according homology group are the zero dimensional vector space.
+
+*Give example with the torus*
+
+This is exactly what we wanted from Homology. An apparatus that allows us distinguish topological spaces based on the connectivity of their n-dimensional simplical complexes.
+
+Before going forward we must note that we did not have to use coeficients in $\mathbb{Z}_2$ we could have equally used coeficients in $\mathbb{Z}$ but $\mathbb{Z}$ is not a field and we would have obtained that the $C_n(X)$ and $H_n(X)$ are not vector spaces but free abelian groups. If instead we had picked any arbitrary ring we would have obtained free modules instead of free abelian groups. We did indeed lose some information but sticking to vector spaces. The Betti numbers are not always equal, but by the Coeficient Theorem they are for suitably nice spaces. We readily refer the reader to \cit{algebraic-topology} to learn about those. We shall continue the treatment of the subject in the same spirit of vector spaces.
+
+
+
+
+How do we interpret the homology groups.
+
+How do we do anything in practise?
+
+What then?
+
+\subsection{Persistent Homology}
 
 
 %What we have essentially done is to translate a topological problem to the language linear algebra. We will now take a step back from the topology and work only with the algebra to see what useful information we can extract.
