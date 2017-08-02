@@ -312,11 +312,18 @@ What we do know is that starting at any vertex $s$ let the vertices $U = \{u_1, 
 
 While it is encouraging that we have obtained an algorithm that bounds the w-diameter it is also quite unsatisfactory that we were not able to directly obtain it. To remedy this we will resort to modifying the second tree diameter algorithm that we outlined previously. We will use the same optimisation strategy i.e. dynamic programming. We need only make two key changes. Instead of the function $h(u)$ that computes the height of a subtree with root $u$ we will use the function $w(u)$ that stores the longest w-path that starts at the root of the subtree. We will remane the function that stores the value of the optimal solution for subroblems from $D(u)$ to $W(u)$ accordingly. To summarise $W(u)$ returns the length of the largest w-path in the subtree $T_u$ and $w(u)$ the length of the largest w-path in $T_u$ that starts at $u$.
 
-This may seem like a simple substitution at first glance, but the devil is in the details. As in the previous modification all additional difficulties stem from the difference in combining path lengths and path w-lengths. In the tree diameter scenario path combination is straightforward. For a tree with root $s$ we will first find two distinct children $u, v \in N(s)$ of $s$ such that $h(u)$ and $h(v)$ is maximum amongst all children. Next we will combine them to obtain the longest path that goes through $s$. This path combination yield the sum $h(u) + h(v) + 2$, where we account for the two additional edges $us, sv \in E(T_s)$. This reasoning of course extends to all subtrees in $T$.
+This may seem like a simple substitution at first glance, but the devil is in the details. As in the previous modification all additional difficulties stem from the difference in combining path lengths and path w-lengths. Let us begin by examining how the w-height of a vertex is computer from the w-heights of its children. Let $s$ be a vertex in $T$ and let us assume the we have computed the w-height of its children recursively. In the case of computing the height we can simply set $h(s) = \max\limits_{u \in N(s)}\big( h(u) \big) + 1$. We cannot do so with the w-height because w-length can remain the same if we do not extend the maximum w-path with a kink.  To demonstrate this let us assume that $u \in N(s)$ is such that $w(u) = \max\limits_{v \in N(s)}(w(v))$. Then if we wish to extend the maximum w-path that ends at $u$ to $s$ we must account for whether $u$ becomes a kink in it. If none of the children of $s$ with maximum w-height form a kink when extending to $s$ then the w-height of $s$does not increase.
 
-In the latter case of w-path combinations we must be vigilant of which vertices become kinks in the path combinations. Let us observe a similar scenario where $s$ is the root the tree and $u, v \in V(T_s)$ are two of the children with maximal values for $h(u)$ and $h(v)$. We would ideally like to combine $w(u)$ and $w(v)$ like so: $w(u) + w(v) + w_{u, v}(s)$. This however is not correct! There is a hidden assumption in the sum that the only vertex that can become a kink in this path combination is $s$. Contrary to this, in fact $u$ and $v$ can also become kinks. Observe that $w(u) \text{ and } w(v)$ are the w-length of two paths - one starting at $u$ and ending in a leaf of $T_u$ and one starting at $v$ and ending in a leaf of $T_v$. In the new path both $u$ and $v$ become inside vertices and depending on whether they become kinks or not the sum may further increase by two. To account for this we must also look at the children of $u$ and $v$. 
+To see how we can obtain the w-height of $s$ let $u$ be any of it's children and $L_u = \{u_1, u_2, ..., u_k\}$ be all children of $u$ through which a w-path with length $w(u)$ passes through. Then we can compute the w-height of $s$ as: $w(s) = \max\limits_{u \in N(s)}\{ h(u) + \max\limits_{v \in L_u)}(w_{s, v}(u)) \}$. In other words there may be multiple w-paths with the same maximal w-length that end at $u$. If possible we must pick the one that would make $u$ form a kink with $s$. If not we can use any of them. There is no point in looking at paths of lesser w-length ad it can only increae by one and at best match the maximum ones.
 
-Let us focus on the children of $u$ and without loss of generality later apply the same reasoning to the children of $v$. We need a way of detecting the potential of $u$ to become a kink or it's potential w-height. Let $\{u_1, u_2, ..., u_k\}$ be all children of $u$. We must pick out the with the maximum w-height $u'$ such that $u$ will form a kink with $u'$ and $s$. If one such exists then the potential w-height $p(u)$ of $u$ is $h(u) + 1$ and $h(u)$ otherwise. In summary $p(u) = \max\limits_{i \in \{1, 2, ..., k\}}\big(h(u_i) + w_{u_i, s}(u)\big)$.
+
+In the tree diameter scenario path combination is straightforward. For a tree with root $s$ we will first find two distinct children $u, v \in N(s)$ of $s$ such that $h(u)$ and $h(v)$ is maximum amongst all children and $u \ne v$ (otherwise we get a walk and not a path). Next we will combine them to obtain the longest path that goes through $s$. This path combination yield the sum $h(u) + h(v) + 2$, where we account for the two additional edges $us, sv \in E(T_s)$. This reasoning of course extends to all subtrees in $T$. In the latter case of w-path combinations we must be vigilant of which vertices become kinks in the path combinations. Let us observe a similar scenario where $s$ is the root the tree and $u, v \in V(T_s)$ are two of the children with maximal values for $h(u)$ and $h(v)$. We would ideally like to combine $w(u)$ and $w(v)$ like so: $w(u) + w(v) + w_{u, v}(s)$. This however is not correct! There is a hidden assumption in the sum that the only vertex that can become a kink in this path combination is $s$. Contrary to this, in fact $u$ and $v$ can also become kinks. Observe that $w(u) \text{ and } w(v)$ are the w-length of two paths - one starting at $u$ and ending in a leaf of $T_u$ and one starting at $v$ and ending in a leaf of $T_v$. In the new path, both $u$ and $v$ can become inside vertices and depending on whether they become kinks or not the sum may further increase by two. To account for this we must also look at the children of $u$ and $v$. 
+
+We will be able to combine paths in a similar fashion. The formula would be:
+
+$$\max\limits_{\substack{u, v \in N(s) \\ u \ne v}}\{ h(u) + \max\limits_{t \in L_u}(w_{s, t}(u)) + h(v) + \max\limits_{t \in L_v}(w_{s, t}(v)) + w_{u, v}(s)\}$$
+
+We must pick out the with the maximum w-height $u'$ such that $u$ will form a kink with $u'$ and $s$. If one such exists then the potential w-height $p(u)$ of $u$ is $h(u) + 1$ and $h(u)$ otherwise. In summary $p(u) = \max\limits_{i \in \{1, 2, ..., k\}}\big(h(u_i) + w_{u_i, s}(u)\big)$.
 
 After computing the potential w-height of all children of $s$ we are not ready to compute the maximum w-path passing through $s$. This is exactly the path combination with two of the children of $s$ - $u, v \in T_u$ such that $p(u) + p(v) + w_{u, v}(s)$ is maximum. Armed with the means of combining subproblems we are finally ready to present the recursive formula for the optimal solution of the problem.
 
@@ -402,6 +409,26 @@ $$
     TBA
 \end{proof}
 
+Time for the proof of correctness.
+
+Time for the proof of correctness.
+
+
+\begin{prop} Given a rooted tree $T$ the w-diameter of $T$ either passes through the root or is entirely contained in one of the subtrees of the children of the root. \end{prop}
+
+\begin{proof}
+    This is trivially true there is simply nowhere else it can be.
+\end{proof}
+
+Therefore the optimal solution is obtain either through one of the optimal solutions of the children or through path combination. All we have to do is show that path combination produces the longest w-path that goes through the root of a subtree. The rest will follow from the prop[]. It is the same as the tree diameter algorithm.
+
+\begin{prop} The combine path subroutine compute the correct answer. \end{prop}
+
+\begin{proof}
+    This is pretty obvious. We are using maximum path and maximising the oportunities for kinks. If there are two maximum paths all with kinks we will detect them. There cannot be a kinkier path there is simply nowhere it could be as it has to pass through the root and two of it's children.
+\end{proof}
+
+As path combination is correct then the optimal sumproblem function is correct. Then the whole algorithm must be correct.
 
 The complexity of the proposed solution is:
 

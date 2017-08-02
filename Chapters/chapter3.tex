@@ -1,0 +1,133 @@
+\chapter{Persistent Homology and Contour Trees}
+\label{chapter3}
+
+In this chapter we shall take a look at one of the tools that has made Computational Topology so viable for topological data analysis in the recent years. This is of course persistent homology. We will develop further develop the mathematical framework of Homology to accomodate this new concept. After this we will take a look at the practical aspect of the computation of Persistent Homology (PH) and its relation to the computation of the Contour Tree.
+
+\section{Simplical Maps}
+
+Before demonstrating the power of Persistent Homology we will take a slight theoretical detour the inroduce the last piece that we are missing that enales its construction. There is a general result in singular homology that shows the interaction of continus maps and homomorphisms between homology groups.
+
+\begin{defn} Let $X$ and $Y$ be two simplical complexes. Let $f: X \to Y$ be a continuous function. Then $f$ induces a homomorphism $f_*: H_n(X) \to H_n(Y)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
+
+This means that if we have a continus function between two spaces we can immediately associate the homology classes of $X$ to those of $Y$. All we have to do to obtain the induced map is to compose with the continous function $f$. The details of this procees are outlines in \cite{algebraic-topology}.
+
+
+% @TODO WHY?!
+This general result is not appropriate for simplicial complexes. WHY?! We need a more tracktable definition to aid us in our computation. We will thus present the following combinatorially flavoured definition given by \cite{combinatorial-algebraic-topology}. 
+
+
+\begin{defn} Let $X$ and $Y$ be two finite abstract simplicial complexes. A function $f: X \to Y$ is a simplical map when if $\sigma$ is a simplex of $X$ then $f(\sigma)$ is a simplex of $Y$. \end{defn}
+
+The two most important observations we can make based on this defitions are the following:
+
+\begin{itemize}
+    \item The composition of two simplicial maps is simplicial.
+    \item When $Y$ is a subcompex of $X$ the inclusion map is a simplicial map.
+\end{itemize}
+
+
+% @TODO Define a homology class
+The reason why we introduced simplicial maps is so that we can pose the following question. If there is a simplical map between two simplicial complexes, can we use it to relate their homology classes? The answear is yes, we can thanks to \cite{combinatorial-algebraic-topology}!
+
+
+% @TODO Are simplicial maps continuous?
+
+\begin{defn} Let $X$ and $Y$ be two simplical complexes and $f: X \to Y$ be a simplicial map. Then $f$ induces a homomorphism $f_*: H_n(X) \to H_n(Y)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
+
+    The homomorphism is induces by taking the simplicies of a chain through the simplicial map and the considering the homology class the chain ends up in (if any). Detail on this can be found in \cite{combinatorial-algebraic-topology}.
+
+% @TODO Should I talk about chain maps?
+
+\section{Persistent Homology}
+
+% @TODO Define filtrations.
+
+Persistent Homology emerged in the early 2000s in the this work of []. While the original motivation for it was to better model point cloud data it has grown into a general methodology that can be applied any filtration of a topological space. Let us consider a filtration of a simplical complex $X$. Example in fig[].
+
+$$ X_0 \subseteq X_1 \subseteq ... \subseteq X_{n-1} \subseteq X_n = X$$
+
+We usually call the index of this filtration time to make it more indicative. We can already compute the homology groups of all of the $X_i$. The next natural question to ask is whether we can track the evolution of the individual homology classes in the homology groups. One key observation makes this possible. The subset relation between all of the $X_i$ induces inclusion maps between them. More formally we have inclusion maps $i_{k, t}: X_k \to X_t$ for $k \le t$ because $X_k \subseteq X_{k+1} \subseteq ... \subseteq X_t$. If we only take the consecutive inclusion maps and just name the $i$ where the we can context which inclusion map it is exactly we obtain the following sequence:
+
+
+$$ X_0 \overset{i}{\longrightarrow} X_1 \overset{i}{\longrightarrow} ... \overset{i}{\longrightarrow} X_{n-1} \overset{i}{\longrightarrow} X_n.$$
+
+We have already shown that the inclusion maps are simplical and that simplical maps induce homomorphisms on the homology groups. This lets us obtain the following sequence:
+
+$$ H_n(X_0) \overset{i_*}{\longrightarrow} H_n(X_1) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(X_{n-1}) \overset{i_*}{\longrightarrow} H_n(X_n).$$
+
+Where we must note that $i_*$ may not be the inclusion maps on the homology groups. They may fail to be injective, any inclusion map is injective. There induces homomorphics encode the local topological changes in the homology of each one of the $X_i$ to the next $X_{i+1}$. We use the following terminology to interpret this information:
+
+\begin{itemize}
+    \item A homology class persists if its image under $i_*$ is not zero.
+    \item A homology class dies if its image under $i_*$ is zero.
+    \item A homology class is born if it is not the image under $i_*$ of a class in the previous complex in the filtration.
+\end{itemize}
+
+We get the following picture []. The classes we are most interested in are the ones that have persisted for the largest number of steps in the filtration. They are said to have high persistence. This can be interpreted as significance and we would like to focus our attention on them. Ephemeral classes on the other hand are consider to have very low significance and can be neglected in practise as noise or sampling errors.
+
+Given this information we can produce the so caled persistence pairs. A persistence pair $(t_1, t_2)$ where $t_i \in \{0, 1, .., n\}$ encode the information about the birth and death of a single homology class. It means that a homology class is born at time $t_1$, then has persisted until and dies at $t_2$.
+
+% @TODO Why is this true?
+There is a theorem that states that the persistence digram of a filtration encodes all of the information about the persistent homology groups.
+
+*Examples*
+
+There is also a simple and fast algorithm for computing the persistence pairs. It requires us order all of the simplices in the complex $\sigma_1, \sigma_2, ..., \sigma_n$ according to these rules \cite{ph-a-survey}.
+
+\begin{itemize}
+    \item $\sigma_i$ precedes $\sigma_j$ when $\sigma_j$ was introduced later in the filtration than $\sigma_i$
+    \item $\sigma_i$ precedes $\sigma_j$ when $\sigma_i$ is a face of $\sigma_j$
+\end{itemize}
+
+Not instead of having to compute the homology groups of all complexes in the filtration individually and then computing the induces maps we can perform the whole computation in a single matrix reduction. Let $D$ be an $n\times n$ matrix and such that.
+
+   $$
+   D[i, j] = \left\{
+       \begin{array}{@{}l@{\thinspace}l}
+           \text{1}  &: \text{if } \sigma_i \text{ is a codimension 1 face of } \sigma_j \\
+           \text{0}  &: \text{otherwise} \\
+       \end{array}
+   \right.
+   $$
+
+In other matrix $D$ is a matrix that holds the boundaries of all simplicies in a single matrix. It is called the combined boundary matrix. Now we can perform the following reduction just by column operations.
+
+
+\begin{algorithm}
+\caption{Reduce Combined Boundary Matrix}
+
+\begin{algorithmic}[1]
+
+
+\ForAll {j $\in$ \{1, 2, ..., n\}} 
+    \While {$\exists j': j' < j \text{ and } low(j') == low(j) $}
+        \State Add column $j'$ to column $j$.
+    \EndWhile
+\EndFor
+
+\end{algorithmic}
+\end{algorithm}
+
+The proof of this algorithm is outlined in [].
+
+% @TODO What kind does the manifold have to be?
+Now let us apply this general theory to a Morse theoretic context. Let $M$ be a triangulation of a smoothly embeded 2-manifold in $\mathbb{R}^3$ and let $f : M \to \mathbb{R}$ be a Morse function. From Morse theory we know that the changes in topology can only happen at finitely many critical points of $M$. Let $c_1 < c_2 < ... < c_n$ be those critical points. Let us now use the sublevel sets $M_{c_i}$  to make a filtration of $M$.We obtain the following filtration which we will call ascending
+
+
+$$ H_n(M_{c_1}) \overset{i_*}{\longrightarrow} H_n(M_{c_2}) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(M_{c_{n-1}}) \overset{i_*}{\longrightarrow} H_n(M_{c_n}) = H_n(M).$$
+
+If we had taken the superlevel sets of $M$ we would have obtained a different filtration. We will call that the descending filtration of $M$.
+
+$$ H_n(M^{c_1}) \overset{i_*}{\longrightarrow} H_n(M^{c_2}) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(M^{c_{n-1}}) \overset{i_*}{\longrightarrow} H_n(M^{c_n}) = H_n(M).$$
+
+
+Let us now restrict $M$ to be compact and contractable. This will ensure that the Reeb Graph of $M$ is a Contour Tree. We will now show that computing the persistent homology of the descending and ascending filtration of $M$ is equivalent to constructing the join and split tree of $M$ respectively.
+
+* Show that this is the case *
+
+Define extended persistence.
+
+
+
+
+
