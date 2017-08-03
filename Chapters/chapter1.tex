@@ -3,6 +3,9 @@
 \label{chapter2}
 
 \section{Set Theoretic Notation}
+The mathematics covered in this dissertation are far too broad to be presented in all their magnificence. This is why rather than attempting to introduce the theory in the classical textbook fashion of definition-theorem-proof I have opted out for focusing more on the developing intuition behind the big ideas at play. I do so because I will later have to rely on the reader's intuition in presenting examples and the further technical developments of the subjects in the last ten years. 
+
+\section{Set Theoretic Notation}
 Should I do this as an appendix?
 
 \section{Topology}
@@ -254,6 +257,37 @@ $$ \mathbb{R}^3 {\longrightarrow} \mathbb{R}^2 {\longrightarrow} \mathbb{R}^4 $$
 
 \section{Differential Topology}
 
+Differential topology is the study of differentiable function on differentiable manifolds. As opposed to the theory of differential geometry, topologists are predominantly interested in the global structure of manifolds and primarily disregard local information such as for example curvature because it can be of little value in investigating the global properties of a space such as its genus. The classical example that illustrates this is that of the doughnut and the coffee mug. From the point of view of differential geometry they are not the same. You cannot rotate and translate one of them to obtain in other. From the differential topology perspective they are indistinguishable in that they share all the global properties topology can "see".   
+
+\subsection{Morse Theory}
+
+One of the leading fields of differential topology is that of Morse Theory. It has shown to be fruitful in both theoretical investigations and real world application and computation []. Morse theory is the study of the deep relation between spaces and function defined on them. One of the main goals is to determine the shape of a shape by analysing a functions that can be defined on it. 
+
+Consider for example the real line $\mathbb{R}$ and the circle $S^1$. There are differentiable from $\mathbb{R}$ to $\mathbb{R}$ such as $y = x$ which do not take a minimum or a maximum value. They can be arbitrary large or small on the manifold $\mathbb{R}$. It is not possible to define such a differentiable function from $S^1$ to $\mathbb{R}$. This is due to the maximum value theorem. More formally a differentiable function is continuous and $S^1$ is compact. By [] the continuous image of a compact space is compact and by [] the compact spaces of $\mathbb{R}$ are closed and bounded. Closed and bounded means unions of intervals of the form $[a, b]$ where $|a|, |b| < \epsilon$ for some $\epsilon \in \mathbb{R}$. We can pick the lower bound of the interval with the lowest lower bound and the upper bound of the interval with the highest upper bound for the minimum and maximum values. Therefore any differentiable function defined on $S^1$ will take a minimum and a maximum value.
+
+This example demonstrates the general methodology of Morse Theory. One defines a function on a smooth manifold and studies the critical points of that function as means of learning about the "shape" of the manifold. The class if real valued function on a manifold is far too complex though. This is why Morse Theory restricts it's attention to Morse functions.
+
+
+\begin{defn} A function $f: M \to \mathbb{R}^n$ is a Morse Function if $f$ is smooth and at critical points the Hessian (matrix of second partial derivatives) is full rank.   \end{defn}
+
+Based on this definition we will defined level sets, sublevel sets and superlever sets of a Morse function.
+
+\begin{defn} A level set at a value $h$ of a Morse function $f: M \to \mathbb{R}$ is the set $f^{-1}(\{h\}) = \{x \in M: f(x) = h \}$   \end{defn}
+
+Sublevel sets are defined in terms of intervals of the interval $[-\infty, a]$ and are the preimage $f^{-1}([-\infty, a]) = \{x \in M: f(x) \in [-\infty, a] \}$. Superlevel sets are defined analogously in terms of intervals of the form $[a, -\infty]$.
+
+These sub(super) level sets allows us to decompose the manifold and work with chunks of it at a time.
+
+Morse functions ensures the following properties which we will make use of in the future:
+
+\begin{itemize}
+    \item None of the critical points are degenerate.
+    \item In Morse functions topological changes of the sub(super)level sets only happen at critical values. 
+    \item A Morse function defined on a close surface has a finite number of critical points.
+\end{itemize}
+
+*Reeb Graphs*
+
 \section{Algebraic Topology}
 
 
@@ -360,12 +394,15 @@ Now, how do we only take into account the cycles that are not covered by a bound
 
 \begin{defn} The n-th homology group of a chain map is $H_n(X) = ker(\partial_{n+1})\big/im(\partial_n)$. \end{defn}
 
+    From linear algebra \cite{lin-alg-done-right} we know two important things about the quotient $H_n(X)$. The first one is that the quotient of a vector space and its subspace is a vector space. The second one is that the dimension of the quotient space is equal to the difference of the dimension of the vector space and the dimension of the subspace. Therefore $H_n(X)$ is a vector space and $dim(H_n(X)) = dim(ker(\partial_{n+1})) - dim(im(\partial_n))$.
+
 Elements of the homology groups are called homology classes.
 
 *I will now give you some example of homology computations.*
 
-Now that we have ventured into the algebra and computed something based on the topology of the space it is time to interpret those results. There is a theorem saying that quotients of vector spaces are also vector spaces. For example $\mathbb{Z}_2^m \big/ \mathbb{Z}_2^n \simeq \mathbb{Z}_2^{m - n}$ where we have slightly abused notation as $\mathbb{Z}_2^n$ is not a subspace of $\mathbb{Z}_2^m$, but a subspace isomorphic to it. This means that all of the homology groups are isomorhpic to $\mathbb{Z}_n$ for some $n \in \mathbb{Z}^+$.
 
+% @TODO Redo this
+Now that we have ventured into the algebra and computed something based on the topology of the space it is time to interpret those results. 
 What we are most interested is the dimension of the homology groups. The dimension of a finite dimensional vector space is the number of vector in a basis of that vector space. Thus if $H_n(X) \simeq \mathbb{Z}_2^m$ then $dim(H_n(X)) = m$. The dimensions of the homology groups are also known as the Betti numbers. The Betti numbers have the following topological interpretation.
 
 
@@ -386,7 +423,9 @@ This is exactly what we wanted from Homology. An apparatus that allows us distin
 Before going forward we must note that we did not have to use coeficients in $\mathbb{Z}_2$ we could have equally used coeficients in $\mathbb{Z}$ but $\mathbb{Z}$ is not a field and we would have obtained that the $C_n(X)$ and $H_n(X)$ are not vector spaces but free abelian groups. If instead we had picked any arbitrary ring we would have obtained free modules instead of free abelian groups. We did indeed lose some information but sticking to vector spaces. The Betti numbers are not always equal, but by the Coeficient Theorem they are for suitably nice spaces. We readily refer the reader to \cite{algebraic-topology} to learn about those. We shall continue the treatment of the subject in the same spirit of vector spaces.
 
 
-\subsection{Persistent Homology}
+\subsection{Contour Tree Preliminaries}
+
+\subsection{Contour Tree Algorithms}
 
 
 %What we have essentially done is to translate a topological problem to the language linear algebra. We will now take a step back from the topology and work only with the algebra to see what useful information we can extract.
