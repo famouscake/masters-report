@@ -2,11 +2,14 @@
 \chapter{Introduction}
 \label{chapter2}
 
-\section{Set Theoretic Notation}
 The mathematics covered in this dissertation are far too broad to be presented in all their magnificence. This is why rather than attempting to introduce the theory in the classical textbook fashion of definition-theorem-proof I have opted out for focusing more on the developing intuition behind the big ideas at play. I do so because I will later have to rely on the reader's intuition in presenting examples and the further technical developments of the subjects in the last ten years. 
 
 \section{Set Theoretic Notation}
-Should I do this as an appendix?
+
+
+\begin{defn} Let $X$, $Y$ be two sets and $f$ be a function between them. Let $A \subseteq Y$ the preimage of $A$ under $f$ is defined as the points in $X$ which are mapped onto $A$. It is denoted as $f^{-1}(A) = \{x \in X : f(x) \in A\}$  \end{defn}
+
+Note that taking the preimage of a set does not require $f$ to be invertable.
 
 \section{Topology}
 
@@ -29,7 +32,6 @@ Let us now be more formal now and define these notions precisely.
 
 %@TODO Redo this setence
 The pair $(X, \tau)$ is called a topological space. In practice one build a topology by first figuring out how they would like their open sets to look like and then takes all unions and finite intersections to obtain the full topology.
-
 
 \begin{ex} The standard topologly on $\mathbb{R}$.  \end{ex}
 
@@ -238,7 +240,7 @@ Let us now for simplicity and demonstrational purposes assume that each $V_i$ is
 % @TODO Continue this.
 An exact sequence is a chain complex where $im(d_k) = ker(d_{k+1})$. Exact sequences are useful because of the nice properties like ...
 
-The homology of a chain complex is defined as a quantifier of how far a chain complex is from being an exact sequnce. It is defined as: $ H_k = ker(d_{k+1}) / im(d_k) $
+The homology of a chain complex is defined as a quantifier of how far a chain complex is from being an exact sequence. It is defined as: $ H_k = ker(d_{k+1}) / im(d_k) $
 
 Let $V$ be a vector space and $W$ a subspace of $V$. A coset of $W$ is the set $v + W = \{v + w : w \in W\}$.
 
@@ -254,39 +256,6 @@ $$ \mathbb{R}^3 {\longrightarrow} \mathbb{R}^2 {\longrightarrow} \mathbb{R}^4 $$
 
 
 \section{Manifolds}
-
-\section{Differential Topology}
-
-Differential topology is the study of differentiable function on differentiable manifolds. As opposed to the theory of differential geometry, topologists are predominantly interested in the global structure of manifolds and primarily disregard local information such as for example curvature because it can be of little value in investigating the global properties of a space such as its genus. The classical example that illustrates this is that of the doughnut and the coffee mug. From the point of view of differential geometry they are not the same. You cannot rotate and translate one of them to obtain in other. From the differential topology perspective they are indistinguishable in that they share all the global properties topology can "see".   
-
-\subsection{Morse Theory}
-
-One of the leading fields of differential topology is that of Morse Theory. It has shown to be fruitful in both theoretical investigations and real world application and computation []. Morse theory is the study of the deep relation between spaces and function defined on them. One of the main goals is to determine the shape of a shape by analysing a functions that can be defined on it. 
-
-Consider for example the real line $\mathbb{R}$ and the circle $S^1$. There are differentiable from $\mathbb{R}$ to $\mathbb{R}$ such as $y = x$ which do not take a minimum or a maximum value. They can be arbitrary large or small on the manifold $\mathbb{R}$. It is not possible to define such a differentiable function from $S^1$ to $\mathbb{R}$. This is due to the maximum value theorem. More formally a differentiable function is continuous and $S^1$ is compact. By [] the continuous image of a compact space is compact and by [] the compact spaces of $\mathbb{R}$ are closed and bounded. Closed and bounded means unions of intervals of the form $[a, b]$ where $|a|, |b| < \epsilon$ for some $\epsilon \in \mathbb{R}$. We can pick the lower bound of the interval with the lowest lower bound and the upper bound of the interval with the highest upper bound for the minimum and maximum values. Therefore any differentiable function defined on $S^1$ will take a minimum and a maximum value.
-
-This example demonstrates the general methodology of Morse Theory. One defines a function on a smooth manifold and studies the critical points of that function as means of learning about the "shape" of the manifold. The class if real valued function on a manifold is far too complex though. This is why Morse Theory restricts it's attention to Morse functions.
-
-
-\begin{defn} A function $f: M \to \mathbb{R}^n$ is a Morse Function if $f$ is smooth and at critical points the Hessian (matrix of second partial derivatives) is full rank.   \end{defn}
-
-Based on this definition we will defined level sets, sublevel sets and superlever sets of a Morse function.
-
-\begin{defn} A level set at a value $h$ of a Morse function $f: M \to \mathbb{R}$ is the set $f^{-1}(\{h\}) = \{x \in M: f(x) = h \}$   \end{defn}
-
-Sublevel sets are defined in terms of intervals of the interval $[-\infty, a]$ and are the preimage $f^{-1}([-\infty, a]) = \{x \in M: f(x) \in [-\infty, a] \}$. Superlevel sets are defined analogously in terms of intervals of the form $[a, -\infty]$.
-
-These sub(super) level sets allows us to decompose the manifold and work with chunks of it at a time.
-
-Morse functions ensures the following properties which we will make use of in the future:
-
-\begin{itemize}
-    \item None of the critical points are degenerate.
-    \item In Morse functions topological changes of the sub(super)level sets only happen at critical values. 
-    \item A Morse function defined on a close surface has a finite number of critical points.
-\end{itemize}
-
-*Reeb Graphs*
 
 \section{Algebraic Topology}
 
@@ -422,21 +391,211 @@ This is exactly what we wanted from Homology. An apparatus that allows us distin
 
 Before going forward we must note that we did not have to use coeficients in $\mathbb{Z}_2$ we could have equally used coeficients in $\mathbb{Z}$ but $\mathbb{Z}$ is not a field and we would have obtained that the $C_n(X)$ and $H_n(X)$ are not vector spaces but free abelian groups. If instead we had picked any arbitrary ring we would have obtained free modules instead of free abelian groups. We did indeed lose some information but sticking to vector spaces. The Betti numbers are not always equal, but by the Coeficient Theorem they are for suitably nice spaces. We readily refer the reader to \cite{algebraic-topology} to learn about those. We shall continue the treatment of the subject in the same spirit of vector spaces.
 
+\section{Differential Topology}
 
-\subsection{Contour Tree Preliminaries}
+Differential topology is the study of differentiable function on differentiable manifolds. As opposed to the theory of differential geometry, topologists are predominantly interested in the global structure of manifolds and primarily disregard local information such as for example curvature because it can be of little value in investigating the global properties of a space such as its genus. The classical example that illustrates this is that of the doughnut and the coffee mug. From the point of view of differential geometry they are not the same. You cannot rotate and translate one of them to obtain in other. From the differential topology perspective they are indistinguishable in that they share all the global properties topology can "see".   
 
-\subsection{Contour Tree Algorithms}
+\subsection{Morse Theory}
 
+One of the leading fields of differential topology is that of Morse Theory. It has shown to be fruitful in both theoretical investigations and real world application and computation []. Morse theory is the study of the deep relation between spaces and function defined on them. One of the main goals is to determine the shape of a shape by analysing a functions that can be defined on it. 
 
-%What we have essentially done is to translate a topological problem to the language linear algebra. We will now take a step back from the topology and work only with the algebra to see what useful information we can extract.
+Consider for example the real line $\mathbb{R}$ and the circle $S^1$. There are differentiable from $\mathbb{R}$ to $\mathbb{R}$ such as $y = x$ which do not take a minimum or a maximum value. They can be arbitrary large or small on the manifold $\mathbb{R}$. It is not possible to define such a differentiable function from $S^1$ to $\mathbb{R}$. This is due to the maximum value theorem. More formally a differentiable function is continuous and $S^1$ is compact. By [] the continuous image of a compact space is compact and by [] the compact spaces of $\mathbb{R}$ are closed and bounded. Closed and bounded means unions of intervals of the form $[a, b]$ where $|a|, |b| < \epsilon$ for some $\epsilon \in \mathbb{R}$. We can pick the lower bound of the interval with the lowest lower bound and the upper bound of the interval with the highest upper bound for the minimum and maximum values. Therefore any differentiable function defined on $S^1$ will take a minimum and a maximum value.
 
-
-
-
-%Chain maps have a very particular structure that may not otherwise be exhibited in a simillar sequence of vector spaces and linear maps.
+This example demonstrates the general methodology of Morse Theory. One defines a function on a smooth manifold and studies the critical points of that function as means of learning about the "shape" of the manifold. The class if real valued function on a manifold is far too complex though. This is why Morse Theory restricts it's attention to Morse functions.
 
 
-\section{Reeb Graph \& Contour Tree}
+\begin{defn} A function $f: M \to \mathbb{R}^n$ is a Morse Function if $f$ is smooth and at critical points the Hessian (matrix of second partial derivatives) is full rank.   \end{defn}
+
+Based on this definition we will defined level sets, sublevel sets and superlever sets of a Morse function.
+
+\begin{defn} A level set at a value $h$ of a Morse function $f: M \to \mathbb{R}$ is the set $f^{-1}(\{h\}) = \{x \in M: f(x) = h \}$   \end{defn}
+
+Sublevel sets are defined in terms of intervals of the interval $[-\infty, a]$ and are the preimage $f^{-1}([-\infty, a]) = \{x \in M: f(x) \in [-\infty, a] \}$. Superlevel sets are defined analogously in terms of intervals of the form $[a, -\infty]$. We shall call the path-connected components of a level set contours.
+
+These sub(super) level sets allows us to decompose the manifold and work with chunks of it at a time.
+
+Morse functions ensures the following properties which we will make use of in the future:
+
+\begin{itemize}
+    \item None of the critical points are degenerate.
+    \item In Morse functions topological changes of the sub(super)level sets only happen at critical values. 
+    \item A Morse function defined on a close surface has a finite number of critical points.
+\end{itemize}
+
+\subsection{Reeb Graph}
+
+
+% @TODO Define the quotient topology.
+
+
+The Reeb Graph is a tool that encapsulates the evolution of the level sets of a continuous function. It does so by tracking how the connected connected components in the level sets appear, disappear and split or join together. When the function is Morse, an edge in the Reeb Graph corresponds to a sequence of connected components in the level sets whose topology does not change. The vertices correspond to critical points where the topology of those components does changes (when they appear, dissapear, split or join). Morse theory ensures that critical points occur at distinct values of the parameter and are isolated. This removes any ambiguities that may arise in the construction of the graph. Furthermore that fact that their number is finite on a close surface and the fact that they only happen at critical values make this computation tractable.
+
+
+\begin{defn}
+Given a topological space $X$ and a continuous function $f: X \to \mathbb{R}$ we can define an equivalence relation $\sim$ such that two points $x, y$ in $X$ are equivalent when there exists a path between them in a level set $f^{-1}(\{h\})$ for some $h \in \mathbb{R}$. The Reeb Graph is the quotient space $X \big/ \sim$ together with the quotient topology.
+\end{defn}
+
+Intuitively it contracts all connected components to a single point.
+
+*SHOW LOTS OF PICTURES*
+
+
+% @TODO Define a topological graph.
+The Reeb Graph is indeed homeomorphic to a topological graph. *Explain Why*
+
+There are two important equations that \cite{comp-topo} relate the Betti Numbers of the topological space $X$ and the quotient space $X \big/ _\sim$
+
+$$ \beta_0(X \big/ _\sim) = \beta_0(X) $$
+$$ \beta_1(X \big/ _\sim) \le \beta_1(X) $$.
+
+We remind the reader that a contractable domain is on that is homotopic to single point. In the homology of such a space there is only one connected component and all other homology groups are trivial. Therefore $\beta_0 = 1 \text{ and } \beta_n = 0, n \in {1, 2, ...}$. A direct consequence of this is that the Reeb Graph of a contractable space is a tree regardless of the function defined on it.
+
+\subsection{Contour Tree}
+
+The special case of the Reeb Graph of a contractable space is called a Contour Tree. 
+
+*Write about the algorithm for computing reeb graphs, say why they are slow*
+
+In order to move forward with the state of the art algorithms for computing the contour tree due to Carr, et. at []. We will define an additional equivalence relation on the quotient space that relates contour of different level sets.
+
+
+\begin{defn}  Let $C = \{p_0, p_1, ..., p_n\}$ be the set of all critical points where the number of connected components in the level sets changes. \end{defn}
+
+
+\begin{defn}   
+    Let $\alpha_1, \alpha_2$ be be two contours of two level sets (possibly the same level set). Then $\alpha_1 \sim \alpha_2$ when there exists a homotopy between $\alpha_1$ and $\alpha_2$ that does not pass through any point in $C$ or when $\alpha_1 = \alpha_2$.
+\end{defn}
+
+
+% @TODO What about those contours?
+Intuitively if we can deform one of the contours to the other along $X$ without passing through a saddle then both contours correspond to the same edge in the contour tree. How about the contours that pass through critical points? They are only equivalent to themself because any homotopy to any other contour must pass through at least one critical point - the one contained in the contour.
+
+
+\begin{defn} We will call contour classes with an infinite number of members infinite contour classes. Those correspond to the edges of the contour tree.  \end{defn}
+
+\begin{defn} We will call contour classes with a single members finite contour classes. Those correspond to the vertices of the contour tree.  \end{defn}
+
+Finite contour classes also correspond to closed sets of the form $[a, a] = \{a\}$ where $a$ is the value of a critical point.
+
+Infinite contour classes correspond to open sets of the form $(a, b)$ where $a \text{ and } b$ are the values of critical points and where for any two $c, c' \in (a, b)$ there is a contour in $f^{-1}(\{c\})$ that is equivalent to a contour in $f^{-1}(\{c'\})$.
+
+Leafs correspond to local minima or maxima.
+
+Interior vertices are one where at least one infinite contour class is created and at least one infinite class is destroyed \cite{hamish-masters}.
+
+*Show many fabulous pictures of contour trees*
+
+\section{Height Trees}
+
+*TRANSFER THE STUFF ON HEIGHT TREES FROM CHAPTER 2 TO THIS SECTION
+
+A height graph is a graph $G = (V, E)$ together with a real valued function $h$ defined on the vertices of $G$. In the case of heights graphs that are Contour Trees we will impose the Morse Theory restriction that all vertices have unique heights. In other words $h(u) \ne h(v)$ for all $u ,v \in V(G)$ where $u \ne v$. The function $h$ naturally induces a total ordering on the vertices. From now on we will assume the vertices of $G$ are given in ascending order. That is to say, $V(G) = \{v_1, v_2, ... , v_n\}$ where $h(v_1) < h(v_2) < ... < h(v_n)$. This lets us work with the indices of the vertices without having to compare their heights directly. In this notation $h(v_i) < h(v_j)$ when $i < j$.
+
+%@TODO Remove this if you will not use it.
+
+Introducing the height function allows us to talk about ascending and descending paths. A path in the graph is a sequence of vertices $(u_1, u_2, ... , u_k)$ where $u_i \in V(G)$ for $i \in \{1, 2, ..., k\}$ and $u_iu_{i+1} \in E(G)$ for $i \in \{1, 2, ..., k-1\}$. Furthermore a path in a height graph is ascending whenever $h(u_1) < h(u_2) < ... < h(u_k)$. Conversely if we traverse the path in the opposite direction it would be descending. We will simply call these path monotone whenever we wish to avoid committing to a specific direction of travel.
+
+We will now add some definitions to this concept.
+
+\begin{defn} Let $G$ be a height graph and $v$ a vertex of $G$. The up degree of $v$ is defined as the number of neighbours with higher value. It is denoted as $\delta^+(v) = \big|\{ u \in N(v) : h(u) > h(v) \}\big|$.   \end{defn}
+
+We will define the down degree of $v$ analogously as $\delta^-(v) = \big|\{ u \in N(v) : h(u) < h(v) \}\big|$.
+
+\begin{defn} Let $G$ be a height graph and $v$ a vertex of $G$. If  $\delta^+(v) = 1$ and $\delta^-(v) = 0$ then $v$ is a lower leaf.  \end{defn}
+
+Conversely if $\delta^+(v) = 0$ and $\delta^-(v) = 1$ then $v$ is an upper leaf.
+
+\section{Algorithms for Computing Contour Trees}
+
+*UNDER CONSTRUCTION*
+
+To keep this discussing simple and on point we sill assume that we will be computing the comtour tree of a triangulated evenly spaces rectangular mesh fee fig[]. Input data will come in the form of the real valued values at the vertices in a rectangular grid. The grid will then be triangulated and turned into a simplical complex. The value at every point in the simplex are obtain through linear interpolation between the vertices. Thus the value of the function in every cell of the complex is based solely on the values of the vertex faces of the cell.
+
+We will not bother with contour extraction here.
+
+*MAKE SURE HEIGHT GRAPHS ARE DEFINED BEFORE THIS MOVE THEM FROM CHAPTER 2 TO HERE*
+
+Morse Theory tells us that the critical values of the mesh will be at the vertices. Due to the linear interpolation.
+
+\begin{defn} Let $G$ be a height graph. The sublevel graph $\Gamma_i^-(G)$ is the subgraph induces by the vertices of $G$ whose height is less than that of $v_i$.  \end{defn}
+
+The superlevel graph is defined analogously as $\Gamma_i^+(G)$.
+
+As we can see if we take the vertices and edges from the mesh we obtain a height graph. We will not define the join and split tree of a height graph.
+
+\begin{defn}
+
+    Let $G$ be a Height Graph. The Join Tree $J_G$ of $G$ is a tree whose vertices are copies of those of $G$. If $V(G) = \{v_1, ..., v_n\}$ then $V(J_G) = \{p_1, ..., p_n\}$ where $h(p_i) = h(v_i), i \in 1, 2, ..., n$. Furthermore $p_ip_j \in E(J_G)$ for $i < j$ when:
+
+\end{defn}
+
+\begin{itemize}
+    \item $v_j$ is the vertex in some connected component of $\Gamma_i^+(G)$ with minimum height,
+    \item $v_i$ is adjacent to a vertex in that connected component.
+\end{itemize}
+
+We will make an analogous definition of the Split Tree which is $S_G$.
+
+*SHOW EXAMPLES AND PRETTY PICTURES*
+
+A key results from \cite{carr-masters} is that the join and split trees of the input mesh and of the contour tree of that mesh are isomorphic. Therefore if we compute the join and split trees of the mesh we immediately obtain the join and split trees of the contour tree.
+
+An algorithm for this is reported in \cite{carr-masters}. It essentially does an upwards sweep and stops at each each vertex to see which connected components it is connected to in $\Gamma_i^+$ an inserts an edge with the lowest one in the Join Tree. This sweep is followed by an analogous downwards sweep that computes the split tree of the mesh.
+
+The question the remains is in obtaining the CT from the join and split trees. The algorithm for this is again found in \cite{carr-masters}. It relies on the following properties:
+
+First of all we can detect leaves of the CT from the join and split trees.
+
+
+
+\begin{lem} Given a height tree $T$ and it's join tree $J_T$ then $\delta_{T}^-(v) = \delta_{S_T}^-(v)$ and $\delta_{T}^+(v) = \delta_{J_T}^+(v)$.\end{lem}
+
+
+Therefore the following hold:
+
+\begin{lem} If $\delta_{J_T}^+(v) = 0$ and $\delta_{J_T}^-(v) = 1$ then $v$ is an \textbf{upper} leaf in $T$.\end{lem}
+\begin{lem} If $\delta_{J_T}^+(v) = 1$ and $\delta_{J_T}^-(v) = 0$ then $v$ is a \textbf{lower} leaf in $T$.\end{lem}
+
+Note that these vertices do not have to be leaves in either the join or split tree.
+
+On top of this we have that:
+
+We have seen that we can identify the leaves of a height tree by looking at the join and split trees. In fact we can do even better. We can identify the edge adjacent to those leaves.
+
+*DEFINE THE REDUCTION*
+
+*DEFINE HOW WE REDUCE BY MOVING ALL LEAVES TO THE CT FROM THE JOIN AND SPLIT*
+
+This gives us an algorithm where we can batch all the leaves, process them and then batch all he new leaves. Both the parallel and serial algorithms are based on this.
+
+How do we ensure the logarithmic collapse?
+
+The parallel algorithm can process long monotone path on a single pass. Thus at every pass the number of vertices should halve. But this is not case because of the w-structures.
+
+
+
+
+
+
+
+
+
+
+First we have to triangulate the mesh.
+
+Then the mesh is a height graph.
+
+And the contour tree is a height tree.
+
+Now define the join and split trees.
+
+Say they are equal for the mesh and the CT
+
+Compute the join/split tree of the mesh.
+
+Now combine them using the combination algorithm.
+
+There are many algorithms for computing the contour tree. But the Great Khan of all algorithms is the ONE. And then there's the parallel one!
 
 
 \section{Contour Trees}
@@ -493,4 +652,3 @@ Before going forward we must note that we did not have to use coeficients in $\m
     %$$\lim_{n \to \infty} \frac{n - 2}{n - 1} = \lim_{x \to \infty} \frac{(n - 2)'}{(n - 1)'} = 1$$
 
     %This means that for sufficiently large $n$ almost all of the vertices in a tree are leaves. Even for $n = 11$ we already have that at least $8/10$ of the vertices are leaves. This result will come in handy in one of the proofs in the second chapter.
- 
