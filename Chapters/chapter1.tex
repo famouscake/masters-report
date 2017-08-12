@@ -2,7 +2,7 @@
 \chapter{Introduction}
 \label{chapter2}
 
-The mathematics covered in this dissertation are far too broad to be presented in all their magnificence. This is why rather than attempting to introduce the theory in the classical textbook fashion of definition-theorem-proof I have opted out for focusing more on the developing intuition behind the big ideas at play. I do so because I will later have to rely on the reader's intuition in presenting examples and the further technical developments of the subjects in the last ten years. 
+The mathematics covered in this dissertation are far too broad to be presented in all their magnificence. This is why rather than attempting to introduce the theory in the classical textbook fashion of definition-theorem-proof I have opted out for focusing more on developing intuition behind the big ideas at play. I do so because I will later rely on the reader's intuition in presenting examples and the further technical developments of the subject of computational topology in the recent years. 
 
 \section{Set Theoretic Notation}
 
@@ -507,24 +507,28 @@ Conversely if $\delta^+(v) = 0$ and $\delta^-(v) = 1$ then $v$ is an upper leaf.
 
 \section{Algorithms for Computing Contour Trees}
 
+\subsection{Input Data Format}
+
 *UNDER CONSTRUCTION*
 
 To keep this discussing simple and on point we sill assume that we will be computing the comtour tree of a triangulated evenly spaces rectangular mesh fee fig[]. Input data will come in the form of the real valued values at the vertices in a rectangular grid. The grid will then be triangulated and turned into a simplical complex. The value at every point in the simplex are obtain through linear interpolation between the vertices. Thus the value of the function in every cell of the complex is based solely on the values of the vertex faces of the cell.
 
 We will not bother with contour extraction here.
 
-*MAKE SURE HEIGHT GRAPHS ARE DEFINED BEFORE THIS MOVE THEM FROM CHAPTER 2 TO HERE*
 
-Morse Theory tells us that the critical values of the mesh will be at the vertices. Due to the linear interpolation.
+\subsection{Theoretical Preliminaries}
 
-\begin{defn} Let $G$ be a height graph. The sublevel graph $\Gamma_i^-(G)$ is the subgraph induces by the vertices of $G$ whose height is less than that of $v_i$.  \end{defn}
+The first and most important theoretical results comes from Morse Theory. It tells us that the critical values of a function which is a linear interpolation on a simplical mesh will be at the vertices of the simplical mesh. This key result implies that vertices in the contour tree correspond to vertices in the mesh. We will demonstrate how the current state of the art algorithms use this property to compute the Contour Tree just from the vertices of the mesh and their 1-dimensional connectivity.
 
-The superlevel graph is defined analogously as $\Gamma_i^+(G)$.
+Let us now turn our attention to height trees and define the join and split trees of a contour tree. These trees each contain half of the topological information that is present in the contour tree. The join tree summarises the evolution in connectivity of the sublevel sets of the CT and the split tree the connectivity of the superlevel sets as the function parameter is varied. As we will see each contour tree has a unique join and split tree and vice versa. This will enable us to compute the join and split tree directly from the mesh and then combine them to obtain the contour tree.
 
-As we can see if we take the vertices and edges from the mesh we obtain a height graph. We will not define the join and split tree of a height graph.
+The first thing we shall do is redefine an analogue of the sublevel and superlevel sets of the height function in terms of subgraphs of the contour tree.
+
+\begin{defn} Let $G$ be a height graph. The sublevel graph $\Gamma_i^-(G)$ of $G$ is the subgraph induced by the vertices of $G$ whose height is less than that of $v_i$.  \end{defn}
+
+The superlevel graph is defined analogously as $\Gamma_i^+(G)$ as the subgraph induces by the vertices of $G$ whose height is more than that of $v_i$. We will use the superlevel and sublevel graph the define the join and split trees respectively.
 
 \begin{defn}
-
     Let $G$ be a Height Graph. The Join Tree $J_G$ of $G$ is a tree whose vertices are copies of those of $G$. If $V(G) = \{v_1, ..., v_n\}$ then $V(J_G) = \{p_1, ..., p_n\}$ where $h(p_i) = h(v_i), i \in 1, 2, ..., n$. Furthermore $p_ip_j \in E(J_G)$ for $i < j$ when:
 
 \end{defn}
@@ -536,20 +540,35 @@ As we can see if we take the vertices and edges from the mesh we obtain a height
 
 We will make an analogous definition of the Split Tree which is $S_G$.
 
+\begin{defn}
+    Let $G$ be a Height Graph. The Split Tree $J_G$ of $G$ is a tree whose vertices are copies of those of $G$. If $V(G) = \{v_1, ..., v_n\}$ then $V(S_G) = \{s_1, ..., s_n\}$ where $h(s_i) = h(s_i), i \in 1, 2, ..., n$. Furthermore $s_is_j \in E(S_G)$ for $i < j$ when:
+
+\end{defn}
+
+\begin{itemize}
+    \item $v_j$ is the vertex in some connected component of $\Gamma_i^+(G)$ with maximum height,
+    \item $v_i$ is adjacent to a vertex in that connected component.
+\end{itemize}
+
 *SHOW EXAMPLES AND PRETTY PICTURES*
 
-A key results from \cite{carr-masters} is that the join and split trees of the input mesh and of the contour tree of that mesh are isomorphic. Therefore if we compute the join and split trees of the mesh we immediately obtain the join and split trees of the contour tree.
+One may notice that the if we only consider the vertices and edges of the input mesh we obtain a height graph of which we can compute the join and split tree. The main theoretical result established in \cite{carr-masters} is that the join and split trees of the input mesh and of the contour tree of that mesh are isomorphic. Therefore if we compute the join and split trees of the mesh we immediately obtain the join and split trees of the contour tree.
 
-An algorithm for this is reported in \cite{carr-masters}. It essentially does an upwards sweep and stops at each each vertex to see which connected components it is connected to in $\Gamma_i^+$ an inserts an edge with the lowest one in the Join Tree. This sweep is followed by an analogous downwards sweep that computes the split tree of the mesh.
+An algorithm for compute the join and split trees of the mesh this is reported in \cite{carr-masters}. It operates by first performing an upwards sweep over all the vertices. It checks the connectivity of each vertex to determine which connected components it is connected to in $\Gamma_i^+$. It then add an edge in the join tree between the current vertex and the lowest vertex in that connected component. This sweep is followed by an analogous downwards sweep that computes the split tree of the mesh.
 
-The question the remains is in obtaining the CT from the join and split trees. The algorithm for this is again found in \cite{carr-masters}. It relies on the following properties:
+As we alluded previously a contour tree has a unique pair of join and split trees. We will now present the algorithm for combining the join and split trees to produce the contour tree. The algorithm relies on a number of theoretical properties presented in \cite{carr-masters}. There are three key properties.
 
-First of all we can detect leaves of the CT from the join and split trees.
+\begin{itemize}
+    \item We can detect the leaves of the contour tree and their adjacent edge by looking at the join and split trees.
+    \item We can remove the leaves from the join and split tree. In doing this we obtain join and split trees for the contour tree excluding it's leaves.
+    \item We can continue this process of removing all the leaves inductively until we obtain the full contour tree.
+\end{itemize}
 
+*SHOW EXAMPLES AND PRETTY PICTURES*
 
+*SHOULD I GIVE ALL DETAIL EXPLICITELY?*
 
 \begin{lem} Given a height tree $T$ and it's join tree $J_T$ then $\delta_{T}^-(v) = \delta_{S_T}^-(v)$ and $\delta_{T}^+(v) = \delta_{J_T}^+(v)$.\end{lem}
-
 
 Therefore the following hold:
 
@@ -566,11 +585,29 @@ We have seen that we can identify the leaves of a height tree by looking at the 
 
 *DEFINE HOW WE REDUCE BY MOVING ALL LEAVES TO THE CT FROM THE JOIN AND SPLIT*
 
-This gives us an algorithm where we can batch all the leaves, process them and then batch all he new leaves. Both the parallel and serial algorithms are based on this.
+\subsection{Serial Algorithm}
 
-How do we ensure the logarithmic collapse?
+Combining the two techniques here is the overall algorithm for computing the contour tree.
+
+\textbf{Step 1.} Triangulate the input mesh.
+
+\textbf{Step 2.} Compute the Join and Split Tree of the input mesh.
+
+\textbf{Step 3.} Iteratively prune leaves from the Join and Split tree and add them to the Contour Tree.
+
+\textbf{Step 4.} Output Contour Tree.
+
+The running time of this algorithm is $O(n\alpha(n))$ where alpha is the inverse Ackerman function.
+
+\subsection{Parallel Algorithm}
+
+How do we ensure the logarithmic collapse? Via theorem []. About half the vertices are leaves.
 
 The parallel algorithm can process long monotone path on a single pass. Thus at every pass the number of vertices should halve. But this is not case because of the w-structures.
+
+\section{Contour Tree Simplification}
+
+Branch decomposition.
 
 
 
