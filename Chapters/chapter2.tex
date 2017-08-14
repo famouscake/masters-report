@@ -2,7 +2,7 @@
 \chapter{Something "W" This Way Comes!}
 \label{chapter2}
 
-We will now continue the discussion on the difficulties of paralleling the algorithm for the computation of the contour tree in a more formal setting. In this Chapter we will develop theory that captures the informal description we outlined. We will use this theory to construct three algorithms for the detection of the largest w-structure in a height tree. We will also provide pseudocode, proof of correctness and proof of the space and time complexity of all presented algorithms.
+We will now continue the discussion on the difficulties of parallelising the algorithm for the computation of the contour tree in a more formal setting. In this Chapter we will develop theory that captures the informal description we outlined previously. We will use this theory to construct three algorithms for the detection of the largest w-structure in a height tree. We will also provide pseudocode, proof of correctness and proof of the space and time complexity of all presented algorithms.
 
 \section{W-Paths in Height Graphs}
 
@@ -41,7 +41,7 @@ The proof of this Lemma can be found at []. In the next section we shall demonst
 
 %his algorithm relies on the property that given any vertex in a tree, the leaf that is furthest away from it is the endpoint of a diameter of the tree. The algorithm works by running a BFS from any vertex and recording the vertex that is the furthest. We then proceed by running a second BFS rooted at that vertex. The second BFS produces the diameter of the tree by the property we stated. The proof for this algorithm can be found at [].
 
-\subsection{DP}
+\subsection{Dynamic Programming}
 
 The second approach is based on the Dynamic Programming paradigm. It is most often applied to optimisation problems that exhibit recursive substructures of the same type as the original problem. The key ingredients in developing a dynamic-programming algorithm are [Into to Algorithms]:
 
@@ -67,10 +67,37 @@ This algorithm can be implemented in linear time through Depth First Search (DFS
 
 \section{W Diameter Detector}
 
+We will now step into the realm of w-detection. Before we outline the proposed algorithms we must establish two key properties which hold the difference between the tree diameter algorithms and their modification to tree w-diameter algorithms.
 
-\subsection{Linear Time Algorithm - W-BFS}
+\begin{defn} Subpath Property  \end{defn}
 
-We shall first explore how we can modify the Double Breadth First Search algorithm to computer the w-diameter of a height tree. The new algorithm will follow exactly the same steps, except it will run a modified version of BFS that computes w-distance [see algorithm next page]. What the algorithm does is it runs a BFS from any vertex in the graph and records the leaf that is farthest in terms of w-length. This furthest leaf is guaranteed to be either the endpoint of a path in the whose w-length least that of the actual w-diameter of the tree minus two. 
+Let $a \rightsquigarrow b$ be a path and $c \rightsquigarrow d$ it's subpath. Then $w(a, b) \le w(c, d)$. 
+
+This property follows from the fact that all kinks of the path from $c$ to $d$ are also kinks of the path from $a$ to $b$. An important thing to note is that in the case of path length if one of the paths is a proper subpath of the other then the inequality is strict. This does not have to be the case with w-paths for the w-length, decreases only when we remove a kink from a path.
+
+\begin{defn} Path Decomposition Property Property  \end{defn}
+
+    Let $a \rightsquigarrow b$ be the path $(a, u_1, u_2, ..., u_k, b)$ and $u_i$ be an inside vertex for any $i \in \{1, 2, ..., k\}$. Then: 
+    
+    $$w(a, b) = w(a, u_i) + w(u_i, b) + w_{a \rightsquigarrow b}(u)$$
+    
+   where:
+    
+   $$
+   w_{a \rightsquigarrow b}(u_i) = \left\{
+       \begin{array}{@{}l@{\thinspace}l}
+           \text{0}  &: \text{if } h(u_i) \in \big(h(u_{i-1}),~h(u_{i+1}) \big) \text{ // $u_i$ is not a kink} \\
+           \text{1} &: \text{otherwise // $u_i$ is a kink.} \\
+       \end{array}
+   \right.
+   $$
+
+   Indeed $u_i$ can be a kink in the path from $a$ to $b$, but it cannot be a kink in the paths from $a$ to $u_i$ and from $u_i$ to $b$ because it is an endpoint of both. All other kinks are counted by either $w(a, u_i)$ or $w(u_i, b)$. When making use of path decomposition property in future proofs we must account for whether the vertex we are decomposing a path at is a kink in that path or not.
+
+
+\subsection{Linear Time Algorithm - 2xBFS}
+
+We shall first explore how we can modify the Double Breadth First Search algorithm to compute the w-diameter of a height tree. The new algorithm will follow exactly the same steps. The only exception is that it will run a modified version of BFS that computes w-distances [see algorithm next page] from a given root vertex to all others in the tree. The algorithm works by first running a BFS from any vertex in the graph and then records the leaf that is farthest in terms of w-length. This furthest leaf is guaranteed to be either the endpoint of a path in the tree whose w-length least that of the actual w-diameter of the tree minus two. 
 
 
 \begin{algorithm}
@@ -123,38 +150,12 @@ We shall first explore how we can modify the Double Breadth First Search algorit
 %\newtheorem{w-algorithm}{The W Detection Algorithm is Correct.}
 Before proving the correctness of the algorithm we must first establish two useful properties that relate the w-length of a path to it's subpaths.
 
-\begin{defn} Subpath Property  \end{defn}
-
-Let $a \rightsquigarrow b$ be a path and $c \rightsquigarrow d$ it's subpath. Then $w(a, b) \le w(c, d)$. 
-
-This property follows from the fact that all kinks of the path from $c$ to $d$ are also kinks of the path from $a$ to $b$.
-
-\begin{defn} Path Decomposition Property Property  \end{defn}
-
-    Let $a \rightsquigarrow b$ be the path $(a, u_1, u_2, ..., u_k, b)$ and $u_i$ be an inside vertex for any $i \in \{1, 2, ..., k\}$. Then: 
-    
-    $$w(a, b) = w(a, u_i) + w(u_i, b) + w_{a \rightsquigarrow b}(u)$$
-    
-   where:
-    
-   $$
-   w_{a \rightsquigarrow b}(u_i) = \left\{
-       \begin{array}{@{}l@{\thinspace}l}
-           \text{0}  &: \text{if } h(u_i) \in \big(h(u_{i-1}),~h(u_{i+1}) \big) \text{ // $u_i$ is not a kink} \\
-           \text{1} &: \text{otherwise // $u_i$ is a kink.} \\
-       \end{array}
-   \right.
-   $$
-
-   Indeed $u_i$ can be a kink in the path from $a$ to $b$, but it cannot be a kink in the paths from $a$ to $u_i$ and from $u_i$ to $b$ because it is an endpoint of both. All other kinks are counter by either $w(a, u_i)$ or $w(u_i, b)$. To account for this in future proof we must consider additional cases for both possible values of $w_{a\rightsquigarrow b}(u_i)$ when using this property.
-
-
 
 \begin{lem} The Algorithm produces the endpoints of a path who is at most 2 kinks shy of being the kinkiest path in the tree. \end{lem}
 
 
 \begin{proof}
-After running the BFS twice we obtain two vertices $u$ and $v$ such that:
+Let $T$ be a height tree and $s \in V(T)$ be the initial vertex we start the first search at. After running the modified BFS twice we obtain two vertices $u$ and $v$ such that:
 
 \begin{equation}
     \label{eq:su_all}
@@ -166,16 +167,16 @@ After running the BFS twice we obtain two vertices $u$ and $v$ such that:
     w(u, v) \ge w(u, t), \forall t \in V(T)
 \end{equation}
 
-Furthermore let $a$ and $b$ be two leaves that are the endpoints of a path that is a W diameter. For any such pair we know that:
+Furthermore let $a$ and $b$ be two leaves that are the endpoints of a path that is a w-diameter. For any such pair we know that:
 
 \begin{equation}
     \label{eq:ab_all}
     w(a, b) \ge w(c, d), \forall c, d \in V(T)
 \end{equation}
 
-By this equation we have that $w(a, b) \ge w(u, v)$. Our goal in this proof will be to give a formal lower bound on $w(u, v)$ terms of $w(a, b)$. To this end let $t$ be the first vertex in the path between $a$ and $b$ that the first BFS starting at $s$ discovers. From this description it is clear that $t$ cannot be $a$ or $b$ unless $s$ is equal to $a$ or $b$.
+By this equation we have that $w(a, b) \ge w(u, v)$. Our goal in this proof will be to give a formal lower bound on $w(u, v)$ in terms of $w(a, b)$. To this end let $t$ be the first vertex in the path between $a$ and $b$ that the first BFS starting at $s$ discovers. We can infer that $t$ cannot be $a$ or $b$ unless $s$ is equal to $a$ or $b$.
 
-The proof can then be split into several cases. \linebreak
+The proof can then be split into several cases depending on the relative positions of $s$, $t$, $a$, $b$ and $u$. \linebreak
 
 {\em Case 1. When the path from $a$ to $b$ does not share any vertices with the path from $s$ to $u$.}
 
@@ -199,7 +200,7 @@ $$ w(u, b) \ge w(a, b) + (y - x) $$
 But as $w(u, v) \ge w(u, b)$ (by equation \ref{eq:uv_all}) we obtain that:
 $$ w(u, v) \ge w(a, b) + (y - x) $$
 
-Considering all possible values that $x$ and $y$ can take, we can see that the minimum value for the right hand side of the equation is at $y = 0$ and $x = 1$. The final conclusion we may draw is that $w(u, v) \ge w(a, b) -1$.
+Considering all possible values that $x$ and $y$ can take, we can see that the minimum value for the right hand side of the inequality is at $y = 0$ and $x = 1$. The final conclusion we may draw is that $w(u, v) \ge w(a, b) -1$.
 
 
 
@@ -207,26 +208,26 @@ Considering all possible values that $x$ and $y$ can take, we can see that the m
 
 {\em Case 1.2. When the path from $u$ to $t$ does not go through $s$.}
 
-If the path from $u$ to $t$ does not go through $s$ then the paths $s \rightsquigarrow t$ and $s \rightsquigarrow u$ have a common subpath. Let $s'$ be the last vertex in that subpath. We will be able to reduce this case to the previous one by using $s'$ in the place of $s$. We must only account for a situation where $s'$ is a kink for one of the paths and not the other. We know that $w(t, u) \ge w(s', u)$ (as a subpath) and through path decomposition we obtain that:
+If the path from $u$ to $t$ does not go through $s$ then the paths $s \rightsquigarrow t$ and $s \rightsquigarrow u$ have a common subpath. Let $s'$ be the last common vertex in that subpath. We will be able to produce s proof that is similar to the previous case by considering $s'$ in the place of $s$. We must only account for whether $s'$ is a kink in one of the paths $s \rightsquigarrow u$ or $s \rightsquigarrow t$. We know that $w(t, u) \ge w(s', u)$ (as a subpath) and through path decomposition of  $s \rightsquigarrow a$ and $s \rightsquigarrow u$ at $s'$ we obtain that:
 
 $$ w(s, a) = w(s, s') + w(s', a) + x $$
 $$ w(s, u) = w(s, s') + w(s', u) + y $$
 
-We know that $w(s, u) \ge w(s, a)$ and therefore:
+where $x,y \in \{0, 1\}$ indicate whether $s'$ is a kink in the corresponding path as before. By equation \ref{eq:su_all} we know that $w(s, u) \ge w(s, a)$ and therefore:
 
 $$ w(s, s') + w(s', u) + y \ge w(s, s') + w(s', a) + x  $$ 
 $$ w(s', u) + y \ge w(s', a) + x $$ 
-$$ w(s', u) \ge w(s', a) + (x - y)$$ 
+$$ w(s', u) \ge w(s', a) + (x - y).$$ 
 
-Since $w(t, u) \ge w(s', u)$ we can further conclude that:
+Since $s'$ lies on the path from $t$ to $u$ we have that $w(t, u) \ge w(s', u)$ by the subpath property. We can use this to conclude the following:
 
-$$ w(t, u) \ge w(s', a) + (x - y)$$ 
+$$ w(t, u) \ge w(s', a) + (x - y).$$ 
 
-From the fact that $t \rightsquigarrow a$ is a subpath of $s' \rightsquigarrow a$ it follows that $w(s', a) \ge w(t, a)$. This lets us obtain that:
+From the fact that $t \rightsquigarrow a$ is a subpath of $s' \rightsquigarrow a$ it follows that $w(s', a) \ge w(t, a)$. This allows us to infer that:
 
-$$ w(t, u) \ge w(t, a) + (x - y)$$ 
+$$ w(t, u) \ge w(t, a) + (x - y). $$ 
 
-Now we are ready to proceed in a similar fashion as the previous case. We will decompose the paths from $b$ to $a$ and from $b$ to $u$ at the vertex $t$ as follows:
+Now we are ready to proceed in a similar manner as the previous case. We will decompose the paths from $b$ to $a$ and from $b$ to $u$ at the vertex $t$ as follows:
 
 $$ w(b, a) = w(b, t) + w(t, a) + z  $$
 $$ w(b, u) = w(b, t) + w(t, u) + w  $$
@@ -235,9 +236,7 @@ $$ w(b, u) \ge w(b, t) + w(t, a) + z - z + (x - y) + w $$
 $$ w(b, u) \ge w(a, b) - z + (x - y) + w $$
 $$ w(b, u) \ge w(a, b) + (x - y) + (w - z) $$
 
-The minimum value for the right hand side of this equation is at $x, w = 0$ and $y, z = 1$. Now as $w(u, v) \ge w(u, b)$ we finally obtain that:
-
-$$ w(u, v) \ge w(a, b) - 2 $$
+The minimum value for the right hand side of this equation is at $x, w = 0$ and $y, z = 1$. Using the fact that $w(u, v) \ge w(u, b)$ we finally obtain $ w(u, v) \ge w(a, b) - 2 $.
 
 
 {\em Case 2. When the path from $a$ to $b$ shares at least one vertex with the path from $s$ to $u$.}
@@ -252,27 +251,21 @@ $$ w(s, a) = w(s, t) + w(t, a) + y $$
 
 As $w(s, u) \ge w(s, a)$ (by equation \ref{eq:uv_all})we obtain that:
 
+$$ w(s, t) + w(t, u) + x  \ge w(s, t) + w(t, a) + y $$
 $$ w(t, u) \ge w(t, a) + (y - x) $$
 
-This again leads us to:
+If we again decompose the paths from $b$ to $a$ and from $b$ to $u$ at $t$ we obtain:
 
 $$ w(b, a) = w(b, t) + w(t, a) + z  $$
 $$ w(b, u) = w(b, t) + w(t, u) + w  $$
 $$ w(b, u) \ge w(b, t) + w(t, a) + (x - y) + w $$
 $$ w(b, u) \ge (w(b, t) + w(t, a) + z) - z + (x - y) + w $$
 $$ w(b, u) \ge w(a, b) - z (x - y) + w $$
-$$ w(b, u) \ge w(a, b) + (x - y) + (w - z) $$
+$$ w(b, u) \ge w(a, b) + (x - y) + (w - z). $$
 
-Where similarly to the previous case we obtain that:
+Where similarly to the previous case the rightful conclusion is that $ w(u, v) \ge w(a, b) - 2 $.
 
-$$ w(u, v) \ge w(a, b) - 2 $$
-
-
-Based on these cases we can conclude that for any input tree the algorithm will produce a path that is at most two less than the actual maximum path.
-
-%$$ w(b, a) = w(b, t) + w(t, a) + x  $$
-%$$ w(b, u) = w(b, t) + w(t, u) + y  $$
-
+Based on these cases we can have shown that that for any input tree the algorithm will produce a w-path that is at most two kinks less than the actual maximum w-path.
 
 
 \end{proof}
@@ -281,7 +274,7 @@ Based on these cases we can conclude that for any input tree the algorithm will 
 
 \begin{proof}
     The modified BFS function has the same time complexity of BFS as all we have added is an "\em if, then, else\em"~statement. The time complexity of BFS is $O(|V| + |E|)$, but in a tree $|E| = |V| - 1$, so the overall complexity is $O(2|V| - 1) = O(|V|)$. 
-    Running the modified BFS function twice is still linear, thus the overall complexity of the algorithm is linear as well.
+    Running the modified BFS function twice remains in linear, thus the overall complexity of the algorithm is linear as well.
 \end{proof}
 
 \begin{lem} The space complexity of the algorithm is $O(|V|)$. \end{lem}
@@ -290,41 +283,61 @@ Based on these cases we can conclude that for any input tree the algorithm will 
     Completely analogous to the standard BFS algorithm, this algorithm uses the same amount of memory in the standard memory model.
 \end{proof}
 
+\subsection{Pathological Cases in 2xBFS}
+
+*Describe all of them*
+
+Sexiest Greek letter?
+$$ \xi $$
+$$ \zeta $$
+$$ \chi $$
+$$ \nu $$
+
 
 \subsection{Attempts at resolving the accuracy of 2xBFS}
 
-For the intents of purpose of this dissertation the accuracy of this algorithm is sufficient. In large enough data sets this estimate provides enough insight to correlate the observed iterations needed to collapse the split and join trees and the resulting w-diameter of the tree. This is demonstrated in the following section. Regardless of such practical considerations it is still of inherent theoretical interest to understand how we may be able to obtain an accurate linear time algorithm for computing the w-diameter.
+
+% @TODO Chapter 3 here may change.
+
+For the intents of purpose of this dissertation the accuracy of this algorithm is sufficient. In large enough data sets this estimate provides enough insight to correlate the observed iterations needed to collapse the split and join trees and the resulting w-diameter of the tree. This is demonstrated empirically in Chapter 3. Regardless of such practical considerations it is still of inherent theoretical interest to investigate how we may be able to obtain a more accurate modification of this algorithm.
 
 One key observation we can make is that on the second run of the BFS we get a w-path that is necessarily longer or equal to one found in the first BFS search. A natural question to ask is whether running the BFS a third, fourth or for that matter nth time would result in the actual w-diameter. On every successive iteration we get a w-path that is longer or equal to the previous one, because w-length is a symmetric path property ($w(a, b) = w(b, a)$). By doing this we can hope that we will eventually obtain a w-path closer to the w-diameter. However there is no guarantee that this will happen. In fact in some cases it is possible that each successive BFS will return the same path over and over again. Obverse how in @TODO fig[] all iterations of BFS go from the vertex $u$ to the vertex $v$ and then from $v$ to $u$ and so on. 
 
 
-Another this we can do is to run the algorithm multiple times from different starting points and keep the maximum value found. This approach unreliable as well as show in @TODO fig[]. That artificial example shows that there can simply be too few starting points which would produce the w-diameter.
+A different heuristic we can apply is to run the algorithm multiple times from different starting points and keep the maximum value found. This approach is somewhat reliable, but may still fail to find the w-diameter. Consider @TODO fig[]. That artificial example shows that there can simply be too few starting points which would produce the w-diameter.
 
-What we do know is that starting at any vertex $s$ let the vertices $U = \{u_1, u_2, ..., u_n\}$ be the furthest away and $W = \{w_1, w_2, ..., w_n\}$ be the ones second furthest away. By the proof of the algorithm we know that not necessarily all vertices in those sets would produce a w-diameter. Thus lets us define $R \subseteq U \cup W$ the set of vertices which are an endpoint of a w-diameter. As we have shown we can construct an example where $|R| = 2$ and $|U \cup W|$ is arbitrarily large. Can we then find some property of the vertices in $R$ and pick them out in the first phase? This I will leave open for the future generations to ponder. I hope in doing so all people of the world will unite unite and end all wars and prejudices in order to work towards this common good!
+
+% @TODO Redo Last Paragraph.
+In the search for a better solution let $s$ be a starting vertex and let the vertices $U = \{u_1, u_2, ..., u_n\}$ be the furthest away in terms of w-distance and $W = \{w_1, w_2, ..., w_n\}$ be the ones second furthest away. By the proof of the algorithm we know that not necessarily all vertices in those sets would produce a w-diameter. Thus lets us define $R \subseteq U \cup W$ as the set of vertices which are endpoints of a w-diameter. As we have shown we can construct an example where $|R| = 2$ and $|U \cup W|$ is arbitrarily large. Can we then find some property of the vertices in $R$ and pick them out in the first phase of the algorithm? *This I will leave open for the future generations to ponder. I hope in doing so all people of the world will unite unite and end all wars and prejudices in order to work towards this common good!*
 
 \subsection{Dynamic Programming Approach}
 
-*Idea redefine $N(u) = N(u) / u.\pi$ so you can simplify notation.
 
-While it is encouraging that we have obtained an algorithm that bounds the w-diameter it is also quite unsatisfactory that we were not able to directly obtain it. To remedy this we will resort to modifying the second tree diameter algorithm that we outlined previously. We will use the same optimisation strategy i.e. dynamic programming. We need only make two key changes. Instead of the function $h(u)$ that computes the height of a subtree with root $u$ we will use the function $w(u)$ that stores the longest w-path that starts at the root of the subtree. We will remane the function that stores the value of the optimal solution for subroblems from $D(u)$ to $W(u)$ accordingly. To summarise $W(u)$ returns the length of the largest w-path in the subtree $T_u$ and $w(u)$ the length of the largest w-path in $T_u$ that starts at $u$.
+% @TODO 
+*Idea redefine $N(u) = N(u) / u.\pi$ so you can simplify notation.*
 
-This may seem like a simple substitution at first glance, but the devil is in the details. As in the previous modification all additional difficulties stem from the difference in combining path lengths and path w-lengths. Let us begin by examining how the w-height of a vertex is computer from the w-heights of its children. Let $s$ be a vertex in $T$ and let us assume the we have computed the w-height of its children recursively. In the case of computing the height we can simply set $h(s) = \max\limits_{u \in N(s)}\big( h(u) \big) + 1$. We cannot do so with the w-height because w-length can remain the same if we do not extend the maximum w-path with a kink.  To demonstrate this let us assume that $u \in N(s)$ is such that $w(u) = \max\limits_{v \in N(s)}(w(v))$. Then if we wish to extend the maximum w-path that ends at $u$ to $s$ we must account for whether $u$ becomes a kink in it. If none of the children of $s$ with maximum w-height form a kink when extending to $s$ then the w-height of $s$does not increase.
+While it is encouraging that we have obtained an algorithm that bounds the w-diameter it is also quite unsatisfactory that we were not able to directly obtain it. To remedy this we will resort to modifying the second tree diameter algorithm that we outlined previously. We will use the same optimisation strategy i.e. dynamic programming by making two key changes. Instead of the function $h(u)$ that computes the height of a subtree with root $u$ we will use the function $w(u)$ that stores the longest w-path that starts at the root of the subtree. We will remane the function that stores the value of the optimal solution for subroblems from $D(u)$ to $W(u)$ accordingly. To summarise $W(u)$ returns the length of the largest w-path in the subtree $T_u$ and $w(u)$ the length of the largest w-path in $T_u$ that starts at $u$.
 
-To see how we can obtain the w-height of $s$ let $u$ be any of it's children and $L_u = \{u_1, u_2, ..., u_k\}$ be all children of $u$ through which a w-path with length $w(u)$ passes through. Then we can compute the w-height of $s$ as: $w(s) = \max\limits_{u \in N(s)}\{ h(u) + \max\limits_{v \in L_u)}(w_{s, v}(u)) \}$. In other words there may be multiple w-paths with the same maximal w-length that end at $u$. If possible we must pick the one that would make $u$ form a kink with $s$. If not we can use any of them. There is no point in looking at paths of lesser w-length ad it can only increae by one and at best match the maximum ones.
+This may seem like a simple substitution at first glance, but the devil is in the details. As in the previous modification all additional difficulties stem from the difference in combining path lengths and path w-lengths. Let us begin by examining how the w-height of a vertex is computed from the w-heights of its children. Let $s$ be a vertex in $T$ and let us assume the we have computed the w-heights of its children recursively. In the case of computing the height we can simply set $h(s) = \max\limits_{u \in N(s)}\big( h(u) \big) + 1$. We cannot do so with the w-height because w-length can remain the same if we do not extend the maximum w-path with a kink.  To demonstrate this let us assume that $u \in N(s)$ is such that $w(u) = \max\limits_{v \in N(s)}(w(v))$. Then if we wish to extend the maximum w-path that ends at $u$ to $s$ we must account for whether $u$ becomes a kink in it. If none of the children of $s$ with maximum w-height form a kink when extending to $s$ then the w-height of $s$ does not increase.
+
+To see how we can obtain the w-height of $s$ let $u$ be any of it's children and $L_u = \{u_1, u_2, ..., u_k\}$ be all children of $u$ through which a w-path with length $w(u)$ passes through. Then we can compute the w-height of $s$ as: $w(s) = \max\limits_{u \in N(s)}\{ h(u) + \max\limits_{v \in L_u}(w_{s, v}(u)) \}$. In other words there may be multiple w-paths with the same maximal w-length that end at $u$. If possible we must pick the one that would make $u$ form a kink with $s$. If not we can use any of them. There is no point in looking at paths of lesser w-length as it can only increase by one and at best match the maximum ones.
 
 
-In the tree diameter scenario path combination is straightforward. For a tree with root $s$ we will first find two distinct children $u, v \in N(s)$ of $s$ such that $h(u)$ and $h(v)$ is maximum amongst all children and $u \ne v$ (otherwise we get a walk and not a path). Next we will combine them to obtain the longest path that goes through $s$. This path combination yield the sum $h(u) + h(v) + 2$, where we account for the two additional edges $us, sv \in E(T_s)$. This reasoning of course extends to all subtrees in $T$. In the latter case of w-path combinations we must be vigilant of which vertices become kinks in the path combinations. Let us observe a similar scenario where $s$ is the root the tree and $u, v \in V(T_s)$ are two of the children with maximal values for $h(u)$ and $h(v)$. We would ideally like to combine $w(u)$ and $w(v)$ like so: $w(u) + w(v) + w_{u, v}(s)$. This however is not correct! There is a hidden assumption in the sum that the only vertex that can become a kink in this path combination is $s$. Contrary to this, in fact $u$ and $v$ can also become kinks. Observe that $w(u) \text{ and } w(v)$ are the w-length of two paths - one starting at $u$ and ending in a leaf of $T_u$ and one starting at $v$ and ending in a leaf of $T_v$. In the new path, both $u$ and $v$ can become inside vertices and depending on whether they become kinks or not the sum may further increase by two. To account for this we must also look at the children of $u$ and $v$. 
+In the tree diameter scenario path combination is straightforward. For a tree with root $s$ we first find two distinct children $u, v \in N(s)$ of $s$ such that $h(u)$ and $h(v)$ is maximum amongst all children and $u \ne v$ (otherwise we get a walk and not a path). Next we will combine them to obtain the longest path that goes through $s$. This path combination yield the sum $h(u) + h(v) + 2$, where we account for the two additional edges $us, sv \in E(T_s)$. This reasoning of course extends to all subtrees in $T$. In the latter case of w-path combinations we must be vigilant of which vertices become kinks in the path combinations. Let us observe a similar scenario where $s$ is the root the tree and $u, v \in V(T_s)$ are two of the children with maximal values for $w(u)$ and $w(v)$. We would ideally like to combine $w(u)$ and $w(v)$ like so: $w(u) + w(v) + w_{u, v}(s)$. This however is not correct! There is a hidden assumption in the sum that the only vertex that can become a kink in this path combination is $s$. Contrary to this, in fact $u$ and $v$ can also become kinks. Observe that $w(u) \text{ and } w(v)$ are the w-length of two paths - one starting at $u$ and ending in a leaf of $T_u$ and one starting at $v$ and ending in a leaf of $T_v$. In the new path, both $u$ and $v$ can become inside vertices and depending on whether they become kinks or not the sum may further increase by two. To account for this we must also look at the children of $u$ and $v$ through which a maximum w-path passes. 
 
-We will be able to combine paths in a similar fashion. The formula would be:
+
+This process is similar to the one for obtaining the w-height of a vertex and is described by the following formula: 
 
 $$\max\limits_{\substack{u, v \in N(s) \\ u \ne v}}\{ h(u) + \max\limits_{t \in L_u}(w_{s, t}(u)) + h(v) + \max\limits_{t \in L_v}(w_{s, t}(v)) + w_{u, v}(s)\}$$
 
-We must pick out the with the maximum w-height $u'$ such that $u$ will form a kink with $u'$ and $s$. If one such exists then the potential w-height $p(u)$ of $u$ is $h(u) + 1$ and $h(u)$ otherwise. In summary $p(u) = \max\limits_{i \in \{1, 2, ..., k\}}\big(h(u_i) + w_{u_i, s}(u)\big)$.
-
-After computing the potential w-height of all children of $s$ we are not ready to compute the maximum w-path passing through $s$. This is exactly the path combination with two of the children of $s$ - $u, v \in T_u$ such that $p(u) + p(v) + w_{u, v}(s)$ is maximum. Armed with the means of combining subproblems we are finally ready to present the recursive formula for the optimal solution of the problem.
+Thus the formula that describes the optimal solution can be written as:
 
 
-$$ W(s) = max\Bigg\{ \max\limits_{u \in N(s)}\bigg(W(u)\bigg), \max\limits_{u, v \in N(s)}\bigg( \max\limits_{u' \in N(u)}\Big(w(u') + w_{u', s}(u)\Big) + \max\limits_{v' \in N(v)}\Big(w(v') + w_{v', s}(v)\Big) + w_{u, v}(s)\bigg) \Bigg\}. $$
+% @TODO Finish This.
+
+
+
+$$ W(s) = max\Bigg\{ \max\limits_{u \in N(s)}\bigg(W(u)\bigg), \max\limits_{\substack{u, v \in N(s) \\ u \ne v}} \bigg( h(u) + \max\limits_{t \in L_u}(w_{s, t}(u)) + h(v) + \max\limits_{t \in L_v}(w_{s, t}(v)) + w_{u, v}(s)\bigg) \Bigg\}. $$
 
 
 % @TODO 
