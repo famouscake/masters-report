@@ -2,6 +2,8 @@
 \chapter{Introduction}
 \label{chapter2}
 
+Talk about the beauty of Computational Topology and why it's useful and where it's used.
+
 The mathematics covered in this dissertation are far too broad to be presented in all their magnificence. This is why rather than attempting to introduce the theory in the classical textbook fashion of definition-theorem-proof I have opted out for focusing more on developing intuition behind the big ideas at play. I do so because I will later rely on the reader's intuition in presenting examples and the further technical developments of the subject of computational topology in the recent years. 
 
 \section{Set Theoretic Notation}
@@ -123,20 +125,23 @@ In a way very similar to abstract algebra continuous function play the role of h
 % @TODO Redo this chapter!
 \section{Building Blocks}
 
-*THIS CHAPTER IS VERY MUCH UNDER CONSTRUCTION*
+The most basic building blocks in Computational Algebraic Topology are Abstract Simplical Complexes (ASC) and Simplicial Complexes (SC). Abstract Simplical Complexes are a combinatorial structure aimed at generalising discrete graphs. Simplicial Complexes are their geometric realisation in standard Eucledian Space. For example a planar graph $G = (V, E)$ as an ASC as a collection of vertices and edges. An embedding in the plane with points representing vertices and line segments (or curves) between them as edges is the SC.
 
-The most basic building blocks in Computational Algebraic Topology are Abstract Simplical Complexes (ASC). An ASC is a generalisation of a discrete graph and is defined as follows.
+*Show Example*
 
+Let us introduce these concepts more formally starting with ASC and then demonstrating how they can be realised in Euledian Space via SC.
 
 \begin{defn} Given a set $V$, an Abstract Siplicial Complex called $\Delta$ on $V$ is a collection of subsets of $V$ such that if $\sigma \in \Delta$ and $\varphi \subseteq \sigma$ then $\varphi \in \Delta$.  \end{defn}
 
-As we are considering these for computational purposes we will only consider ACS of finite sets. Elements of $\Delta$ are called simplices. The dimension of a simplex is it's cardinality. We will denote by $\Delta_n$ all simplices in $\Delta$ of dimension $n$. Analogous to graph theory simplices of dimension one are called vertices and simplices of dimension two are called edges. To generalise further 2-dimensional simplices are called triangles and 3-dimensional simplices are called polyhedra. Simplices of higher dimension lose their geometric flavour, so will avoid naming them altogether.
+In the spirit of keeping our definitions computationally tractable we will only consider ACS of finite sets. Elements of $\Delta$ are called simplices. The dimension of a simplex is it's cardinality minus one. We will denote by $\Delta_n \subseteq \Delta$ all simplices in $\Delta$ of dimension $n$. To connect this to geometry simplices of dimension zero are called vertices and simplices of dimension one are called edges. To generalise further two dimensional simplices are called triangles and three dimensional simplices are called tetrahedra. Simplices of higher dimension lose their geometric flavour, so will avoid naming them altogether.
 
 \begin{ex} Show a simple example of an abstract simplical complex. \end{ex}
 
 
 % @TODO This is main not accurate
-\begin{defn} Let $\sigma$ be an n-simplex in $\Delta$. A face of $\sigma$ is any simplex in $\Delta$ such that $\varphi \subseteq \sigma$. \end{defn}
+\begin{defn} Let $\sigma$ be an n-simplex in $\Delta$. A face of $\sigma$ is any simplex $\varphi$ in $\Delta$ such that $\varphi \subseteq \sigma$. \end{defn}
+
+We will call the faces of a simplex that have $k$ dimensions less it's codimension $k$ faces. The codimension one of a tetrahedra are the triangles. The codimension two faces are the edges and so on. 
 
 An ASC is closed under taking subsets, so the faces of a simplex are in fact all subsets of the simplex. This is also one of the reasons why high dimensional ASC are avoided in practise. For example an n-dimensional simplex has $2^n$ faces in the complex.
 
@@ -144,13 +149,18 @@ An ASC is closed under taking subsets, so the faces of a simplex are in fact all
 
 $$ St(\sigma) =  \{ \varphi \in \Delta : \sigma \subset \varphi \}. $$
 
-The interplay between continuous mathematics and combinatorics is indeed interesting. For example in this context the star of a vertex plays the role of an open neighbourhood. Unsuprisingly we can define a topology on an ASC called the Alexandroff topology.
+
+* REDO THIS OR LEAVE IT OUT*
+% @TODO Redo This or leave it out.
+The interplay between continuous mathematics and combinatorics is indeed interesting. For example in this context the star of a vertex plays the role of an open neighbourhood. We can define a topology on an ASC called the Alexandroff topology.
 
 % @TODO Find a reference for this.
 
 \begin{defn} The collection of all start in an ASC $\Delta$ is basis for a topology. The topology is finitely generated by $\{St(\sigma)\}_{\sigma \in \Delta}$.  \end{defn}
 
-Say why this topology is used and why it's interesting and how it is used.
+
+
+% @TODO Explain why/where this is useful.
 
 While ASC are a purely combinatorial construct, like graphs they do have a geometric realisation.
 
@@ -167,34 +177,45 @@ We will define the face of an n-simplex analogously as:
 
 \begin{ex} Show an example of the basic simplices. \end{ex}
 
+A Simplical Complex $K$ is the finite collection of homeomorphic images of standard simplicies such that:
+
+\begin{itemize}
+    \item If the simplex $\sigma$ is in $K$ then all of it's faces must also be in $K$.
+    \item The intersection of the images of two simplicies is either empty or a common face of both.
+\end{itemize}
+
+You can imagine using the standard simplicies as building blocks for a Simplical Complex. We take them, embed them in a high enough dimensional Eucledian space and glue them together along their common faces. Self intersections are of course not allowed. Furthermore every ASC has a geometric realisation, but not necessarily in their original dimension \cite{comp-topo}.
+
+\begin{thm} Every abstract simplicial complex of dimension $n$ has a geometric realization in $\mathbb{R}^{2d+1}$. \end{thm}
+
 
 
 % @TODO Analogous to Hatcher
-In order to build a fully functional simplical complex we extend by definitions by the following. The union of all faces of $\Delta^n$ is the boundary of $\Delta^n$ and it is written as $\partial \Delta^n$. The open simplex $\overset{\circ}{\Delta^n}$ is just $\Delta^n \textbackslash \partial \Delta^n$ as is the interior of $\Delta^n$.
+%In order to build a fully functional simplical complex we extend by definitions by the following. The union of all faces of $\Delta^n$ is the boundary of $\Delta^n$ and it is written as $\partial \Delta^n$. The open simplex $\overset{\circ}{\Delta^n}$ is just $\Delta^n \textbackslash \partial \Delta^n$ as is the interior of $\Delta^n$.
 
 
 % @TODO From Herbert
-We can now define a simplical complex $\Delta$ embedded in $\mathbb{R}^n$ as the finite collection of homeomorphic images of simplices of dimension no more than $n$. Furthermore if $\sigma \in \Delta$ then all of the faces $\varphi \subset \sigma$ must be in $\Delta$, and $\sigma_1, \sigma_2 \ in \Delta$ implies that their intersection $\sigma_1 \cap \sigma_2$ is either empty of a face of both.
+%We can now define a simplical complex $\Delta$ embedded in $\mathbb{R}^n$ as the finite collection of homeomorphic images of simplices of dimension no more than $n$. Furthermore if $\sigma \in \Delta$ then all of the faces $\varphi \subset \sigma$ must be in $\Delta$, and $\sigma_1, \sigma_2 \ in \Delta$ implies that their intersection $\sigma_1 \cap \sigma_2$ is either empty of a face of both.
 
 
 
 % @TODO From Hatcher (modified)
 
-A simplical complex structure of a topological space $X$ with vertex set $V$ and ASC $\Delta$ defined on $V$ is a collection of homeomorphic maps $\{f_\sigma : \Delta^{|\sigma|} \to X\}_{\sigma \in \Delta}$ such that:
+%A simplical complex structure of a topological space $X$ with vertex set $V$ and ASC $\Delta$ defined on $V$ is a collection of homeomorphic maps $\{f_\sigma : \Delta^{|\sigma|} \to X\}_{\sigma \in \Delta}$ such that:
 
 
-\begin{itemize}
-    \item If $f_\sigma$ is one of the maps and $\varphi \subset \sigma$ then the image of $f_\varphi$ is a subset of the image of $f_\sigma$.
-    \item If $f_\sigma$ is one of the maps no other map maps to the image of the restriction $f_\sigma | \overset{\circ}{\Delta^{|\sigma|}}$.
-    \item If $f_{\sigma_1}$ and $f_{\sigma_2}$ are such maps then then the intersection of their images $im(f_{\sigma_1}) \cap im(f_{\sigma_2})$ is the image $im(f_\varphi)$ where $\varphi$ is a face of both. 
+%\begin{itemize}
+    %\item If $f_\sigma$ is one of the maps and $\varphi \subset \sigma$ then the image of $f_\varphi$ is a subset of the image of $f_\sigma$.
+    %\item If $f_\sigma$ is one of the maps no other map maps to the image of the restriction $f_\sigma | \overset{\circ}{\Delta^{|\sigma|}}$.
+    %\item If $f_{\sigma_1}$ and $f_{\sigma_2}$ are such maps then then the intersection of their images $im(f_{\sigma_1}) \cap im(f_{\sigma_2})$ is the image $im(f_\varphi)$ where $\varphi$ is a face of both. 
 
-\end{itemize}
-
-
-% @TODO Herbert
+%\end{itemize}
 
 
-\begin{thm} Geometric Realisation Theorem. Every abstract simplicial complex of dimension $d$ has a geometric realisation in $\mathbb{R}^{2d+1}.$   \end{thm}
+%% @TODO Herbert
+
+
+%\begin{thm} Geometric Realisation Theorem. Every abstract simplicial complex of dimension $d$ has a geometric realisation in $\mathbb{R}^{2d+1}.$   \end{thm}
 
 
 
@@ -390,6 +411,44 @@ The higher order Betti numbers represent the number of higher dimensional holes.
 This is exactly what we wanted from Homology. An apparatus that allows us distinguish topological spaces based on the connectivity of their n-dimensional simplical complexes.
 
 Before going forward we must note that we did not have to use coeficients in $\mathbb{Z}_2$ we could have equally used coeficients in $\mathbb{Z}$ but $\mathbb{Z}$ is not a field and we would have obtained that the $C_n(X)$ and $H_n(X)$ are not vector spaces but free abelian groups. If instead we had picked any arbitrary ring we would have obtained free modules instead of free abelian groups. We did indeed lose some information but sticking to vector spaces. The Betti numbers are not always equal, but by the Coeficient Theorem they are for suitably nice spaces. We readily refer the reader to \cite{algebraic-topology} to learn about those. We shall continue the treatment of the subject in the same spirit of vector spaces.
+
+There are two more notions we need to define to be able to fully utilise the power of homology - that of reduced and relative homology.
+
+The need for reduced homology arises from a slight inconsistency in the interpretation of the homology groups. Take for example the topological space that consists of a single point. In that topological space all homology groups except for the $H_0$ are trivial. It is convenient in many application to make $H_0$ behave like the rest of the homology group and specifically be trivial in our example. In this sense path-connected topological spaces will have trivial zeroth homology. The geometrical interpretation of this extension is the reduces 0th homology counts the number of voids that separate path connected components of a topological space.
+
+In formal terms we augment the chain complex of a topological space $X$ with one additional group $\mathbb{Z}$.
+
+$$ ... \longrightarrow C_1(X) \longrightarrow C_0(X) \overset{\epsilon}{\longrightarrow} \mathbb{Z}_2 \longrightarrow 0 $$
+
+In this augmented chain the function $\epsilon: C_0(X) \to \mathbb{Z}_2$ is defined as $\epsilon\big(\sum_{i}n_i\sigma_i\big) = \sum_{i}n_i$. The value of $\epsilon$ is equal to the parity of the number of simplicies in the chain. We will define the reduces homology as the homology of the augmented chain complex or $\overset{\sim}{H}_n(X)$. We have that $\overset{\sim}{H}_n(X) = H_n(X)$ for $n > 0$ and $\overset{\sim}{H}_0(X)\bigoplus \mathbb{Z}_2 = H_0(X) $
+
+Another useful notion is that of relative homology. Just as in abstract algebra we can extract useful properties of quotient groups a natural question to ask is whether we can do something similar in the setting of algebraic topology and quotient spaces. 
+
+Let $A$ be a subcomplex of $X$. Let us then define $C_n(X, A) = C_n(X) / C_n(A)$ and define a new relative chain complex as
+
+$$ ... \longrightarrow C_n(X, A) \longrightarrow ... \longrightarrow C_1(X, A) \longrightarrow C_0(X, A) \longrightarrow 0. $$
+
+This is a chain complex because...
+
+% @TODO Explain Why
+More importantly the relative homology $H_n(X, A)$ is not defined as $H_n(X) / H_n(A)$ but as the homology of the chain complex defined above. As the boundary maps take $C_n(A)$ to $C_{n-1}(A)$ the boundary maps induce relative boundary maps on the chain complex. We call the cycles and boundaries of the relative chain complex relative chains and relative boundaries.
+
+Intuitively here is how we can think of the relative homology classes \cite{algebraic-topology}.
+
+A relative chain $\alpha$ is a relative cycle when it's boundary $\partial\alpha $ is in $C_n(A)$.
+
+A relative cycle $\alpha$ is trivial in the homology when it's the sum of a boundary $\partial \beta$ of $\beta \in C_{n+1}(X)$ and a chain $\gamma \in C_n(A)$.
+
+There is a way to relate the this purely algebraic machinery to our geometric intuition for "nice" enough spaces.
+
+
+% @TODO Finish this.
+\begin{thm} Excision - When $A$ is  \end{thm}
+
+
+A corollary of this is that if $A$ is a close subcomplex of $X$ then $H_n(X, A) \simeq \overset{\sim}{H}_n(X/A, A/A)$ where $A/A$ is a single point in $X/A$. This allows us to leverage our geometric intuition about quotient space to compute homology groups.
+
+
 
 \section{Differential Topology}
 
@@ -607,35 +666,35 @@ The parallel algorithm can process long monotone path on a single pass. Thus at 
 
 \section{Contour Tree Simplification}
 
-Branch decomposition.
+Contour Trees are summary of the connectivity of the level sets of a Morse function. They are primarily used in scientific visualisation. A central problem in visualisation is simplifying the data that is presented to enable human comprehension. The contour tree of a large enough data set can quickly become an unwieldy beast in it's own right. This is why it is vital to employ techniques that simplify remove parts of the contour tree that correspond to less "significant" topological features.
+
+One such technique is Branch Decomposition. It was first introduced in \cite{ct-branch-decomp}. It involved decomposing the contour tree into a set of disjoint monotone paths which cover all edges of the tree. This is called branch decomposition and the trivial one is where we take every vertex to be a separate path. A more complex one is shown in this example. Furthermore a branch decomposition is hierarchical when there is exactly one branch that connects two leaves and every other branch connects a leaf to an interior node.
+
+The branches in this scheme represent pair of critical points and form the basis for topological simplification that can be applied. We apply a simplification by removing a branch that does not disconnect the tree. This produces a hierarchy of cancellations like in example []. We define the persistence of a branch to be the bigger of the difference between it's end points and the persistence of it's children. Branches of high persistence reflect more prominent features in the tree. We apply the simplification by removing branches with low persistence that do not disconnect the tree.
+
+% @TODO Remove Stay Tuned
+The paper \cite{ct-branch-decomp} cites that the persistence defined in that way is similar to persistence first defined in \cite{persistence-original}. In Chapter N of this dissertation we will demonstrate that this claim is either incorrect of misleading. Stay tuned folks.
 
 
 
+%First we have to triangulate the mesh.
+
+%Then the mesh is a height graph.
+
+%And the contour tree is a height tree.
+
+%Now define the join and split trees.
+
+%Say they are equal for the mesh and the CT
+
+%Compute the join/split tree of the mesh.
+
+%Now combine them using the combination algorithm.
+
+%There are many algorithms for computing the contour tree. But the Great Khan of all algorithms is the ONE. And then there's the parallel one!
 
 
-
-
-
-
-
-First we have to triangulate the mesh.
-
-Then the mesh is a height graph.
-
-And the contour tree is a height tree.
-
-Now define the join and split trees.
-
-Say they are equal for the mesh and the CT
-
-Compute the join/split tree of the mesh.
-
-Now combine them using the combination algorithm.
-
-There are many algorithms for computing the contour tree. But the Great Khan of all algorithms is the ONE. And then there's the parallel one!
-
-
-\section{Contour Trees}
+\section{Additional Proofs}
 
 \begin{lem} In a tree with no vertices of degree two at least half of the vertices are leaves. \end{lem}
 

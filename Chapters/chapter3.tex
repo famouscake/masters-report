@@ -12,6 +12,8 @@ In addition to the main objectives there are some additional topics, related to 
 \begin{itemize}
     \item Description the implementation of all used algorithms.
     \item Demonstration of the running time of the implementations of the algorithms.
+    \item Exploring the statistical distribution of w-structures in randomly generated trees.
+    \item Correlating itterations for collapse with w-diameter of randomly generated tree.
     \item Determining the smallest 2-dimensional grid dataset that exhibits a w-structure.
     \item Discussion on whether it is possible to determine the w-diameter of a datasets without computing it's contour tree beforehand.
     \item Discussion on the kinds of structures in raw data that produce w-structures in the contour trees.
@@ -20,11 +22,15 @@ In addition to the main objectives there are some additional topics, related to 
 
 \section{Algorithms Implemented}
 
-For the dissertation I implemented the one following algorithms - contour tree, 2xBFS, DP.
+For the dissertation I implemented the following algorithms - contour tree, 2xBFS, DP.
 
 The first algorithm that had to be implemented was for computing the Contour Tree. For simplicity I implemented a version that takes as input a rectangular 2-dimensional mesh. I used the pseudocode provided in this paper [] and implemented it in C++. To test the correctness of the code I compared it against the code that was used for [].
 
 After this I implemented three algorithm for w-detection. The first one is the most basic exhaustive approach where we find the w-length of all paths in the tree. It has quadratic running time. The second one is the 2xBFS algorithm and lastly the DP algorithm. They were implemented in C++. You can find the code in the appendix.
+
+
+% @TODO Describe how
+To implement the DP algorithm I had to modify to recursive solution to a bottom up solution.
 
 Another algorithm I implemented is one that generates all possible $n \times m$ 2-d grids. The objective here is to find the minimum one that produces a w-structure.
 
@@ -94,6 +100,8 @@ The most interesting case is pukaskwa. Notice how pukaskwa has 881600 edges this
 
 \subsection{Random Data}
 
+Do random trees to get the distribution of Ws.
+Do random trees to get the iterations correlation of Ws.
 
 Talk about the value of random data in providing statistics. It may not be realistic but we may draw conclusion about the distribution of w-diameters in random trees.
 

@@ -335,9 +335,9 @@ Thus the formula that describes the optimal solution can be written as:
 
 % @TODO Finish This.
 
-
-
 $$ W(s) = max\Bigg\{ \max\limits_{u \in N(s)}\bigg(W(u)\bigg), \max\limits_{\substack{u, v \in N(s) \\ u \ne v}} \bigg( h(u) + \max\limits_{t \in L_u}(w_{s, t}(u)) + h(v) + \max\limits_{t \in L_v}(w_{s, t}(v)) + w_{u, v}(s)\bigg) \Bigg\}. $$
+
+As before the optimal solution is either entirely in one of the subtrees of the children of a vertex or in the path combination of two of the children of the vertex.
 
 
 % @TODO 
@@ -354,6 +354,10 @@ $$
 
 \begin{algorithm}
 \caption{Computing the W Diameter of a Height Tree.}
+
+
+% @TODO 
+* NEW CODE I GYNORMOUS SHOULD I PUT IT HERE *?
 
 \begin{algorithmic}[1]
 
