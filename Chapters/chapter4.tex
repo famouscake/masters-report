@@ -7,7 +7,7 @@ In this chapter we shall take a look at one of the tools that has made Computati
 
 Before demonstrating the power of Persistent Homology we will take a slight theoretical detour the inroduce the last piece that we are missing that enales its construction. There is a general result in singular homology that shows the interaction of continus maps and homomorphisms between homology groups.
 
-\begin{defn} Let $X$ and $Y$ be two simplical complexes. Let $f: X \to Y$ be a continuous function. Then $f$ induces a homomorphism $f_*: H_n(X) \to H_n(Y)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
+\begin{defn} Let $X$ and $Y$ be two topologicla spaces. Let $f: X \to Y$ be a continuous function. Then $f$ induces a homomorphism $f_*: H_n(X) \to H_n(Y)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
 
 This means that if we have a continus function between two spaces we can immediately associate the homology classes of $X$ to those of $Y$. All we have to do to obtain the induced map is to compose with the continous function $f$. The details of this procees are outlines in \cite{algebraic-topology}.
 
@@ -34,45 +34,72 @@ The reason why we introduced simplicial maps is so that we can pose the followin
 
 \begin{defn} Let $X$ and $Y$ be two simplical complexes and $f: X \to Y$ be a simplicial map. Then $f$ induces a homomorphism $f_*: H_n(X) \to H_n(Y)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
 
-    The homomorphism is induces by taking the simplicies of a chain through the simplicial map and the considering the homology class the chain ends up in (if any). Detail on this can be found in \cite{combinatorial-algebraic-topology}.
+The homomorphism is induces by taking the simplicies of a chain through the simplicial map and the considering the homology class the chain ends up in (if any). Detail on this can be found in \cite{combinatorial-algebraic-topology}.
+
+We will further expand this definition to also cover relative chain maps and relative homologies.
+
+\begin{defn} Let $X$ and $Y$ be two simplical complexes and let $A \subseteq X$ and $B \subseteq Y$ be two subcomplexes. Let $f: X \to Y$ be a simplicial map such that $f(A) \subseteq B$. Then $f$ induces a homomorphism $f_*: H_n(X, A) \to H_n(Y, B)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
+
+We will use the shorthand $f: (X, A) \to (Y, B)$ for functions that satisfy the criteria of this definition. The function $f$ is called this a simplicial map between simplicial pairs (analogous to continous map between topological pairs in \cite{algebraic-topology}). 
+
+
+% @TODO Define absolute homology
+The homomorphism is induced by running the relative homology classes through the simplicial map and recording which class their image lands in. The primary type of map we will use in this chapter is a specific kind of simplicial map - the inclusion map. The reason for this will become clear in the following section. In the case of absolute homology when $X$ is a simplicial complex and $A$ is a subcomplex of $X$ there is a natural inclusion map $i: A \to X$ which is injective but not necessarily surjective. It takes the simplicies of $A$ to exactly the same simplicies of $X$ and leaves the simplicies outside of $A$ untouched. 
+
+We shall define the inclusion of relative homology analogously. Let $B$ be another subcomplex of $X$ such that $A$ is also a subcomplex of $B$, or $A \subseteq B \subseteq X$. Then let $i : X \to X$ be the identity map. As $A \subseteq B$ then the restriction $i_A: A \to B$ is a well defined function and therefore $i(A) \subseteq B$. Therefore there is a map $i$ between the pairs $(X, A)$ and $(X, B)$ such that $i(A) \subseteq B$ by the previous definition this map induces a homomorphism $i_* : H_n(X, A) \to H_n(X, B)$.
+
 
 % @TODO Should I talk about chain maps?
+% @TODO Add proof for all of this?
 
 \section{Persistent Homology}
 
 % @TODO Define filtrations.
+% @TODO Introduce filtrations and VR complexes.
 
-Persistent Homology emerged in the early 2000s in the this work of []. While the original motivation for it was to better model point cloud data it has grown into a general methodology that can be applied any filtration of a topological space. Let us consider a filtration of a simplical complex $X$. Example in fig[].
+Persistent Homology emerged in the early 2000s in the this work of \cite{persistence-original}. The original motivation for introducing it was to better model point cloud data through filtrations of Vietoris Ribs complexes. Persistent Homology has since grown into a general methodology that can be applied any filtration of a topological space. To best illustrate what persistent homology is let us consider a filtration of a simplical complex $X$. Example in fig[].
 
 $$ X_0 \subseteq X_1 \subseteq ... \subseteq X_{n-1} \subseteq X_n = X$$
 
-We usually call the index of this filtration time to make it more indicative. We can already compute the homology groups of all of the $X_i$. The next natural question to ask is whether we can track the evolution of the individual homology classes in the homology groups. One key observation makes this possible. The subset relation between all of the $X_i$ induces inclusion maps between them. More formally we have inclusion maps $i_{k, t}: X_k \to X_t$ for $k \le t$ because $X_k \subseteq X_{k+1} \subseteq ... \subseteq X_t$. If we only take the consecutive inclusion maps and just name the $i$ where the we can context which inclusion map it is exactly we obtain the following sequence:
+We have obtained a one parameter sequence of nester subcomplexes. Another way to think of this is that we start with simplicial complex and iteratively add new simplicies to it. It is customary to call the index of this filtration time to make it more indicative of a process that evolves in time. We can already compute the homology groups of the individual $X_i$. The key insight in persistent homology was to as the question whether we can track the evolution of individual homology classes in the homology groups as we go from one complex to the next. This is made possible by the subset relation between all of the $X_i$. As discussed in the previous section the inclusion map is the natural map between a set and it's superset. More formally we have inclusion maps $i_{i, j}: X_i \to X_j$ for $i \le j$ because $X_i \subseteq X_{i+1} \subseteq ... \subseteq X_j$. 
+By only considering the inclusion maps between consecutive $X_i$ and $X_{i+1}$ we can build the following chain of simplicial complexes
 
 
-$$ X_0 \overset{i}{\longrightarrow} X_1 \overset{i}{\longrightarrow} ... \overset{i}{\longrightarrow} X_{n-1} \overset{i}{\longrightarrow} X_n.$$
+$$ X_0 \overset{i}{\longrightarrow} X_1 \overset{i}{\longrightarrow} ... \overset{i}{\longrightarrow} X_{n-1} \overset{i}{\longrightarrow} X_n$$
 
-We have already shown that the inclusion maps are simplical and that simplical maps induce homomorphisms on the homology groups. This lets us obtain the following sequence:
+
+% @TODO Introduce Chain Maps
+where we have renamed all inclusion maps to $i$ and infer them from context. We have already shown that the inclusion maps are simplical and that simplical maps induce homomorphisms on homology groups through chain maps inducing. This lets us transform the sequence directly to the homology groups like so:
 
 $$ H_n(X_0) \overset{i_*}{\longrightarrow} H_n(X_1) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(X_{n-1}) \overset{i_*}{\longrightarrow} H_n(X_n).$$
 
-Where we must note that $i_*$ may not be the inclusion maps on the homology groups. They may fail to be injective, any inclusion map is injective. There induces homomorphics encode the local topological changes in the homology of each one of the $X_i$ to the next $X_{i+1}$. We use the following terminology to interpret this information:
+Here it is important to note that the induced maps $i_*$ do not have to be the inclusion maps on the homology groups. They can easily fail to be injective when for example two homology classes in some $H_n(X_i)$ map to the same homology class $H_n(X_{i+1})$ due to the introduction of a new boundary. This contradicts the fact that inclusion maps are injective. The induces homomorphisms encode the local topological changes in the homology of consecutive complexes in the filtration. We will introduce the following terminology to help us interpret this information:
 
+
+% @TODO You may not be right about death here
 \begin{itemize}
-    \item A homology class persists if its image under $i_*$ is not zero.
-    \item A homology class dies if its image under $i_*$ is zero.
-    \item A homology class is born if it is not the image under $i_*$ of a class in the previous complex in the filtration.
+    \item A homology class is \textbf{born} if it is not the image of a class in the previous complex in the filtration under $i_*$.
+    \item A homology class \textbf{dies} if its image under $i_*$ is the zero element or when it is merged with another class (they have the same iamge).
+    \item A homology class \textbf{persists} if its image under $i_*$ is not zero.
 \end{itemize}
 
-We get the following picture []. The classes we are most interested in are the ones that have persisted for the largest number of steps in the filtration. They are said to have high persistence. This can be interpreted as significance and we would like to focus our attention on them. Ephemeral classes on the other hand are consider to have very low significance and can be neglected in practise as noise or sampling errors.
+In order to produce a detailed computation of the persistent homology of a filtration we would have to compute all homology groups of all complexes and then compute all inclusion maps. Doing so by hand is cumbersome and more importantly far too lengthy. We will avoid doing it in favour of presented diagrams of the evolution of the homology classes and appeal to the reader's geometric and topological intuition to argue their correctness.
 
-Given this information we can produce the so caled persistence pairs. A persistence pair $(t_1, t_2)$ where $t_i \in \{0, 1, .., n\}$ encode the information about the birth and death of a single homology class. It means that a homology class is born at time $t_1$, then has persisted until and dies at $t_2$.
+*Let us look at the following example. Show a pretty picture and explain it*
+
+Given the persistence homology of a filtration we can pose the question of how we can rank the classes based on their "significance". We are most interested in the classes that persist for a large number of steps in the filtration. Such classes are exactly the ones we consider significant and are said to have high persistence. Ephemeral classes on the other hand are consider to have very low significance and can be neglected. In practise such classes often correspond to statistical noise or sampling error.
+
+
+% @TODO Should you add X_i here istead of just t_i?
+
+To quantify this precisely we will produce the so called persistence pairs. A persistence pair $(t_1, t_2)$ is a pairing of two timestamps - the birth and death time of a homology class. Every class is associated with a pair such as this where $t_1$ is the birth time, $t_2$ is the death time and the class has persisted in all $t_1 \le t_i \le t_2$. In the cases of classes that never die such as *this one in that example* we will assume that their death time is $\infty$. We will call such classes essential and others inessential as in \cite{comp-topo}.
 
 % @TODO Why is this true?
 There is a theorem that states that the persistence digram of a filtration encodes all of the information about the persistent homology groups.
 
 *Examples*
 
-There is also a simple and fast algorithm for computing the persistence pairs. It requires us order all of the simplices in the complex $\sigma_1, \sigma_2, ..., \sigma_n$ according to these rules \cite{ph-a-survey}.
+Finally we will describe an algorithm for computing the persistence pairs. It requires us order all of the simplices in the complex $\sigma_1, \sigma_2, ..., \sigma_n$ according to these rules \cite{ph-a-survey}.
 
 \begin{itemize}
     \item $\sigma_i$ precedes $\sigma_j$ when $\sigma_j$ was introduced later in the filtration than $\sigma_i$
@@ -108,11 +135,14 @@ In other matrix $D$ is a matrix that holds the boundaries of all simplicies in a
 \end{algorithmic}
 \end{algorithm}
 
-The proof of this algorithm is outlined in [].
+The proof of this algorithm is outlined in \cite{persistence-original}.
 
 % @TODO What kind does the manifold have to be?
 Now let us apply this general theory to a Morse theoretic context. Let $M$ be a triangulation of a smoothly embeded 2-manifold in $\mathbb{R}^3$ and let $f : M \to \mathbb{R}$ be a Morse function. From Morse theory we know that the changes in topology can only happen at finitely many critical points of $M$. Let $c_1 < c_2 < ... < c_n$ be those critical points. Let us now use the sublevel sets $M_{c_i}$  to make a filtration of $M$.We obtain the following filtration which we will call ascending
 
+$$ M_{c_1} \subseteq M_{c_2} \subseteq ... \subseteq M_{c_{n-1}} \subseteq M_{c_n} = M.$$
+
+From this filtration we can produce the following persistent homology chain
 
 $$ H_n(M_{c_1}) \overset{i_*}{\longrightarrow} H_n(M_{c_2}) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(M_{c_{n-1}}) \overset{i_*}{\longrightarrow} H_n(M_{c_n}) = H_n(M).$$
 
@@ -121,25 +151,29 @@ If we had taken the superlevel sets of $M$ we would have obtained a different fi
 $$ H_n(M^{c_1}) \overset{i_*}{\longrightarrow} H_n(M^{c_2}) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(M^{c_{n-1}}) \overset{i_*}{\longrightarrow} H_n(M^{c_n}) = H_n(M).$$
 
 
-Let us now restrict $M$ to be compact and contractable. This will ensure that the Reeb Graph of $M$ is a Contour Tree. We will now show that computing the persistent homology of the descending and ascending filtration of $M$ is equivalent to constructing the join and split tree of $M$ respectively.
+Let us now restrict $M$ to be compact and contractable. This will ensure that the Reeb Graph of $M$ is a Contour Tree. We would like to tackle the claim made in \cite{ct-branch-decomp} that the persistent homology pairs are equivalent to branch decomposition pairs. We can immediately see that this claim is either false of ill-defined. The major reason for this is that essential homology classes do not get paired. But in the branch decomposition schemes all critical points are paired.
 
-* Show that this is the case *
+There is however yet more reason to pursue this. Slightly after the paper of branch decomposition was published, there emerged a way to extend the persistent homology scheme so that all critical points get paired. Using this will allows us to directly compare it to the branch decomposition of a contour tree. 
 
-* SHOW EXAMPLES *
+%We will now show that computing the persistent homology of the descending and ascending filtration of $M$ is equivalent to constructing the join and split tree of $M$ respectively.
 
-Define extended persistence.
+%* Show that this is the case *
+
+%* SHOW EXAMPLES *
+
+%Define extended persistence.
 
 \section{Extended Persistence}
 
-We have seen from the definition and computationas of persistence that not all critical points are paired. Those that give birth the essential persistent homology classes will not be paired because they are never destoyed pass the final simplex in the filtration. This leads to incompleteness in the persistence pairings which we would to remedy. 
+We have seen from the definition and computations of persistent homology that not all critical points are paired. Those that give birth the essential persistent homology classes will not be paired because they are never destoyed pass the final simplex in the filtration. This leads to incompleteness in the persistence pairings which we would to remedy. 
 
 * Give example with a previous example where the global minimum was not paired *
 
 **REDO THIS**
 
-We would also like to pair them in such a way that is symetric consistent with our intuition (developed in the example above). Enter extended persistence. The main idea of extended persistence is to follow the ascending pass with a descending pass where once we reach a class that is homologous to a essential class in the ascending filtration we consider it to be destroyed and thus paired. We would also like a chain that starts at the zero groups and end the zero group. This way we have an assurance that every class that is born will eventually die.
+We would also like to pair them in such a way that is both symmetric and consistent with our intuition (developed in the example above). Enter extended persistence. The main idea behind extended persistence is to follow the ascending pass of persistent homology with a descending pass where once we reach a class that is homologous to a essential class in the ascending filtration we consider it to be destroyed and thus paired. To justify this algebraically we would like this process to be a consequence of a new augmented chain that starts with the zero homology group and ends with the zero group. This way we have an assurance that every class that is born will eventually die.
 
-Our initial instinct here might be to just two filtration one ascending and one descending. The problem that arises is in relating the classes of the two. It would be ideal if we could merge both filtrations into a single long chain, but the two filtrations flow in different directions. Here is an example
+Our initial instinct here might be to just directly apply persistent homology twice. Once on the ascending and the on the descending filtration. The problem that arises is in relating the classes of the two different filtrations. It would be ideal if we could merge both filtrations into a single long chain, but the two filtrations flow in different directions. Here is an example
 
 $$ 0 = H_n(M_{c_1}) \rightarrow ... \rightarrow H_n(M_{c_n}) = H_n(M) = H_n(M^{c_1}) \leftarrow ... \leftarrow H_n(M^{c_{n}}) = 0.$$
 
@@ -196,6 +230,51 @@ Show the it is equivalent to branch decomposition of the join and split tree.
 Show that extended persistence pairing are not equivalent to branch decomposition pairing. Say the paper is either wrong or had something else in mind which is not clarified well enough.
 
 Emerge victorious and have the plebeians chant you name in the streets. All Hail Petros all hail Petros.
+
+
+\subsection{Extended Persistence on Path-Connected Domains}
+
+The final step we take on this journey will be to prove a more an original and more general results that will solidify our claim completely.
+
+
+\begin{prop} In the extended persistence of a Path-Connected domain the global minimum pairs with the global maximum in the 0th homology \end{prop}
+
+\begin{proof}
+    Let $M$ be a Path-Connected domain and let $M_1 \subseteq M_2 \subseteq ... \subseteq M_n$ be a filtration of $M$. This filtration induces etended persistence 
+
+$$ 0 = H_0(M_{c_1}) \rightarrow ... \rightarrow H_0(M_{c_n}) = H_0(M) = H_0(M, M^{c_0}) \rightarrow ... \rightarrow H_0(M, M^{c_{1}}) = 0.$$
+
+As $M$ is Path-Connected it has one path-connected component and therefore $H_0(M) = H_0(M_0) \simeq  \mathbb{Z}_2$.  Our aim here will be to show that all of the $H_0(M, M^{c_i})$ are trivial. This will mean that the single homology class that exists in $H_0(M)$ will die at $H_0(M, M^{c_n})$ which is exactly the global maximum.
+
+
+% @TODO Define Excision
+% @TODO  Add the thing where this holds - H_n(M / M^{c_i}, pt) = \overset{\sim}{H}_n(M / M^{c_i})
+As a corollary of the Excision Theorem we have that
+
+$$H_0(M, M^{c_i}) = H_0(M / M^{c_i}, pt) = \overset{\sim}{H}_0(M / M^{c_i})$$  
+
+where $pt = M^{c_i} / M^{c_i}$.
+
+Now let us explore the reduced homology of the topological space $M / M^{c_i}$. We will show that is it path-connected and therefore the reduced homology is trivial.
+
+
+% @TODO Add quote
+By definition $M$ is path connected. Consider the function $\pi: M \to M/ M^{c_i}$ that takes a point to it's equivalent class. By point set topology [] we know that $\pi$ is continuous. We can also infer that $\pi$ is surjective. Indeed there there is no equivalence class that no point maps to. Furthermore the continuous image of a path connected is connected by []. As we have that $M$ is path-connected therefore $\pi(M) = M / M^{c_i}$ is path-connected. 
+
+By [] we have that $H_0(M / M^{c_i}) = \mathbb{Z}_2$ and by [] that $H_0(M / M^{c_i}) = \overset{\sim}{H}_0(M / M^{c_i}) \bigoplus \mathbb{Z}_2$
+
+We can conclude that $H_0(M, M^{c_i}) = \overset{\sim}{H}_0(M / M^{c_i}) = 0$
+
+Therefore the map induced by the inclusion of the pairs $(M, \emptyset) \to (M, M^{c_n})$ will map the essential homology class of $H_0(M_n)$ to zero. This mean that the global minimum pairs with the global maximum.
+
+
+\end{proof}
+
+
+
+
+
+
 
 
 
