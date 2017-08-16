@@ -1,15 +1,15 @@
 \chapter{Persistent Homology and Contour Trees}
 \label{chapter4}
 
-In this chapter we shall take a look at one of the tools that has made Computational Topology so viable for topological data analysis in the recent years. This is of course persistent homology. We will develop further develop the mathematical framework of Homology to accomodate this new concept. After this we will take a look at the practical aspect of the computation of Persistent Homology (PH) and its relation to the computation of the Contour Tree.
+We will now take a look at one of the tools that has made topological data analysis so viable in the recent years. This tool is called Persistent Homology (PH). In this chapter we will first further develop the mathematical framework of Homology to accommodate this new concept. Following our theoretical foray we will examine the practical aspects of the computation of persistent homology and its relation to the computation and simplification of contour trees.
 
 \section{Induced Maps on Homology}
 
-Before demonstrating the power of Persistent Homology we will take a slight theoretical detour the inroduce the last piece that we are missing that enales its construction. There is a general result in singular homology that shows the interaction of continus maps and homomorphisms between homology groups.
+Before introducing ourselves with persistent homology we will take a slight detour in order to introduce the last piece that we are missing to enable its construction. There is a general result in singular homology that shows the interaction of continuous maps and homomorphisms between homology groups.
 
-\begin{defn} Let $X$ and $Y$ be two topologicla spaces. Let $f: X \to Y$ be a continuous function. Then $f$ induces a homomorphism $f_*: H_n(X) \to H_n(Y)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
+\begin{defn} Let $X$ and $Y$ be two topological spaces. Let $f: X \to Y$ be a continuous function. Then $f$ induces a homomorphism $f_*: H_n(X) \to H_n(Y)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
 
-This means that if we have a continus function between two spaces we can immediately associate the homology classes of $X$ to those of $Y$. All we have to do to obtain the induced map is to compose with the continous function $f$. The details of this procees are outlines in \cite{algebraic-topology}.
+This means that if we have a continuous function between two spaces we can immediately associate the homology classes of $X$ to those of $Y$. All we have to do to obtain the induced map is to compose the simplices with the continuous function $f$. The details of this process are outlines in \cite{algebraic-topology}.
 
 
 % @TODO WHY?!
@@ -27,7 +27,7 @@ The two most important observations we can make based on this defitions are the 
 
 
 % @TODO Define a homology class
-The reason why we introduced simplicial maps is so that we can pose the following question. If there is a simplical map between two simplicial complexes, can we use it to relate their homology classes? The answear is yes, we can thanks to \cite{combinatorial-algebraic-topology}!
+The reason why we introduced simplicial maps is so that we can pose the following question. If there is a simplical map between two simplicial complexes, can we use it to relate their homology classes? The answer is yes, we can thanks to \cite{combinatorial-algebraic-topology}!
 
 
 % @TODO Are simplicial maps continuous?
@@ -40,7 +40,7 @@ We will further expand this definition to also cover relative chain maps and rel
 
 \begin{defn} Let $X$ and $Y$ be two simplical complexes and let $A \subseteq X$ and $B \subseteq Y$ be two subcomplexes. Let $f: X \to Y$ be a simplicial map such that $f(A) \subseteq B$. Then $f$ induces a homomorphism $f_*: H_n(X, A) \to H_n(Y, B)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
 
-We will use the shorthand $f: (X, A) \to (Y, B)$ for functions that satisfy the criteria of this definition. The function $f$ is called this a simplicial map between simplicial pairs (analogous to continous map between topological pairs in \cite{algebraic-topology}). 
+We will use the shorthand $f: (X, A) \to (Y, B)$ for functions that satisfy the criteria of this definition. The function $f$ is called this a simplicial map between simplicial pairs (analogous to continuous map between topological pairs in \cite{algebraic-topology}). 
 
 
 % @TODO Define absolute homology
@@ -161,75 +161,102 @@ There is however yet more reason to pursue this. Slightly after the paper of bra
 
 %* SHOW EXAMPLES *
 
-%Define extended persistence.
+% Define extended persistence.
 
 \section{Extended Persistence}
 
-We have seen from the definition and computations of persistent homology that not all critical points are paired. Those that give birth the essential persistent homology classes will not be paired because they are never destoyed pass the final simplex in the filtration. This leads to incompleteness in the persistence pairings which we would to remedy. 
+*CAN THE SAME CRITICAL POINT BE TWO TWINGS?*
 
-* Give example with a previous example where the global minimum was not paired *
+We have seen from the definition and computations of persistent homology that not all critical points are paired. Those that give birth the essential persistent homology classes will not be paired because they are never destroyed pass the final simplex in the filtration. This leads to incompleteness in the persistence pairings which we would to remedy. Our goal in extending persistence it to find a natural and intuitive way to pair the essential homology classes. In terms of filtrations of triangulations of manifolds based on the sub/superlevel sets of a Morse functions this means that all critical points will be paired in some homology.
 
-**REDO THIS**
+*SHOW EXAMPLE*
 
-We would also like to pair them in such a way that is both symmetric and consistent with our intuition (developed in the example above). Enter extended persistence. The main idea behind extended persistence is to follow the ascending pass of persistent homology with a descending pass where once we reach a class that is homologous to a essential class in the ascending filtration we consider it to be destroyed and thus paired. To justify this algebraically we would like this process to be a consequence of a new augmented chain that starts with the zero homology group and ends with the zero group. This way we have an assurance that every class that is born will eventually die.
+* REDO FIRST SENTENCE *
+The way we have paired the remaining critical points in the above example is hopefully both symmetric and consistent with our intuition (developed in the example above). But how do we justify doing so theoretically? Enter extended persistence. The main idea behind extended persistence is to follow the ascending pass of persistent homology with a descending pass where once we reach a class that is homologous to a essential class in the ascending filtration we consider it to be destroyed and thus paired. To justify this algebraically we would like to make this process a consequence of a new augmented chain that starts with the zero homology group and ends with the zero group. This way we have an assurance that every class that is born will eventually die.
 
-Our initial instinct here might be to just directly apply persistent homology twice. Once on the ascending and the on the descending filtration. The problem that arises is in relating the classes of the two different filtrations. It would be ideal if we could merge both filtrations into a single long chain, but the two filtrations flow in different directions. Here is an example
+Our initial instinct here might be to just directly apply persistent homology twice. Once on the ascending and the on the descending filtration. The problem that arises is in relating the classes of the two different filtrations. We are able to merge both filtrations into a single long chain, but the induced maps of the two filtrations flow in different directions. Here is an example of what would happen if we attempt this
 
 $$ 0 = H_n(M_{c_1}) \rightarrow ... \rightarrow H_n(M_{c_n}) = H_n(M) = H_n(M^{c_1}) \leftarrow ... \leftarrow H_n(M^{c_{n}}) = 0.$$
 
-Here the direction of the arrows is according to the inclusion maps as we have that $M_{c_i} \subseteq M_{c_j}$ and $M^{c_j} \supseteq M^{c_j}$ for $i \le j$. The can be remedied if we reverse the directions of the arrows in the descending filtration. In order to reverse the directions of the arrows and to keep some of our intuition we shall employ the use of relative homology. The following is not equivalent to the previous but is exactly what we are looking for.
+The direction of the arrows is accordance with the how the homomorphisms are induced. To verify this consider that $M_{c_i} \subseteq M_{c_j}$ and $M^{c_j} \supseteq M^{c_j}$ for $i \le j$. This can be remedied if we find a way to reverse the directions of the arrows in the descending filtration. The issue in finding new maps to induce homomorphisms in the opposite direction is that we will sacrifice the our intuition which captures the evolution of homology classes. This is because other induced homomorphisms will not be natural and as such will be harder to interpret. If we wish to keep using natural inclusion maps we must instead resort to changing the homology groups we use. Let us opt for a descending filtration of relative homology groups like so:
+
+$$ H_n(M) = H_n(M, M^{c_n}) \rightarrow H_n(M, M^{c_{n - 1}}) \rightarrow ... \rightarrow H_n(M, M^{c_{1}}) = 0 $$
+
+
+% @TODO By which def (end of paragraph)
+In this relative filtration the homomorphisms are induced by inclusions on the relative homology groups. To see this let $(M, M^{c_i})$ and $(M, M^{c_{i+1}})$ two consecutive pairs. The inclusion map from $M$ to $M$ takes the superlevel set $M^{c_i}$ in the superlevel set $M^{c_{i+1}}$ because $M^{c_i} \subseteq M^{c_{i+1}}$. By definition [] this is a simplicial map from $(M, M^{c_i})$ and $(M, M^{c_{i+1}})$ and thus induces a homomorphism between $H_n(M, M^{c_i})$ and $H_n(M, M^{c_{i+1}})$.
+
+The final step to complete our desired sequence is to "glue" these two filtrations together at the point $ H_n(M_{c_n}) = H_n(M) = H_n(M, M^{c_n})$. The second equality holds because $M^{c_n} = \emptyset$ and quotienting by the empty set leaves the underlying relative chain complexes unchanged. Putting this all together yields the following chain of homology groups.
 
 $$ 0 = H_n(M_{c_1}) \rightarrow ... \rightarrow H_n(M_{c_n}) = H_n(M) = H_n(M, M^{c_n}) \rightarrow ... \rightarrow H_n(M, M^{c_{1}}) = 0.$$
 
-Where the descending filtration is represented through the sequence of relative homology groups. Let us explore why this is built this way.
+% @TODO Is that really what a close subcomplex is?
 
-The maps in the ascending filtrations are induced via the inclusion maps between the nested spaces $M_i \subseteq M_j$  where $i \le j$. The more interesting case if between the relative homology groups. First of all the isomorphism between $H_n(M) = H_n(M, M^{c_n})$ comes from that fact that $M^{c_n} = \emptyset$ and quotienting by the empty sets leaves a group unchanged. The show where the consecutive maps come from we will give the following example.
+This augmented filtration justifies the pairing of essential classes according to the intuitive understanding we obtained from example []. The only issue is that the relative homology groups are difficult to interpret on their own. To aid our comprehension of what exactly occurs in the relative filtration we shall employ the Excision Theorem where $H_n(M, M^{c_i}) = H_0(M / M^{c_i}, pt) = \overset{\sim}{H}_0(M / M^{c_i})$ where $M^{c_i}$ is a closed subcomplex of $M$ as required for all $i \in \{1, 2, 3, ..., n\}$. 
 
-Let $X$ be a simplical complex, $B \subset X$ be a subcomplex of $X$ and $A \subset B$ be a subcomplex of $B$. Then we can find a natural map from $H_n(X, A)$ to $H_n(X, B)$ induced by the inclusion from $A$ to $B$. Let us write out $C_n(X), C_n(A), C_n(B)$ through their generator simplicies.
+* Take a look at example how the complex is built and the how it unwinds itself *
+
+\includegraphics[scale=0.2,center]{./images/extended-ph.eps}
+
+\subsection{Extended Persistence and Branch Decomposition}
+
+Now let us examine the relation of extended persistence to branch decomposition. Here is an example branch decomposition of a contour tree of the following 3x3 grid dataset. It is not possible for the branch decomposition to pair the global maximum with the global minimum. There is no monotone path between them. To show that no branch decomposition of a contour tree is equivalent to the extended persistence of the dataset I will demonstrate that extended persistence necessarily pair the global minimum with the global maximum. 
+
+*Show the extended persistence filtration of the W3x3*
+*Show the branch decomposition*
+
+
+% @TODO Add quote
+As you can see these methods produce very different pairings indeed. We will conclude that the claims made in [] are either false of not well defined. It so happens that a w-structure that this dissertation is devoted to cause not only computational trouble, but also serve as counterexamples and pose theoretical difficulties as well. To further cement statement we will us show a more general general result in the following chapter which holds for all filtrations of path-connected spaces.
+
+
+%The maps in the ascending filtrations are induced via the inclusion maps between the nested spaces $M_i \subseteq M_j$  where $i \le j$. The more interesting case if between the relative homology groups. First of all the isomorphism between $H_n(M) = H_n(M, M^{c_n})$ comes from that fact that $M^{c_n} = \emptyset$ and quotienting by the empty sets leaves a group unchanged. The show where the consecutive maps come from we will give the following example.
+
+%Let $X$ be a simplical complex, $B \subset X$ be a subcomplex of $X$ and $A \subset B$ be a subcomplex of $B$. Then we can find a natural map from $H_n(X, A)$ to $H_n(X, B)$ induced by the inclusion from $A$ to $B$. Let us write out $C_n(X), C_n(A), C_n(B)$ through their generator simplicies.
 
 % @TODO Fix these brackets
-$$ C_n(X) = <a_1, a_2, ..., a_k, ..., a_l, ..., a_n> $$
-$$ C_n(A) = <a_l, ..., a_n>$$
-$$ C_n(B) = <a_k, ..., a_l, ..., a_n>$$
+%$$ C_n(X) = <a_1, a_2, ..., a_k, ..., a_l, ..., a_n> $$
+%$$ C_n(A) = <a_l, ..., a_n>$$
+%$$ C_n(B) = <a_k, ..., a_l, ..., a_n>$$
 
 
-Then the relative chains are generated by:
+%Then the relative chains are generated by:
 
-$$ C_n(X, A) = <a_1, ..., a_k, ..., a_{l-1}>$$
-$$ C_n(X, B) = <a_1, ..., a_{k-1}>$$
+%$$ C_n(X, A) = <a_1, ..., a_k, ..., a_{l-1}>$$
+%$$ C_n(X, B) = <a_1, ..., a_{k-1}>$$
 
 
 % @TODO Show it is a chain map
 
-Where we can introduce a natural inclusion map $f : C_n(X, A) \to C_n(X, B)$ where $f(a_i) = a_i$ when $i < k$ and $f(a_i) = 0$ when $i \ge k$. The map $f$ is well defined as an inclusion map and furthermore it is a chain map. Chain maps induce linear maps on the homology. Therefore we obtain the map $f_* : H_n(X, A) \to H_n(X, B)$ where $f_*([\alpha]) = [f(\alpha)]$. Where the brackets denote the homology quotient classes in $H_n(X, A) \text{ and } H_n(X, B)$ respectively.
+%Where we can introduce a natural inclusion map $f : C_n(X, A) \to C_n(X, B)$ where $f(a_i) = a_i$ when $i < k$ and $f(a_i) = 0$ when $i \ge k$. The map $f$ is well defined as an inclusion map and furthermore it is a chain map. Chain maps induce linear maps on the homology. Therefore we obtain the map $f_* : H_n(X, A) \to H_n(X, B)$ where $f_*([\alpha]) = [f(\alpha)]$. Where the brackets denote the homology quotient classes in $H_n(X, A) \text{ and } H_n(X, B)$ respectively.
 
 %Now let us to back to the descending filtration of $M$. We have 
 
-Let us go back extended persistence. In the descending filtration of the relative homology we have the scenario we just described. Therefore as there is an inclusion function for between every $M^{c_i}$ and every $M^{c_j}$ where $i \ge j$ and this induces a linear map between every $H_n(M, M^{c_i})$ and $H_n(M, M^{c_j})$.
+%Let us go back extended persistence. In the descending filtration of the relative homology we have the scenario we just described. Therefore as there is an inclusion function for between every $M^{c_i}$ and every $M^{c_j}$ where $i \ge j$ and this induces a linear map between every $H_n(M, M^{c_i})$ and $H_n(M, M^{c_j})$.
 
 %We have developed all this mathematical machinery
 
--- Give some intuition behind this.
+%-- Give some intuition behind this.
 
--- Show how this is used on an example.
+%-- Show how this is used on an example.
 
--- Give an algorithm for computing it.
+%-- Give an algorithm for computing it.
 
--- Explain how the algorithm is connected to the computation.
+%-- Explain how the algorithm is connected to the computation.
 
-\section{Persistent Homology and the Contour Tree}
+%\section{Persistent Homology and the Contour Tree}
 
--- Say some general things about how we are going to relate the two and what we shall accomplish in this chapter.
+%-- Say some general things about how we are going to relate the two and what we shall accomplish in this chapter.
 
-\subsection{Join and Split Trees}
+%\subsection{Join and Split Trees}
 
-Show that the computation of the ascending filtration and descending filtration is equivalent to the join and split tree of a contractable domain.
+%Show that the computation of the ascending filtration and descending filtration is equivalent to the join and split tree of a contractable domain.
 
-Show the it is equivalent to branch decomposition of the join and split tree.
+%Show the it is equivalent to branch decomposition of the join and split tree.
 
-Show that extended persistence pairing are not equivalent to branch decomposition pairing. Say the paper is either wrong or had something else in mind which is not clarified well enough.
+%Show that extended persistence pairing are not equivalent to branch decomposition pairing. Say the paper is either wrong or had something else in mind which is not clarified well enough.
 
-Emerge victorious and have the plebeians chant you name in the streets. All Hail Petros all hail Petros.
+%Emerge victorious and have the plebeians chant you name in the streets. All Hail Petros all hail Petros.
 
 
 \subsection{Extended Persistence on Path-Connected Domains}
@@ -242,7 +269,7 @@ The final step we take on this journey will be to prove a more an original and m
 \begin{proof}
     Let $M$ be a Path-Connected domain and let $M_1 \subseteq M_2 \subseteq ... \subseteq M_n$ be a filtration of $M$. This filtration induces etended persistence 
 
-$$ 0 = H_0(M_{c_1}) \rightarrow ... \rightarrow H_0(M_{c_n}) = H_0(M) = H_0(M, M^{c_0}) \rightarrow ... \rightarrow H_0(M, M^{c_{1}}) = 0.$$
+$$ 0 = H_0(M_{c_1}) \rightarrow ... \rightarrow H_0(M_{c_n}) = H_0(M) = H_0(M, M^{c_n}) \rightarrow ... \rightarrow H_0(M, M^{c_{1}}) = 0.$$
 
 As $M$ is Path-Connected it has one path-connected component and therefore $H_0(M) = H_0(M_0) \simeq  \mathbb{Z}_2$.  Our aim here will be to show that all of the $H_0(M, M^{c_i})$ are trivial. This will mean that the single homology class that exists in $H_0(M)$ will die at $H_0(M, M^{c_n})$ which is exactly the global maximum.
 
@@ -267,10 +294,17 @@ We can conclude that $H_0(M, M^{c_i}) = \overset{\sim}{H}_0(M / M^{c_i}) = 0$
 
 Therefore the map induced by the inclusion of the pairs $(M, \emptyset) \to (M, M^{c_n})$ will map the essential homology class of $H_0(M_n)$ to zero. This mean that the global minimum pairs with the global maximum.
 
-
 \end{proof}
 
+Following this proposition we can only conclude that in any contractable domain with a w-structure that separates the global minimum with the global maximum branch decomposition is not the same as extended persistence.
 
+\subsection{Extended Persistence and Join/Split Trees}
+
+In this final section we will present examples for how extended persistence on the 0th homology is actually equivalent to computing join and split tree.
+
+*Don't know if I can prove this yet, but it probably won't be too hard.*
+
+*Should I keep this or not?*
 
 
 
