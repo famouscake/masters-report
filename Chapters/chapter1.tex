@@ -2,9 +2,40 @@
 \chapter{Introduction}
 \label{chapter2}
 
-Talk about why parallel algorithms are important
+* ----- <roadsign> Peter Construction Co. </roadsign> *
 
-Talk about the beauty of Computational Topology and why it's useful and where it's used. 
+% @TODO Do metheorologoy as an example
+Modern science relies heavily on data collection and analysis. The only way to test a scientific hypothesis in practise is to conduct an experiment that is in accordance to the theory and to collect data outputted by the experiment. Through analysing the collected data scientists can reason about the probability of whether their hypothesis is correct. If that probability is not high enough the hypothesis is rejected and a better one is sought. The analytical current machinery for doing so is reliable and robust. It is based on statistics, machine learning and *other stuff*. One major issue is that more data can be collected than can be analysed []. The only solution to this problem is to reduce the amount of data. The central problem with this approach is in picking which pieces of data to discard. Ideally one would like to discard data which is of little significance and would slow down the analysis with little to offer in terms of important insight and information.
+
+This is where computational topology can come in. Topology is about the qualitative features of spaces. These are the big scale general features that are essential in making a space what it is. Computational Topology is concerned with extracting those from data. This is why it is useful in our case.
+
+An invaluable tool in learning about data is visualisation. In fact the same problem hold with scientific and information visualisation. The human eyesight has limited capabilities. Ensuring only relevant and important information is displayed is crucial in the success of such methods. Let us take for example a tool such as the contour tree. It is primarily used as a discrete summary of the connectivity of a scalar field.
+
+*Show example and explain it.*
+
+Through the contour tree we can accomplish the following amazing things. Give examples.
+
+The first aim of this dissertation will to be aid in the speeding up of the construction of the contour tree from raw data. In the modern world where individual cores of processors are not expected to become much faster practical speedup has to come from leveraging parallelism be it distributed or shared memory. 
+
+The second aim of this dissertation is to discuss the simplification of contour trees and how that can be approached from two different perspectives in the realm of computational topology. 
+
+%Statistics can play a huge role in deciding. There are well enstablished methods for discarding correlated predictors
+
+Computational Topology 
+
+
+
+What is computational topology?
+What are the primary tools that are used?
+Where have they been used in practise and with what success.
+
+Talk about why performance can be lacking.
+Talk about parallel algorithms.
+Talk about the future of computation.
+
+Outline what you will do in the thesis.
+Go though the contents in the chapters.
+
 
 The mathematics covered in this dissertation are far too broad to be presented in all their magnificence. This is why rather than attempting to introduce the theory in the classical textbook fashion of definition-theorem-proof I have opted out for focusing more on developing intuition behind the big ideas at play. I do so because I will later rely on the reader's intuition in presenting examples and the further technical developments of the subject of computational topology in the recent years. 
 
@@ -127,7 +158,7 @@ In a way very similar to abstract algebra continuous function play the role of h
 % @TODO Redo this chapter!
 \section{Building Blocks}
 
-The most basic building blocks in Computational Algebraic Topology are Abstract Simplical Complexes (ASC) and Simplicial Complexes (SC). Abstract Simplical Complexes are a combinatorial structure aimed at generalising discrete graphs. Simplicial Complexes are their geometric realisation in standard Eucledian Space. For example a planar graph $G = (V, E)$ as an ASC as a collection of vertices and edges. An embedding in the plane with points representing vertices and line segments (or curves) between them as edges is the SC.
+The most basic building blocks in Computational Algebraic Topology are Abstract Simplical Complexes (ASC) and Simplicial Complexes (SC). Abstract Simplical Complexes are a combinatorial structure aimed at generalising discrete graphs. Simplicial Complexes are their geometric realisation in standard Eucledian Space. For example a planar graph $G = (V, E)$ is an ASC as a collection of vertices (singleton sets) and edges (sets of two elements). An embedding in the plane with points representing vertices and line segments (or curves) between them as edges is a Simplicial Complex.
 
 *Show Example*
 
@@ -135,7 +166,9 @@ Let us introduce these concepts more formally starting with ASC and then demonst
 
 \begin{defn} Given a set $V$, an Abstract Siplicial Complex called $\Delta$ on $V$ is a collection of subsets of $V$ such that if $\sigma \in \Delta$ and $\varphi \subseteq \sigma$ then $\varphi \in \Delta$.  \end{defn}
 
-In the spirit of keeping our definitions computationally tractable we will only consider ACS of finite sets. Elements of $\Delta$ are called simplices. The dimension of a simplex is it's cardinality minus one. We will denote by $\Delta_n \subseteq \Delta$ all simplices in $\Delta$ of dimension $n$. To connect this to geometry simplices of dimension zero are called vertices and simplices of dimension one are called edges. To generalise further two dimensional simplices are called triangles and three dimensional simplices are called tetrahedra. Simplices of higher dimension lose their geometric flavour, so will avoid naming them altogether.
+In the spirit of keeping our definitions computationally tractable we will only consider ACS of finite sets. Elements of $\Delta$ are called simplices. The dimension of a simplex is it's cardinality minus one. To connect this to geometry simplices of dimension zero are called vertices and simplices of dimension one are called edges. To generalise further two dimensional simplices are called triangles and three dimensional simplices are called tetrahedra. Simplices of higher dimension lose their geometric flavour, so will avoid naming them altogether.
+
+ %We will denote by $\Delta_n \subseteq \Delta$ all simplices in $\Delta$ of dimension $n$.
 
 \begin{ex} Show a simple example of an abstract simplical complex. \end{ex}
 
@@ -145,7 +178,7 @@ In the spirit of keeping our definitions computationally tractable we will only 
 
 We will call the faces of a simplex that have $k$ dimensions less it's codimension $k$ faces. The codimension one of a tetrahedra are the triangles. The codimension two faces are the edges and so on. 
 
-An ASC is closed under taking subsets, so the faces of a simplex are in fact all subsets of the simplex. This is also one of the reasons why high dimensional ASC are avoided in practise. For example an n-dimensional simplex has $2^n$ faces in the complex.
+An ASC is closed under taking subsets, so the faces of a simplex are in fact all subsets of the simplex. This is also one of the reasons why high dimensional ASC are avoided in practise. For example an n-dimensional simplex has $2^n$ faces which are all in the complex by definition.
 
 \begin{defn} Let $V$ be a finite set and $\Delta$ an ASC of $V$. Let $\sigma \in \Delta$. The star of $\sigma$ is the set of all simplices of which $\sigma$ is a face. In set theoretic notation:\end{defn}
 
@@ -164,7 +197,7 @@ The interplay between continuous mathematics and combinatorics is indeed interes
 
 % @TODO Explain why/where this is useful.
 
-While ASC are a purely combinatorial construct, like graphs they do have a geometric realisation.
+While ASC are a purely combinatorial construct, we saw in our example in the beginning of the section that like graphs they do have a geometric realisation. We will now provide the definitions of how their geometric realisation can be constructed via simplicial compexes.
 
 % Comb Topo Book
 \begin{defn} The standard geometric n-simplex is the convex hull of the set of endpoints of the standard basis $[1, 0, ..., 0], [0, 1, ..., 0], ..., [0, 0, ..., 1]$ in $\mathbb{R}^{n+1}$ defined as: \end{defn}
@@ -186,7 +219,7 @@ A Simplical Complex $K$ is the finite collection of homeomorphic images of stand
     \item The intersection of the images of two simplicies is either empty or a common face of both.
 \end{itemize}
 
-You can imagine using the standard simplicies as building blocks for a Simplical Complex. We take them, embed them in a high enough dimensional Eucledian space and glue them together along their common faces. Self intersections are of course not allowed. Furthermore every ASC has a geometric realisation, but not necessarily in their original dimension \cite{comp-topo}.
+You can imagine using the standard simplicies as building blocks for a Simplical Complex. We take them, embed them in a high enough dimensional Eucledian space and glue them together along their common faces. Self intersections are of course not allowed. In fact every ASC has a geometric realisation, but not necessarily in their original dimension. This is made precise by the following theorem \cite{comp-topo}.
 
 \begin{thm} Every abstract simplicial complex of dimension $n$ has a geometric realization in $\mathbb{R}^{2d+1}$. \end{thm}
 
@@ -223,7 +256,7 @@ You can imagine using the standard simplicies as building blocks for a Simplical
 
 \section{Vector Spaces, Quiver Diagrams and Barcode Diagrams}
 
-*THIS CHAPTER IS VERY MUCH UNDER CONSTRUCTION*
+*This chapter will probably be redistributed in the homology chapter. I'll probably remove it.*
 
 Should I define a vector space, bases, etc.?
 
@@ -283,93 +316,91 @@ $$ \mathbb{R}^3 {\longrightarrow} \mathbb{R}^2 {\longrightarrow} \mathbb{R}^4 $$
 
 % @TODO Define a topological invariant.
 % @TODO Make sure you have the definition of n-cycle
-Algebraic Topology concerns itself with topological invariants of algebraic nature. These invariants are obtained through the extraction of algebraic structures like groups, rings, vector fields or modules from a topological space. The fact that they are topological invariants is demonstrated by the fact that a homeomorphic image of that space produces an isomorphic algebraic structure of the same kind. In practical terms these algebraic structures measure properties of a topological space such as connected components, number of holes (1-cyles), number of voids (2-cycles) or more generally number of n-cycles. This section will focus on developing the mathematical apparatus by which homology is built.
+
+Algebraic Topology concerns itself with topological invariants of algebraic nature. These invariants are obtained through the extraction of algebraic structures like groups, rings, vector spaces or modules from a topological space. One of the leading formalisms in algebraic topology is Homology. Homology measures properties of a topological space such as connected components, number of holes (1-cyles), number of voids (2-cycles) or more generally number of n-cycles with the use of vector spaces. Before introducing the mathematical apparatus by which homology is built we will take a short detour to explore the concepts that lead to it's inception.
+
+%Continuous images of topological spaces preserve the structure of these algebraic objects in the sense they they can be used to produced homomorphism between them. 
 
 \subsection{Euler Characteristic}
 
 The first topological invariant of algebraic nature we shall encounter is the Euler Characteristic. It is denoted as $\chi$ and it assigns an integer to suitably nice spaces through a generalisation of counting \cite{elementary-applied-topology}. The concept was originally defined for polyhedra as a alternating sum of the form $|V| - |E| + |F|$, where $V$ is the set of vertices, $E$ the set of edges and $F$ the set of faces. This allowed for the classification of the Platonic solids [fig].
 
 
-% @TODO Define CW complexes
-The Euler Characteristic can be generalized to all spaces that can be decomposed into a finite number of cells. Let us first consider CW-complexes because they generalise polyhedra. The natural generalisation of the alternating sum is to continue it indefinitely by the number of 3-cells, then 4-cells, etc., as follows
+% @TODO Define CW complexes, simplical complexes may not generalise polyhedra
+The Euler Characteristic can be generalized to all spaces that can be decomposed into a finite number of cells. Let us first consider simplical complexes because they generalise polyhedra. The natural generalisation of the alternating sum is to continue it indefinitely with the number of 3-cells, then 4-cells, etc., as follows
 
-$$ \chi = k_0 - k_1 + k_2 - ... = \sum_{i}{(-1)^i~k_i}  $$,
+$$ \chi = k_0 - k_1 + k_2 - ... = \sum_{i}{(-1)^i~k_i}, $$
 
-where all $k_i = 0$ for $i > n$ and all $k_i$ for $i \le n$ are positive integers. This sum of course works perfectly fine for simplical complexes as well.
+where all $k_i$ is the number of $i$ dimensional simplicies and $k_i = 0$ for $i$ bigger than some $n \in \mathbb{Z}^+$ and all $k_i$ for $i \le n$ are positive integers. 
 
 
 Even more generally given a topological space $X$ that can be decomposed into the disjoint union of a finite number of open cells $X = \coprod_{\alpha}\sigma_{\alpha}$ where each k-cell $\sigma_{\alpha}$ is homeomorphic to $\mathbb{R}^k$ we can apply the same formula as above \cite{elementary-applied-topology}. 
 
 $$ \chi(X) = \sum_{\sigma}{(-1)^{dim(\sigma)}} .$$
 
-MAYBE TALK ABOUT TAME FUNCTIONS?
-
-
 \begin{lem}   The Euler Characteristic is homotopy invariant. \end{lem}
 
-This results allows to compute in practice $\chi$ considering a finite triangulation of a manifold. As there is a homeomorphism between a manifold and it's triangulation $\chi$ will not change. We will be well advised to pick a tringulation with the least number of simplices to improve computational efficiency. For example the octahedron is a triangulation of a sphere. We will omit the process by which this is done in detail and refer the reader to [].
+This results allows to compute in practice $\chi$ of manifolds by considering any of their finite triangulations. As long as there is a homeomorphism between a manifold and triangulation $\chi$ will not change. We will be well advised to pick the triangulations with the least number of simplices to improve computational efficiency. For example the octahedron is a triangulation of a sphere and therefore the Euler Characteristic of the sphere is zero. For further information on this subject we refer the reader to [].
 
 \subsection{Homology}
 
-The guiding principle behind the Euler Characteristic was to decompose a space into cells, count them and perform cancellations based on the parity of the dimension of the cells. This approach yields important information about a topological space, but we can hope to gain more by generalising it. We shall accomplish this by leveraging the mathematical machinery of Homology.
+The guiding principle behind the Euler Characteristic was to decompose a space into cells, count them and perform cancellations based on the parity of the dimension of the cells. This approach yields important information about a topological space, but we can hope to gain more by generalising it. We shall accomplish this by leveraging the mathematical machinery of Homology. Homology is a tool that was first developed to measure the topological complexity high dimensional manifolds \cite{persistence-original} by identifying what other manifolds can be embedded or surround them. For example with homology we can detect that there is a hole in the torus.
 
-The theory of Homology comes in two flavours - \textbf{simplical} and \textbf{singular}. Singular homology is geared towards analysing simplical complexes while singular homology is it's generalisation for arbitrary topological spaces. In this dissertation we restrict attention on singular homology because we are primarily interested in the computation of homology on simplical complexes. More information on singular homology can be found in the following sources \cite{algebraic-topology, elementary-applied-topology}
+The theory of Homology comes in two flavours - \textbf{simplical} and \textbf{singular}. Simplicial homology is geared towards analysing simplical complexes and singular homology is the appropriate generalisation for arbitrary topological spaces. In this dissertation we restrict attention on singular homology because we are primarily interested in the computational aspect of homology. For this weed tractable spaces. We will however on occasion refer to singular homology when we desire to leverage a more general result from the relevant theory. More information on singular homology can be found in the following sources \cite{algebraic-topology, elementary-applied-topology}
 
 
 % @TODO Finish this
-Homology is built around the interplay between two key concepts of \textbf{cycles} and \textbf{boundaries}. Let us consider the simplical complex on fig[] as an example. It consists of four vertices $\{a, b, c, d\}$, five edges $\{ab, bc, ca, db, cb\}$ and one face $\{abc\}$. The boundary of a simplex consists of its codimension-1 faces. For example the boundary of the 1-dim simplex $ab$ consists of the 0-dim simplices $a \text{ and } b$. The boundary of the 2-dim simplex $abc$ consists of the 1-dim simplices $ab, ac \text{ and } cb$. A cycle on the other hand consists of the simplices that form the boundary of a simplex that is of one dimension higher. In our example we can observe that the edges $ab, bc, ca$ and $bd, dc, cb$ form a 1-dim cycle.  This also happens to be in line with the graph theoretic definition. The first and last vertex of the paths formed by those edges are the same. A more geometric way to put it is that the edges enclose an 2-dim area of space.  To expand this definition to higher dimensional cycles picture the faces of the tetrahedron. They would form a 2-cycle as they completely enclose a 3-dim volume. In general an n-cycle consists of simplices that are the boundary of a n+1-dim simplex
+Homology is built around the interplay between the two key concepts of \textbf{cycles} and \textbf{boundaries}. Let us consider the two triangles on fig[] as an example. It consists of four vertices $\{a, b, c, d\}$, five edges $\{ab, bc, ca, db, cb\}$ and one face $\{abc\}$. The boundary of a simplex consists of its codimension-1 faces. For example the boundary of the 1-dim simplex $ab$ consists of the 0-dim simplices $a \text{ and } b$. The boundary of the 2-dim simplex $abc$ consists of the 1-dim simplices $ab, ac \text{ and } cb$. A cycle on the other hand consists of the simplices that form the boundary of a simplex that is of one dimension higher (regardless of whether that bigger simplex is in the complex). In our example we can observe that the edges $ab, bc, ca$ and $bd, dc, cb$ form a 1-dim cycle.  This also happens to be in line with the graph theoretic definition. The first and last vertex of the paths formed by those edges are the same. A more geometric way to put it is that the edges enclose an 2-dim area of space.  To expand this definition to higher dimensional cycles picture the faces of the tetrahedron. They would form a 2-cycle as they completely enclose a 3-dim volume. In general an n-cycle consists of simplices that are the boundary of a n+1-dim simplex
 
-Notice also that the paths formed by the edges $bc, ca, ab$ and $ca, ab, bc$ are also cycles. The only difference is which vertex they start and end at. We would like to disregard the choice of starting point completely because those three paths represent the same structure in the simplical complex and. To this end we shall introduce additive algebraic notation. In this notation the same cycle would be written as $ab + bc + ca$.  We will soon demonstrate that additive notation is not only used to illustrate the point of disregarding edge order. Its more important aspect is that it allows us to treat sums of edges as linear combinations in an abstract vector space.
+Notice also that the paths formed by the edges $bc, ca, ab$ and $ca, ab, bc$ are also cycles. The only difference is which vertex they start and end at. We would like to disregard the choice of starting point completely because those three paths represent the same structure in the simplical complex. To this end we shall introduce additive algebraic notation. In this notation the same cycle would be written as $ab + bc + ca$.  We will soon demonstrate that additive notation is not only used to illustrate the point of disregarding edge order. Its more important aspect is that it allows us to treat sums of edges as linear combinations in an abstract vector space.
 
+The interplay between between cycles and boundaries is in asking the question - which cycles in the complex are \textbf{not} the boundary of a higher dimensional simplex. This is important because these cycles cannot be contracted to a point. The lack of higher dimensional simplex the enclose means there is a void of some dimension in our simplex.
 
-% @TODO Finish this.
-Talk about how the face covers a boundary. Talk about the problem of finding cycles that are not closed by boundaries. Those are exactly the holes in the space.
-
-Let us be more formal now. To begin with, for simplicity, we will operate with vector spaces over the field of coefficients $\mathbb{Z}_2 = \{0, 1\}$ together with the standard operations of addition and multiplication modulo two. The building blocks of the homology of a simplical complex $X$ are:
+Let us be more formal now. To begin with, we will operate with vector spaces over the field of coefficients $\mathbb{Z}_2 = \{0, 1\}$ together with the standard operations of addition and multiplication modulo two. We could develop the same theory with the familiar coefficient in $\mathbb{R}$ but we would sacrifice geometric intuition and computational efficiency later on. The building blocks of the homology of a simplical complex $X$ are:
 
 
 \begin{itemize}
-    \item The vector space of \textbf{n-chains} of $X$. This is denoted as $C_n(X)$. It is an abstract vector space with basis all the n-simplices of $X$.
-    \item The \textbf{boundary maps} of the n-chains of $X$. These are linear maps between the n-chains denoted as $\partial_n : C_n(X) \to C_{n-1}(X)$.
+    \item The \textbf{vector spaces of n-chains} of $X$. This is denoted as $C_n(X)$. It is an abstract vector space with basis all the n-simplices of $X$ for $n \in \{0, 1, 2, ..., \}$.
+    \item The \textbf{boundary maps} of the n-chains of $X$. These are linear maps between consecutive vector spaces of n-chains. It is denoted as $\partial_n : C_n(X) \to C_{n-1}(X)$.
 \end{itemize}
 
-Now let us elaborate on these definitions. In our previous example $C_0(X)$ is the vector space that is spanned by the vertices $\{a, b, c, d\}$. We write this as $C_0(X) = span(\{a, b, c, d\})$. A vector in $C_0(X)$ is a linear combination of the basis vectors using coefficients in $\mathbb{Z}_2$. Let $\sigma \in C_0(X)$, then $\sigma  = \alpha_0a + \alpha_1b + \alpha_2c + \alpha_3d$ where $\alpha_i \in \{0 ,1\}$ for every $i = 0, 1, 2, 3$. If we go a dimension up $C_1(X) = span(\{ab, bc, ca, cd, bd\})$. As we pointed out earlier the cycle that consists of the edges $bc, cd, db$ is represented by the linear combination $0ab + 1bc + 0ca + 1cd + 1bd$ and has coordinates $(0, 1, 0, 1, 1)$ in $C_1(X)$ with respect to the basis we have chosen.
+In our previous example $C_0(X)$ was the vector space that is spanned by the vertices $\{a, b, c, d\}$. We write this as $C_0(X) = span(\{a, b, c, d\})$. A vector in $C_0(X)$ is a linear combination of the basis vectors using coefficients in $\mathbb{Z}_2$. Let $\sigma \in C_0(X)$ be a vector, then we can express it as $\sigma  = \alpha_0a + \alpha_1b + \alpha_2c + \alpha_3d$ where $\alpha_i \in \{0 ,1\}$ for every $i = 0, 1, 2, 3$. Going a dimension up $C_1(X) = span(\{ab, bc, ca, cd, bd\})$. As we pointed out earlier the cycle that consists of the edges $bc, cd, db$ is represented by the sum or linear combination $bc + dc + bd = 0ab + 1bc + 0ca + 1cd + 1bd$ and has coordinates $(0, 1, 0, 1, 1)$ in $C_1(X)$ with respect to the basis we have chosen.
 
-We may of course wish to work with to use a different basis for some of the n-chains. Change of basis is useful in linear algebra and can have an effect on the computational efficiency, especially when dealing with projections and quotient spaces. This is completely acceptable in this setting and we can use any linear combinations of the simplicies so long as we obtain a number of linearly independent vector equal to the number of n-simplicies in the simplical complex or the dimension of $C_0(X)$. For example $C_0(X) = span(\{a + b, b, c, c + d\})$ because the vectors $(1, 1, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0) \text { and } (0, 0, 1, 1,)$ are linearly independent.
+* Badly explained redo this *
+We may of course wish to work with to use a different basis for some of the n-chains. The operation of change of basis is useful in linear algebra and can have an effect on the computational efficiency, especially when dealing with projections and quotient spaces. We can use any linear combinations of the simplicies so long as they have the same span and form a basis. For example $C_0(X) = span(\{a + b, b, c, c + d\})$ because the vectors $(1, 1, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0) \text { and } (0, 0, 1, 1,)$ are linearly independent.
 
-The boundary maps are defined analogously to how we presented them in the beginning of the section. The effect a boundary map has on a basis element $\sigma \in C_n(X)$ is that it returns the linear combination consisting of basis elements of $C_{n-1}(X)$ that are codimension-1 faces of $\sigma$. If $\sigma$ is the affine combination of the vertices $[v_0, v_1, ..., v_n]$ the we define it's boundary as:
+The boundary maps are defined analogously to how we presented them in the beginning of the section. The effect a boundary map has on a basis element $\sigma \in C_n(X)$ is that it returns the linear combination consisting of basis elements of $C_{n-1}(X)$ that are codimension-1 faces of $\sigma$. If $\sigma$ is the affine combination of the vertices $[v_0, v_1, ..., v_n]$ then we define it's boundary as:
 
 $$ \partial(\sigma) = \partial([v_0, v_1, ..., v_n]) = \sum_{i=0}^{n}[v_0, ... , \hat{v_i}, ..., v_n] $$
 
-Linear functions commute with vector addition and scalar multiplication. This allows us to know everything that is to know about a linear function through it's effect on the basis vectors of its domain. This is because in the general setting for a linear function $f : V \to W$ we have that: $ f\big(\sum_{i}{a_iv_i}\big) = \sum_i{a_if(v_i)} $. We have demonstrated the effects of $\partial_n$ on the basis vectors of $C_n(X)$. All we have to do is extend it linearly. This results in the following definition:
+We would also like to extend $\partial$ linearly. Linear functions commute with vector addition and scalar multiplication. This allows us to know everything that is to know about a linear function through it's effect on the basis vectors of its domain. This is because in the general setting for a linear function $f : V \to W$ we have that: $ f\big(\sum_{i}{a_iv_i}\big) = \sum_i{a_if(v_i)} $. We have demonstrated the effects of $\partial_n$ on the basis vectors of $C_n(X)$. All we have to do is extend it linearly. This results in the following definition:
 
 
 $$ \partial\bigg(\sum_{\sigma}a_{\sigma}\sigma\bigg) = \partial\bigg(\sum_{\sigma}{a_{\sigma}[v_{\sigma_0}, v_{\sigma_1}, ..., v_{\sigma_n}]}\bigg) = \sum_{\sigma}{a_{\sigma} \sum_{i=0}^{n}[v_{\sigma_0},..., \hat{v}_{\sigma_i}, ..., v_{\sigma_n}]} .$$
 
-What we have thus obtained is a collection of vector spaces together with linear maps beteen. This is what called a chain complex. This is the quiver representation of a chain complex of a simplicat comples of dimension n.
+
+% @TODO Chain complex more generally.
+What we have thus obtained is a collection of vector spaces together with linear maps between. We will call it a chain complex. This is the quiver representation of a chain complex of a simplicat comples of dimension n.
 
 
-%$$ 0 \longrightarrow ... \longrightarrow 0 \longrightarrow V_1 \overset{f_1}{\longrightarrow} V_2 \overset{f_2}{\longrightarrow} ... \overset{f_{n-1}}{\longrightarrow} V_n  \longrightarrow 0 \longrightarrow ... \longrightarrow 0$$
+$$ C_n(X) \overset{\partial_n}{\longrightarrow} C_{n-1}(X) \overset{\partial_{n-1}}{\longrightarrow} ... \overset{\partial_2}{\longrightarrow} C_1(X) \overset{\partial_1}{\longrightarrow} C_0(X) $$
 
-$$ C_n(X) \longrightarrow C_{n-1}(X) \longrightarrow ... \longrightarrow C_1(X) \overset{f_1}{\longrightarrow} C_0(X) $$
-
-For conveninece we will extend this chain on both sided with the zero dimentional vector space as follows:
+For convenience we can extend this chain on both sided with the zero dimensional vector space as follows:
 
 $$ 0 \overset{\partial_{n+1}}{\longrightarrow} C_n(X) \overset{\partial_{n}}{\longrightarrow} C_{n-1}(X) \overset{\partial_{n-1}}{\longrightarrow} ... \longrightarrow C_1(X) \overset{\partial_1}{\longrightarrow} C_0(X) \overset{\partial_0}{\longrightarrow} 0. $$
 
 In this sequence $\partial_{n+1} \text{ and } \partial_{0}$ are zero maps. In the case of $\partial_{n+1}$ it maps the zero vector of $0$ to the zero vector of $C_n(X)$ and $\partial_0$ maps all vectors in $C_0(X)$ to the zero vector in $0$.
 
-In this context we would like a simple method of recognising cyles and boundaries. The boundaries are provided to use by the boundary maps. Thus the set of all boundaries in $C_n(X)$ is given by the image of $C_{n+1}(X)$ under $\partial_{n+1}$ or $im(\partial_{n+1})$. The cycles in $C_n(X)$ are given by all the vector in $C_n(X)$ that go to the zero vector of $C_{n-1}(X)$ under $\partial_n$. Intuitively the boundary of an n-chain is zero exactly when all of the faces of the simplices in the n-chain cancel out. The set of all vectors that go to the zero vector under the boundary map $\partial$ is called the kernel of $\partial$ or $ker(\partial)$.
+Let us now translate the geometric intuition we have of cycles and boundaries to domain of algebra. The boundaries are provided to us by the boundary maps. Thus the set of all boundaries in $C_n(X)$ is given by the image of $C_{n+1}(X)$ under $\partial_{n+1}$ or $im(\partial_{n+1})$. The cycles in $C_n(X)$ are given by all the vectors in $C_n(X)$ that go to the zero vector of $C_{n-1}(X)$ under $\partial_n$. Intuitively the boundary of an n-chain is zero exactly when all of the faces of the simplices in the chain have even parity and cancel in our binary algebra. The set of all vectors that go to the zero vector under the boundary map $\partial$ is precisely the kernel of $\partial$ or $ker(\partial)$.
 
-From linear algebra we know that for a linear function $f: V \to W$ $ker(f)$ is a linear subspace of $V$ and $im(f)$ is a subspace of $W$. In the context of chain complexes this means that the images and kernels of all the boudary maps are linear subspaces of their appropriate n-chains. What we would like ot learn about is of the relation of the cycles and boundaries in this algebraic context. We have defined the boundary operator in a very special way. We have defined it so that whenever we apply it two consecutive times we obtain the 0 vector.
-
+From linear algebra we know that for a linear function $f: V \to W$, $ker(f)$ is a linear subspace of $V$ and $im(f)$ is a subspace of $W$. In the context of chain complexes this means that the images and kernels of all the boudary maps are linear subspaces of their respective n-chains. Before learning how the interplay between cycles and boundaries is translated in this setting we must present the following fundamental theorem
 
 \begin{lem} Fundamental Lemma of Homology. $(\partial_{n-1} \circ \partial_n) (\sigma) = 0, \text{ for every } \sigma \in C_{n}(X)$. \end{lem}
 
 \begin{proof}
     We will only sketch the intuitive outline of the proof and refer the reader to \cite{algebraic-topology} for a more complete version.
 
-    Let us consider the boundary of $\sigma$ which is $\partial_n(\sigma)$. It contains all of the n-1 faces of $\sigma$. Furthermore every n-2 face of $\sigma$ belongs to exactly two n-1 faces of sigma. Therefore those will cancel out in the second boundary operation.
+    Let us consider the boundary of $\sigma \in C_n(X)$ which is $\partial_n(\sigma)$. It contains all of the n-1 faces of $\sigma$. Furthermore every n-2 face of $\sigma$ belongs to exactly two n-1 faces of sigma. Therefore they will cancel out in the second boundary operation $\partial_{n-1}\partial_n(\sigma)$.
 \end{proof}
 
 
@@ -379,21 +410,22 @@ From linear algebra we know that for a linear function $f: V \to W$ $ker(f)$ is 
     If the image of $\partial_n$ were not in the kernel of $\partial_{n-1}$ then there would be at least one n-chain $\sigma$ for which $(\partial_{n-1} \circ \partial_n) (\sigma) \ne 0$. By the Fundamental Lemma of Homology this is not possible.
 \end{proof}
 
-Now, how do we only take into account the cycles that are not covered by a boundary? Take the quotient of the two. Because of the way how the quotient space is constructed the only cycles that do not go to the zero coset under the quotient projection map are the ones that entirely linear combinations of boundaries of higher dimensional simplicies. This is precicely how we define the n-th homology of a chain map.
+
+% @TODO and example
+* Add the definitions of quotient in the appendix *
+
+We can obtain the kernel as a way of detecting the cycles in chain complex. But how can we disregard the cycles that are covered by a boundary? The answer is another algebraic operation. The quotient of the cycles and their subspace the boundaries. What the quotient operation does is to effectively send all cycles that consist entirely of boundaries to zero. *Show example with previous example*. This is precicely how we define the n-th homology of a chain map.
 
 
-\begin{defn} The n-th homology group of a chain map is $H_n(X) = ker(\partial_{n+1})\big/im(\partial_n)$. \end{defn}
+\begin{defn} The n-th homology group of a chain map is vector space $H_n(X) = ker(\partial_{n+1})\big/im(\partial_n)$. \end{defn}
 
-    From linear algebra \cite{lin-alg-done-right} we know two important things about the quotient $H_n(X)$. The first one is that the quotient of a vector space and its subspace is a vector space. The second one is that the dimension of the quotient space is equal to the difference of the dimension of the vector space and the dimension of the subspace. Therefore $H_n(X)$ is a vector space and $dim(H_n(X)) = dim(ker(\partial_{n+1})) - dim(im(\partial_n))$.
+From linear algebra \cite{lin-alg-done-right} we know two important things about the quotient $H_n(X)$. The first one is that the quotient of a vector space and its subspace is a vector space. The second one is that the dimension of the quotient space is equal to the difference of the dimension of the vector space and the dimension of the subspace. Therefore $H_n(X)$ is a vector space and $dim(H_n(X)) = dim(ker(\partial_{n+1})) - dim(im(\partial_n))$. Elements of the homology groups are called homology classes.
 
-Elements of the homology groups are called homology classes.
-
-*I will now give you some example of homology computations.*
-
+*I will now give you some example of homology computations. Connect them to Euler characteristic*
 
 % @TODO Redo this
 Now that we have ventured into the algebra and computed something based on the topology of the space it is time to interpret those results. 
-What we are most interested is the dimension of the homology groups. The dimension of a finite dimensional vector space is the number of vector in a basis of that vector space. Thus if $H_n(X) \simeq \mathbb{Z}_2^m$ then $dim(H_n(X)) = m$. The dimensions of the homology groups are also known as the Betti numbers. The Betti numbers have the following topological interpretation.
+What we are most interested is the dimension of the homology groups. The dimension of a finite dimensional vector space is the number of vectors in a basis of that vector space. Thus if $H_n(X) \simeq \mathbb{Z}_2^m$ then $dim(H_n(X)) = m$. The dimensions of the homology groups are also known as the Betti numbers. The Betti numbers have the following topological interpretation.
 
 
 \begin{itemize}
@@ -409,6 +441,8 @@ The higher order Betti numbers represent the number of higher dimensional holes.
 *Give example with the torus*
 
 This is exactly what we wanted from Homology. An apparatus that allows us distinguish topological spaces based on the connectivity of their n-dimensional simplical complexes.
+
+* Leave this or not? *
 
 Before going forward we must note that we did not have to use coeficients in $\mathbb{Z}_2$ we could have equally used coeficients in $\mathbb{Z}$ but $\mathbb{Z}$ is not a field and we would have obtained that the $C_n(X)$ and $H_n(X)$ are not vector spaces but free abelian groups. If instead we had picked any arbitrary ring we would have obtained free modules instead of free abelian groups. We did indeed lose some information but sticking to vector spaces. The Betti numbers are not always equal, but by the Coeficient Theorem they are for suitably nice spaces. We readily refer the reader to \cite{algebraic-topology} to learn about those. We shall continue the treatment of the subject in the same spirit of vector spaces.
 
@@ -443,7 +477,7 @@ There is a way to relate the this purely algebraic machinery to our geometric in
 
 
 % @TODO Finish this.
-\begin{thm} Excision - When $A$ is  \end{thm}
+\begin{thm} Excision - Let $X$ be a topological space, let $A \subseteq X$ and let $U \subseteq A$ where the closure of $U$ is contained in the interiour of $A$. Then   \end{thm}
 
 
 A corollary of this is that if $A$ is a close subcomplex of $X$ then $H_n(X, A) \simeq \overset{\sim}{H}_n(X/A, A/A)$ where $A/A$ is a single point in $X/A$. This allows us to leverage our geometric intuition about quotient space to compute homology groups.
@@ -458,9 +492,9 @@ Differential topology is the study of differentiable function on differentiable 
 
 One of the leading fields of differential topology is that of Morse Theory. It has shown to be fruitful in both theoretical investigations and real world application and computation []. Morse theory is the study of the deep relation between spaces and function defined on them. One of the main goals is to determine the shape of a shape by analysing a functions that can be defined on it. 
 
-Consider for example the real line $\mathbb{R}$ and the circle $S^1$. There are differentiable from $\mathbb{R}$ to $\mathbb{R}$ such as $y = x$ which do not take a minimum or a maximum value. They can be arbitrary large or small on the manifold $\mathbb{R}$. It is not possible to define such a differentiable function from $S^1$ to $\mathbb{R}$. This is due to the maximum value theorem. More formally a differentiable function is continuous and $S^1$ is compact. By [] the continuous image of a compact space is compact and by [] the compact spaces of $\mathbb{R}$ are closed and bounded. Closed and bounded means unions of intervals of the form $[a, b]$ where $|a|, |b| < \epsilon$ for some $\epsilon \in \mathbb{R}$. We can pick the lower bound of the interval with the lowest lower bound and the upper bound of the interval with the highest upper bound for the minimum and maximum values. Therefore any differentiable function defined on $S^1$ will take a minimum and a maximum value.
+Consider for example the real line $\mathbb{R}$ and the circle $S^1$. There are differentiable functions from $\mathbb{R}$ to $\mathbb{R}$ such as $y = x$ which do not take a minimum or a maximum value. They can be arbitrary large or small on the manifold $\mathbb{R}$. It is not possible to define such a differentiable function from $S^1$ to $\mathbb{R}$. This is due to the maximum value theorem. More formally a differentiable function is continuous and $S^1$ is compact. By [] the continuous image of a compact space is compact and by [] the compact spaces of $\mathbb{R}$ are closed and bounded. Closed and bounded means unions of intervals of the form $[a, b]$ where $|a|, |b| < \epsilon$ for some $\epsilon \in \mathbb{R}$. We can pick the lower bound of the interval with the lowest lower bound and the upper bound of the interval with the highest upper bound for the minimum and maximum values. Therefore any differentiable function defined on $S^1$ will take a minimum and a maximum value.
 
-This example demonstrates the general methodology of Morse Theory. One defines a function on a smooth manifold and studies the critical points of that function as means of learning about the "shape" of the manifold. The class if real valued function on a manifold is far too complex though. This is why Morse Theory restricts it's attention to Morse functions.
+This example demonstrates the general methodology of Morse Theory. One defines a function on a smooth manifold and studies the manifold through the function. A more concrete to do is by using the critical points of that function as means of learning about the "shape" of the manifold. The class if real valued function on a manifold is far too complex though. This is why Morse Theory restricts it's attention to Morse functions.
 
 
 \begin{defn} A function $f: M \to \mathbb{R}^n$ is a Morse Function if $f$ is smooth and at critical points the Hessian (matrix of second partial derivatives) is full rank.   \end{defn}
@@ -520,6 +554,8 @@ In order to move forward with the state of the art algorithms for computing the 
 
 \begin{defn}  Let $C = \{p_0, p_1, ..., p_n\}$ be the set of all critical points where the number of connected components in the level sets changes. \end{defn}
 
+* Not sure if this definition works *
+
 \begin{defn}   
     Let $\alpha_1, \alpha_2$ be be two contours of two level sets (possibly the same level set). Then $\alpha_1 \sim \alpha_2$ when there exists a homotopy between $\alpha_1$ and $\alpha_2$ that does not pass through any point in $C$ or when $\alpha_1 = \alpha_2$.
 \end{defn}
@@ -550,7 +586,7 @@ In this section we will present the state of the algorithm for construction a co
 
 \subsection{Input Data Format}
 
-*UNDER CONSTRUCTION*
+* ----- <roadsign> Peter Construction Co. </roadsign> *
 
 % @TODO Add example and citation for irregular domains
 In order to simplify out implementation without much loss in generality we will assume that the input data comes in the form of a real valued $n \times m$ matrix or more appropriately in our context grid. The gird represents the values of vertices of a two dimensional simplicial mesh where the vertices are "evenly spaced" measurements. See example []. The algorithms presented here can be extended to a grid of any number of dimensions or even to irregular grids. See []. 
@@ -611,7 +647,7 @@ The second step of the algorithm is to combine the join and split trees to produ
 
 The first step in merging the two it to identify all leaves of the contour tree and their incident edges. We can recognize them immediately from the join and split trees using the following property.
 
-\begin{defn} Property of leaves   \end{defn}
+\begin{defn} Property of leaves from Hamish's dissertation   \end{defn}
 
 
 % @TODO Define vertex contraction and quote property.
@@ -635,6 +671,9 @@ The running time of this algorithm is $O(n\alpha(n))$ where alpha is the inverse
 
 \subsection{Parallel Algorithm}
 
+* ----- <roadsign> Peter Construction Co. </roadsign> *
+
+
 In the year 2016 there was a paper [] published that introduced a data parallel implementation of the contour tree algorithm. The algorithm follows the same two phases of first computing join and split trees and them combining them. We will neglect the details in the new data-parallel way of computing join and split trees as they are not as relevant to the dissertation and the problem we are addressing.  
 
 
@@ -645,6 +684,8 @@ On the other hand if we are able to collapse long chains such as that then effec
 
 There is a way to collapse chains with a monotone paths. This is a short description of it. There is however no way to collapse non monotone chain. Therefore long chain with many zig zags in them serialize the parallel algorithm. Out main goal will be to explore long zig zag chains such as that one and try to find a way for the algorithm to collapse them and have logarithmic collapse.
 
+* Explain the zig zags better, but don't go into too much detail until the next chapter.*
+
 \subsection{Contour Tree Simplification}
 
 Contour Trees are summary of the connectivity of the level sets of a Morse function. They are primarily used in scientific visualisation. A central problem in visualisation is simplifying the data that is presented to enable human comprehension. The contour tree of a large enough data set can quickly become an unwieldy beast in it's own right. This is why it is vital to employ techniques that simplify remove parts of the contour tree that correspond to less "significant" topological features.
@@ -652,6 +693,9 @@ Contour Trees are summary of the connectivity of the level sets of a Morse funct
 One such technique is Branch Decomposition. It was first introduced in \cite{ct-branch-decomp}. It involved decomposing the contour tree into a set of disjoint monotone paths which cover all edges of the tree. This is called branch decomposition and the trivial one is where we take every vertex to be a separate path. A more complex one is shown in this example. Furthermore a branch decomposition is hierarchical when there is exactly one branch that connects two leaves and every other branch connects a leaf to an interior node.
 
 The branches in this scheme represent pair of critical points and form the basis for topological simplification that can be applied. We apply a simplification by removing a branch that does not disconnect the tree. This produces a hierarchy of cancellations like in example []. We define the persistence of a branch to be the bigger of the difference between it's end points and the persistence of it's children. Branches of high persistence reflect more prominent features in the tree. We apply the simplification by removing branches with low persistence that do not disconnect the tree.
+
+
+% @TODO Todo talk about how this is used to remove noise and artifacts in data.
 
 % @TODO Remove Stay Tuned
 The paper \cite{ct-branch-decomp} cites that the persistence defined in that way is similar to persistence first defined in \cite{persistence-original}. In Chapter N of this dissertation we will demonstrate that this claim is either incorrect of misleading. Stay tuned folks.

@@ -1,7 +1,7 @@
 \chapter{Persistent Homology and Contour Trees}
 \label{chapter4}
 
-We will now take a look at one of the tools that has made topological data analysis so viable in the recent years. This tool is called Persistent Homology (PH). In this chapter we will first further develop the mathematical framework of Homology to accommodate this new concept. Following our theoretical foray we will examine the practical aspects of the computation of persistent homology and its relation to the computation and simplification of contour trees.
+We will now take a look at one of the tools that has made topological data analysis so viable in the recent years. This tool is called Persistent Homology (PH). It is primarily used for measuring topological features such as shapes. This is done by analysing the homology of subsets of the entire space. To accomodate this new concept we must first introduce some additional properties of the relations of homologies of topological spaces and their continous images. Following our theoretical foray we will examine the practical aspects of the computation of persistent homology and its relation to the computation and simplification of contour trees.
 
 \section{Induced Maps on Homology}
 
@@ -200,6 +200,8 @@ This augmented filtration justifies the pairing of essential classes according t
 
 \subsection{Extended Persistence and Branch Decomposition}
 
+* Most of this sections will be pictures this is why it is not written up properly *
+
 Now let us examine the relation of extended persistence to branch decomposition. Here is an example branch decomposition of a contour tree of the following 3x3 grid dataset. It is not possible for the branch decomposition to pair the global maximum with the global minimum. There is no monotone path between them. To show that no branch decomposition of a contour tree is equivalent to the extended persistence of the dataset I will demonstrate that extended persistence necessarily pair the global minimum with the global maximum. 
 
 *Show the extended persistence filtration of the W3x3*
@@ -207,7 +209,10 @@ Now let us examine the relation of extended persistence to branch decomposition.
 
 
 % @TODO Add quote
-As you can see these methods produce very different pairings indeed. We will conclude that the claims made in [] are either false of not well defined. It so happens that a w-structure that this dissertation is devoted to cause not only computational trouble, but also serve as counterexamples and pose theoretical difficulties as well. To further cement statement we will us show a more general general result in the following chapter which holds for all filtrations of path-connected spaces.
+As you can see these methods produce very different pairings. We will conclude that the claims made in [] are either false of not well defined. The correct way to phrase this is the following. "Our definition of persistence is quivalent to extended persistence for the join and split trees. It is not directly applicable in the case of the contour tree itself in terms of the formalism it's built on".
+
+
+It so happens that a w-structure that this dissertation is devoted to causes not only computational difficulties, but also serve as counterexamples to pose theoretical difficulties as well. To further cement statement we will us show a more general general result in the following chapter which holds for all filtrations of path-connected spaces.
 
 
 %The maps in the ascending filtrations are induced via the inclusion maps between the nested spaces $M_i \subseteq M_j$  where $i \le j$. The more interesting case if between the relative homology groups. First of all the isomorphism between $H_n(M) = H_n(M, M^{c_n})$ comes from that fact that $M^{c_n} = \emptyset$ and quotienting by the empty sets leaves a group unchanged. The show where the consecutive maps come from we will give the following example.
@@ -263,7 +268,6 @@ As you can see these methods produce very different pairings indeed. We will con
 
 The final step we take on this journey will be to prove a more an original and more general results that will solidify our claim completely.
 
-
 \begin{prop} In the extended persistence of a Path-Connected domain the global minimum pairs with the global maximum in the 0th homology \end{prop}
 
 \begin{proof}
@@ -302,7 +306,7 @@ Following this proposition we can only conclude that in any contractable domain 
 
 In this final section we will present examples for how extended persistence on the 0th homology is actually equivalent to computing join and split tree.
 
-*Don't know if I can prove this yet, but it probably won't be too hard.*
+*Don't know if I can prove this yet, but it probably won't be too hard. But then again it may be.*
 
 *Should I keep this or not?*
 

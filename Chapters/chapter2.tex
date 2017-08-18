@@ -17,7 +17,7 @@ We can use the number of kinks in a path to define a metric on it. Intuitively t
 
 \section{W-Paths in Height trees}
 
-We will not restrict our attention to height trees. Those are unsurprisingly height graph which are trees. The first key property of trees will make use of is that there is a unique path between any two vertices. This allows us to slightly simplify some of our notation.  Instead of  $d(u \rightsquigarrow v)$ and $w(u \rightsquigarrow v)$ we will write $d(u, v)$ and $w(u, v)$ respectively.  
+We will now restrict our attention to height trees. Those are unsurprisingly height graph which are trees. The first key property of trees will make use of is that there is a unique path between any two vertices. This allows us to slightly simplify some of our notation.  Instead of  $d(u \rightsquigarrow v)$ and $w(u \rightsquigarrow v)$ we will write $d(u, v)$ and $w(u, v)$ respectively.  
 
 We are now fully prepared to unveil that which we seek - the longest w-path in a tree (the one with the most kinks). As there is a unique path between any two vertices this can be posed as an optimisation problem as follows:
 
@@ -339,31 +339,17 @@ $$ W(s) = max\Bigg\{ \max\limits_{u \in N(s)}\bigg(W(u)\bigg), \max\limits_{\sub
 
 As before the optimal solution is either entirely in one of the subtrees of the children of a vertex or in the path combination of two of the children of the vertex.
 
+Here is the pseudocode for the algorithm.
 
-% @TODO 
-Which one looks better?
-$$
-W(s) = max
-\left\{
-	\begin{array}{ll}
-                \max\limits_{u \in N(s)}\bigg(W(u)\bigg),\\
-                \max\limits_{u, v \in N(s)}\bigg( \max\limits_{u' \in N(u)}\Big(w(u') + w_{u', s}(u)\Big) + \max\limits_{v' \in N(v)}\Big(w(v') + w_{v', s}(v)\Big) + w_{u, v}(s)\bigg)
-	\end{array}
-\right\}
-$$
-
-\begin{algorithm}
+\begin{algorithm}{}
 \caption{Computing the W Diameter of a Height Tree.}
-
-
-% @TODO 
-* NEW CODE I GYNORMOUS SHOULD I PUT IT HERE *?
-
 \begin{algorithmic}[1]
 
-\Function{W\_DFS}{T, s}
+%\Function{W\_DFS}{T, s}
+    \State{\textbf{Function}W\_DFS}(T, s)
 
-    % If we are at a leaf
+    % If we are at a leaf Base Case
+    \State // Base Case
     \If {|T.$Adj$[s]| == 1 AND s.$\pi \ne $ s}
         \State s.W = 0
         \State s.w = 0
@@ -371,6 +357,8 @@ $$
     \EndIf
 
     % Forwards DFS visit
+
+    \State // DFS Visit
     \ForAll {u $\in$ T.$Adj$[s]} 
         \If {u.$\pi$ == $\emptyset$}
             \State u.$\pi$ = s
@@ -380,30 +368,86 @@ $$
 
     % Backtracking
     \\
-    \State $Array$ p
+
+    \State // After all neighbours are visited
+
+    \State // Calculate w-height of s
     \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
-        \State p[u] = 0
-        \ForAll {v $\in$ T.$Adj$[u]$/u$} 
-            \State p[u] = max(p[u], v.h + $w_{v, s}(u)$) 
-        \EndFor
+        \If {L[u] == $\emptyset$}
+            \State H[s] = max(H[s], H[u]);
+        \Else
+            \ForAll {v $\in$ L[u]$/u$} 
+                \State H[s] = max(H[s], H[u] + $w_{v, s}(u)$);
+            \EndFor
+        \EndIf
     \EndFor
 
+    \State // Find all children that contribute to the a w-height path
+    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
+        \If {L[u] == $\emptyset$ AND H[s] == H[u]}
+            \State L[s] = L[s] $\cup$ u
+        \Else
+            \ForAll {v $\in$ L[u]$/u$} 
+                \If {H[s] = max(H[s], H[u] + $w_{v, s}(u)$)}
+                    \State L[s] = L[s] $\cup$ u
+                \EndIf
+            \EndFor
+        \EndIf
+    \EndFor
+
+    \State // Find the maximum path combination
     \State maxCombine = 0
     \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
+
         \ForAll {v $\in$ T.$Adj$[s]$/s.\pi$} 
-        \State maxCombine = max(maxCombine, p[u] + p[v] + $w_{u, v}(s)$)
+
+            \If {v == u}
+                \State continue
+            \EndIf
+
+            \State temp = H[u] + H[v]
+
+            \If {L[u] $\ne$ $\emptyset$}
+                \ForAll {t $\in$ L[u]$/u$} 
+                    \If {$w_{t, s}(u) == 1$}
+                        \State temp = temp + 1
+                        \State break
+                    \EndIf
+                \EndFor
+            \EndIf
+
+            \If {L[v] $\ne$ $\emptyset$}
+                \ForAll {t $\in$ L[v]$/u$} 
+                    \If {$w_{t, s}(v) == 1$}
+                        \State temp = temp + 1
+                        \State break
+                    \EndIf
+                \EndFor
+            \EndIf
+            \If {$w_{u, v}(s) == 1$}
+                \State temp = temp + 1
+            \EndIf
+            \State maxCombine = max(maxCombine, temp)
         \EndFor
+
     \EndFor
 
-    \\
-    \State maxSubsolution = 0
-    \ForAll {u $\in$ T.$Adj$[s]} 
-        \State maxSubsolution = max(maxSubsolution, u.W)
-    \EndFor
-    \\
-    \State s.W = max(s.maxCombine, s.maxSubsolution)
+\end{algorithmic}
+\end{algorithm}
+    
+\begin{algorithm}{}
+\caption{Computing the W Diameter of a Height Tree. Part 2}
+\begin{algorithmic}[1]
 
-\EndFunction
+    \State // Find maximum subproblem solution
+    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
+        \State O[s] = max(O[s], O[u])
+    \EndFor
+
+    \State // Take the bigger of the two
+    \State O[s] = max(O[s], maxCombine)
+
+%\EndFunction
 
 \Function{Calculate\_W\_Diameter}{T}
     \State s = <any vertex>
@@ -415,35 +459,106 @@ $$
 \end{algorithmic}
 \end{algorithm}
 
+
+%\begin{algorithmic}[1]
+
+%\Function{W\_DFS}{T, s}
+
+    %% If we are at a leaf
+    %\If {|T.$Adj$[s]| == 1 AND s.$\pi \ne $ s}
+        %\State s.W = 0
+        %\State s.w = 0
+        %\State return
+    %\EndIf
+
+    %% Forwards DFS visit
+    %\ForAll {u $\in$ T.$Adj$[s]} 
+        %\If {u.$\pi$ == $\emptyset$}
+            %\State u.$\pi$ = s
+            %\State W\_DFS(T, u)
+        %\EndIf
+    %\EndFor
+
+    %% Backtracking
+    %\\
+    %\State $Array$ p
+    %\ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
+        %\State p[u] = 0
+        %\ForAll {v $\in$ T.$Adj$[u]$/u$} 
+            %\State p[u] = max(p[u], v.h + $w_{v, s}(u)$) 
+        %\EndFor
+    %\EndFor
+
+    %\State maxCombine = 0
+    %\ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
+        %\ForAll {v $\in$ T.$Adj$[s]$/s.\pi$} 
+        %\State maxCombine = max(maxCombine, p[u] + p[v] + $w_{u, v}(s)$)
+        %\EndFor
+    %\EndFor
+
+    %\\
+    %\State maxSubsolution = 0
+    %\ForAll {u $\in$ T.$Adj$[s]} 
+        %\State maxSubsolution = max(maxSubsolution, u.W)
+    %\EndFor
+    %\\
+    %\State s.W = max(s.maxCombine, s.maxSubsolution)
+
+%\EndFunction
+
+%\Function{Calculate\_W\_Diameter}{T}
+    %\State s = <any vertex>
+    %\State s.$\pi$ = s
+    %\State W\_DFS(T, s)
+    %\State return s.W
+%\EndFunction
+
+%\end{algorithmic}
+%\end{algorithm}
+
+* Not sure if this is enough *
+
+Let us not prove that the algorithm is correct. 
+
+\begin{lem} The computation for the longest w-path that goes through the root of a subtree is correct. \end{lem}
+\begin{proof}
+    Let $s$ be the root of the current subtree $T_s$ in the computation of the algorithm. Suppose that our algorithm has identified that the longest path through $s$ has $t$ kinks. Suppose for the sake of contradiction that there is another w-path with at least $t+1$ kinks that goes through $s$.
+
+    That path must go through two of the children of $s$. Let those children be $u$ and $v$. We must have that the value of $h(u) + \max\limits_{t \in L_u}(w_{s, t}(u))$ is maximum amongst all children of $s$. Otherwise we could pick a bigger one to create a longer w-path with $v$.
+
+    But if $u \text { and } v$ are such vertices then they would have been computed by our algorithm and the maximum w-path that passes through $s$ would be $t$ kinks.
+
+    Contradiction!
+
+\end{proof}
+
+
 \begin{lem} The Algorithm produces the w-diameter of a height tree. \end{lem}
 
-
 \begin{proof}
-    TBA
+
+    We just showed the longest w-path through a root vertex is computed correctly. As the value of the optimal solution is taken in the same way as in the dynamic programming tree algorithm then the correctness of our algorithm follows directly from it.
+
 \end{proof}
 
-Time for the proof of correctness.
 
-Time for the proof of correctness.
+%\begin{prop} Given a rooted tree $T$ the w-diameter of $T$ either passes through the root or is entirely contained in one of the subtrees of the children of the root. \end{prop}
 
+%\begin{proof}
+    %This is trivially true there is simply nowhere else it can be.
+%\end{proof}
 
-\begin{prop} Given a rooted tree $T$ the w-diameter of $T$ either passes through the root or is entirely contained in one of the subtrees of the children of the root. \end{prop}
+%Therefore the optimal solution is obtain either through one of the optimal solutions of the children or through path combination. All we have to do is show that path combination produces the longest w-path that goes through the root of a subtree. The rest will follow from the prop[]. It is the same as the tree diameter algorithm.
 
-\begin{proof}
-    This is trivially true there is simply nowhere else it can be.
-\end{proof}
+%\begin{prop} The combine path subroutine compute the correct answer. \end{prop}
 
-Therefore the optimal solution is obtain either through one of the optimal solutions of the children or through path combination. All we have to do is show that path combination produces the longest w-path that goes through the root of a subtree. The rest will follow from the prop[]. It is the same as the tree diameter algorithm.
+%\begin{proof}
+    %This is pretty obvious. We are using maximum path and maximising the oportunities for kinks. If there are two maximum paths all with kinks we will detect them. There cannot be a kinkier path there is simply nowhere it could be as it has to pass through the root and two of it's children.
+%\end{proof}
 
-\begin{prop} The combine path subroutine compute the correct answer. \end{prop}
+%As path combination is correct then the optimal sumproblem function is correct. Then the whole algorithm must be correct.
 
-\begin{proof}
-    This is pretty obvious. We are using maximum path and maximising the oportunities for kinks. If there are two maximum paths all with kinks we will detect them. There cannot be a kinkier path there is simply nowhere it could be as it has to pass through the root and two of it's children.
-\end{proof}
-
-As path combination is correct then the optimal sumproblem function is correct. Then the whole algorithm must be correct.
-
-The complexity of the proposed solution is:
+We will now take a look at the time complexity of the proposed solution. We can summarise it in the following formula is:
 
 $$ O\bigg( |V| + |E| + \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} + \sum_{u \in V}{d(u)^2}  \bigg) $$
 
