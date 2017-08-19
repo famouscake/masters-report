@@ -350,7 +350,17 @@ The theory of Homology comes in two flavours - \textbf{simplical} and \textbf{si
 
 
 % @TODO Finish this
-Homology is built around the interplay between the two key concepts of \textbf{cycles} and \textbf{boundaries}. Let us consider the two triangles on fig[] as an example. It consists of four vertices $\{a, b, c, d\}$, five edges $\{ab, bc, ca, db, cb\}$ and one face $\{abc\}$. The boundary of a simplex consists of its codimension-1 faces. For example the boundary of the 1-dim simplex $ab$ consists of the 0-dim simplices $a \text{ and } b$. The boundary of the 2-dim simplex $abc$ consists of the 1-dim simplices $ab, ac \text{ and } cb$. A cycle on the other hand consists of the simplices that form the boundary of a simplex that is of one dimension higher (regardless of whether that bigger simplex is in the complex). In our example we can observe that the edges $ab, bc, ca$ and $bd, dc, cb$ form a 1-dim cycle.  This also happens to be in line with the graph theoretic definition. The first and last vertex of the paths formed by those edges are the same. A more geometric way to put it is that the edges enclose an 2-dim area of space.  To expand this definition to higher dimensional cycles picture the faces of the tetrahedron. They would form a 2-cycle as they completely enclose a 3-dim volume. In general an n-cycle consists of simplices that are the boundary of a n+1-dim simplex
+Homology is built around the interplay between the two key concepts of \textbf{cycles} and \textbf{boundaries}. Let us consider the simplical complex depicted on Figure \ref{fig:hom-sc} as an example. It consists of four vertices $\{a, b, c, d\}$, five edges $\{ab, bc, ca, db, cb\}$ and one face $\{abc\}$. The boundary of a simplex consists of its codimension-1 faces. For example the boundary of the 1-dim simplex $ab$ consists of the 0-dim simplices $a \text{ and } b$. The boundary of the 2-dim simplex $abc$ consists of the 1-dim simplices $ab, ac \text{ and } cb$. A cycle on the other hand consists of the simplices that form the boundary of a simplex that is of one dimension higher (regardless of whether that bigger simplex is in the complex). In our example we can observe that the edges $ab, bc, ca$ and $bd, dc, cb$ form a 1-dim cycle.  This also happens to be in line with the graph theoretic definition. The first and last vertex of the paths formed by those edges are the same. A more geometric way to put it is that the edges enclose an 2-dim area of space.  To expand this definition to higher dimensional cycles picture the faces of the tetrahedron. They would form a 2-cycle as they completely enclose a 3-dim volume. In general an n-cycle consists of simplices that are the boundary of a n+1-dim simplex
+
+\begin{figure}[h]%
+    \centering
+    \includegraphics[scale=0.4]{./images/chapter1/homology-sc.eps}%
+    \caption{An Example Simplical Complex}%
+    \label{fig:hom-sc}%
+\end{figure}
+
+
+
 
 Notice also that the paths formed by the edges $bc, ca, ab$ and $ca, ab, bc$ are also cycles. The only difference is which vertex they start and end at. We would like to disregard the choice of starting point completely because those three paths represent the same structure in the simplical complex. To this end we shall introduce additive algebraic notation. In this notation the same cycle would be written as $ab + bc + ca$.  We will soon demonstrate that additive notation is not only used to illustrate the point of disregarding edge order. Its more important aspect is that it allows us to treat sums of edges as linear combinations in an abstract vector space.
 
@@ -446,6 +456,7 @@ This is exactly what we wanted from Homology. An apparatus that allows us distin
 
 Before going forward we must note that we did not have to use coeficients in $\mathbb{Z}_2$ we could have equally used coeficients in $\mathbb{Z}$ but $\mathbb{Z}$ is not a field and we would have obtained that the $C_n(X)$ and $H_n(X)$ are not vector spaces but free abelian groups. If instead we had picked any arbitrary ring we would have obtained free modules instead of free abelian groups. We did indeed lose some information but sticking to vector spaces. The Betti numbers are not always equal, but by the Coeficient Theorem they are for suitably nice spaces. We readily refer the reader to \cite{algebraic-topology} to learn about those. We shall continue the treatment of the subject in the same spirit of vector spaces.
 
+
 There are two more notions we need to define to be able to fully utilise the power of homology - that of reduced and relative homology.
 
 The need for reduced homology arises from a slight inconsistency in the interpretation of the homology groups. Take for example the topological space that consists of a single point. In that topological space all homology groups except for the $H_0$ are trivial. It is convenient in many application to make $H_0$ behave like the rest of the homology group and specifically be trivial in our example. In this sense path-connected topological spaces will have trivial zeroth homology. The geometrical interpretation of this extension is the reduces 0th homology counts the number of voids that separate path connected components of a topological space.
@@ -474,6 +485,9 @@ A relative chain $\alpha$ is a relative cycle when it's boundary $\partial\alpha
 A relative cycle $\alpha$ is trivial in the homology when it's the sum of a boundary $\partial \beta$ of $\beta \in C_{n+1}(X)$ and a chain $\gamma \in C_n(A)$.
 
 There is a way to relate the this purely algebraic machinery to our geometric intuition for "nice" enough spaces.
+
+
+% @TODO Give example with disc and sphere!
 
 
 % @TODO Finish this.
@@ -693,6 +707,18 @@ Contour Trees are summary of the connectivity of the level sets of a Morse funct
 One such technique is Branch Decomposition. It was first introduced in \cite{ct-branch-decomp}. It involved decomposing the contour tree into a set of disjoint monotone paths which cover all edges of the tree. This is called branch decomposition and the trivial one is where we take every vertex to be a separate path. A more complex one is shown in this example. Furthermore a branch decomposition is hierarchical when there is exactly one branch that connects two leaves and every other branch connects a leaf to an interior node.
 
 The branches in this scheme represent pair of critical points and form the basis for topological simplification that can be applied. We apply a simplification by removing a branch that does not disconnect the tree. This produces a hierarchy of cancellations like in example []. We define the persistence of a branch to be the bigger of the difference between it's end points and the persistence of it's children. Branches of high persistence reflect more prominent features in the tree. We apply the simplification by removing branches with low persistence that do not disconnect the tree.
+
+\begin{figure}%
+    \centering
+    \subfloat[Contour Tree.]{{\includegraphics[scale=0.4]{./images/w3x3.eps}}}%
+    \qquad
+    \subfloat[Branch Decomposition.]{{\includegraphics[scale=0.4 ]{./images/branch-decomposition-W3x3.eps}}}%
+    \caption{Branch Decomposition of a Contour tree.}%
+    \label{fig:example}%
+\end{figure}
+
+%\includegraphics[center, scale=0.5 ]{./images/branch-decomposition-W3x3.eps}
+%\includegraphics[center, scale=0.5]{./images/w3x3.eps}
 
 
 % @TODO Todo talk about how this is used to remove noise and artifacts in data.

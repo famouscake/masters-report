@@ -57,9 +57,19 @@ We shall define the inclusion of relative homology analogously. Let $B$ be anoth
 % @TODO Define filtrations.
 % @TODO Introduce filtrations and VR complexes.
 
-Persistent Homology emerged in the early 2000s in the this work of \cite{persistence-original}. The original motivation for introducing it was to better model point cloud data through filtrations of Vietoris Ribs complexes. Persistent Homology has since grown into a general methodology that can be applied any filtration of a topological space. To best illustrate what persistent homology is let us consider a filtration of a simplical complex $X$. Example in fig[].
+Persistent Homology emerged in the early 2000s in the this work of \cite{persistence-original}. The original motivation for introducing it was to better model point cloud data through filtrations of Vietoris Ribs complexes. Persistent Homology has since grown into a general methodology that can be applied any filtration of a topological space. To best illustrate what persistent homology is let us consider a filtration of a simplical complex $X$. 
 
 $$ X_0 \subseteq X_1 \subseteq ... \subseteq X_{n-1} \subseteq X_n = X$$
+
+A concrete example of this is Figure \ref{fig:filt-sc}.
+
+
+\begin{figure}[h]%
+    \centering
+    \includegraphics[scale=0.3]{./images/chapter4/filt-combined.eps}%
+    \caption{Filtration of a Simplical Complex}%
+    \label{fig:filt-sc}%
+\end{figure}
 
 We have obtained a one parameter sequence of nester subcomplexes. Another way to think of this is that we start with simplicial complex and iteratively add new simplicies to it. It is customary to call the index of this filtration time to make it more indicative of a process that evolves in time. We can already compute the homology groups of the individual $X_i$. The key insight in persistent homology was to as the question whether we can track the evolution of individual homology classes in the homology groups as we go from one complex to the next. This is made possible by the subset relation between all of the $X_i$. As discussed in the previous section the inclusion map is the natural map between a set and it's superset. More formally we have inclusion maps $i_{i, j}: X_i \to X_j$ for $i \le j$ because $X_i \subseteq X_{i+1} \subseteq ... \subseteq X_j$. 
 By only considering the inclusion maps between consecutive $X_i$ and $X_{i+1}$ we can build the following chain of simplicial complexes
