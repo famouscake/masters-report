@@ -161,9 +161,18 @@ If we had taken the superlevel sets of $M$ we would have obtained a different fi
 $$ H_n(M^{c_1}) \overset{i_*}{\longrightarrow} H_n(M^{c_2}) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(M^{c_{n-1}}) \overset{i_*}{\longrightarrow} H_n(M^{c_n}) = H_n(M).$$
 
 
-Let us now restrict $M$ to be compact and contractable. This will ensure that the Reeb Graph of $M$ is a Contour Tree. We would like to tackle the claim made in \cite{ct-branch-decomp} that the persistent homology pairs are equivalent to branch decomposition pairs. We can immediately see that this claim is either false of ill-defined. The major reason for this is that essential homology classes do not get paired. But in the branch decomposition schemes all critical points are paired.
+% @TODO Do this
+Here are two examples of filtrations and explanations of bar diagrams.
 
-There is however yet more reason to pursue this. Slightly after the paper of branch decomposition was published, there emerged a way to extend the persistent homology scheme so that all critical points get paired. Using this will allows us to directly compare it to the branch decomposition of a contour tree. 
+
+Finally we will define what we call the persistence of a homology class.
+
+\begin{defn} The persistence of a single homology class in persistent homology that is born at time $t_1$ and dies at time $t_2$ is $t_1 - t_2$.  \end{defn}
+
+
+%Let us now restrict $M$ to be compact and contractable. This will ensure that the Reeb Graph of $M$ is a Contour Tree. We would like to tackle the claim made in \cite{ct-branch-decomp} that the persistent homology pairs are equivalent to branch decomposition pairs. We can immediately see that this claim is either false of ill-defined. The major reason for this is that essential homology classes do not get paired. But in the branch decomposition schemes all critical points are paired.
+
+%There is however yet more reason to pursue this. Slightly after the paper of branch decomposition was published, there emerged a way to extend the persistent homology scheme so that all critical points get paired. Using this will allows us to directly compare it to the branch decomposition of a contour tree. 
 
 %We will now show that computing the persistent homology of the descending and ascending filtration of $M$ is equivalent to constructing the join and split tree of $M$ respectively.
 
@@ -210,19 +219,64 @@ This augmented filtration justifies the pairing of essential classes according t
 
 \subsection{Extended Persistence and Branch Decomposition}
 
-* Most of this sections will be pictures this is why it is not written up properly *
+In this subsection we will tackle a claim that has been made in the paper that first introduced branch decomposition of contour trees. The claims is the following : "... we define the persistence of a branch to be the greater of its length and the persistence of each of it children. This definition differs from the definition of persistence given in [10] because it takes into consideration the topological obstructions. " \cite{ct-branch-decomp}. In that quote the reference to "[10]" is to the original paper that introduced persistent homology \cite{persistence-original}.
 
-Now let us examine the relation of extended persistence to branch decomposition. Here is an example branch decomposition of a contour tree of the following 3x3 grid dataset. It is not possible for the branch decomposition to pair the global maximum with the global minimum. There is no monotone path between them. To show that no branch decomposition of a contour tree is equivalent to the extended persistence of the dataset I will demonstrate that extended persistence necessarily pair the global minimum with the global maximum. 
+Let us unpack the claim piece by piece. Firstly the paper only redefines how the persistence of the branches is computed and branches are pair of critical points. Therefore for this to be equivalent to the persistence pairs, both methods must  produce equivalent pairs. It is clear from this definition that the actual persistence pairings stay the same, we only compute the persistence value in a different way. What we will aim to show is that the pairings produced by persistent homology are in themselves different from the pairings produces by branch decomposition. After this it will not matter how the actual persistence of branches is computed as they are fundamentally different things. Lastly the paper claims that the branch decomposition definition differs from persistent homology in that "it takes into consideration the topological obstructions.". It is not clear exactly what the authors meant by "topological obstructions". These obstructions are not defined in the paper nor in subsequent publications. This does not stop us from working with the definition because we will demonstrate a second way in which persistence differs from branch decomposition.
 
-*Show the extended persistence filtration of the W3x3*
-*Show the branch decomposition*
+The first major difference we can find comes from the fact that persistent homology as it was originally defined does not pair all critical points. As we discussed previously the pairings of essential homology classes are not defined because they never die in the filtration. In the case of contour trees we will be dealing will simply connected contractable domains. Such domains have a single connected component and therefore have exactly one essential homology class in the 0th homology. This is the class that is born at the global minimum, or the first simlicial complex in the filtration. In branch decomposition on the other hand all critical points are paired.
+
+This is already of major difference between the two. Furthermore the paper on branch decomposition clearly cites the original paper for persistent homology and not the subsequence paper on extended persistence where this issue is remedied. In fact it cannot reference that paper. The branch decomposition paper has been published in January of 2004 and the paper that clearly defines Extended Persistence as such has been published in January of 2009 \cite{persistence-extended}. There is however more to this story. The concept of pairing critical points unpaired by persistence goes further back than the 2009 paper and can be traced to the paper \cite{extreme-elevation} which was also published in January of 2004. The paper outlines the initial concept of extended persistence in the specific case of 2-manifolds embedded in $\mathbb{R}^3$. This means that the idea of pairing all critical points was present when the claim was made. All of lets us the take this a step further. We will now test whether branch decomposition is equivalent to extended persistence.
+
+We will demonstrate that they are not with a small counter example. This counter example will show that at least one pair in both is necessarily different. In contour trees where the global minimum and the global maximum are not connected via a monotone path branch decomposition cannot by definition pair them as the endpoints of a branch. Extended persistence on the other hand does pair them as the global maximum is the first class in the descending relative filtration that is homologous to the essential class born at the global minimum. To reduce the stress caused by the reader's feverish anticipation of this counter example we will foreshadow that it is a contour tree with a w-structure. This w-structure is what separates the global minimum from the global maximum.
+
+Let us first begin with an example data set show in fig. The contour tree of this data set is shown in fig and a branch decomposition of this contour tree is shown in fig. The extended persistence of the 0th is shown in fig. We can clearly see the following:
+
+\begin{itemize}
+    \item There is no monotone path between the global minimum and global maximum in the data set.
+    \item There is no monotone path between the global minimum and global maximum in the contour tree.
+    \item No branch decomposition of the contour tree can pair the global minimum and the global maximum.
+    \item Extended persistence pair the global minimum and the global maximum.
+\end{itemize}
+
+Therefore this counter examples demonstrates that branch decomposition is equivalent to extended persistence in the counter example. There they are not equivalent in general. But they are equivalent on some contour trees. Examine the simple contour tree on fig []. Let us now go a step further and demonstrate a whole class of counter examples where they are not equal. This class will be that of all contour trees where there is no monotone path between the global minimum and the global maximum. It is already clear that in the branch decomposition of such trees they will not be paired. All we have to do is prove that extended persistence does pair them.
+
+
+% @TODO Check spelling in references.
+
+
+
+%Let us now restrict $M$ to be compact and contractable. This will ensure that the Reeb Graph of $M$ is a Contour Tree. We would like to tackle the claim made in \cite{ct-branch-decomp} that the persistent homology pairs are equivalent to branch decomposition pairs. We can immediately see that this claim is either false of ill-defined. The major reason for this is that essential homology classes do not get paired. But in the branch decomposition schemes all critical points are paired.
+
+%There is however yet more reason to pursue this. Slightly after the paper of branch decomposition was published, there emerged a way to extend the persistent homology scheme so that all critical points get paired. Using this will allows us to directly compare it to the branch decomposition of a contour tree. 
+
+
+
+
+%Lastly we will not that we cannot take into account the
+
+
+
+%Explain the claim that has been made and quote it directly.
+
+%Show why it is flawed in the first place.
+
+%Show why it's not equivalent to it.
+
+
+
+%* Most of this sections will be pictures this is why it is not written up properly *
+
+%Now let us examine the relation of extended persistence to branch decomposition. Here is an example branch decomposition of a contour tree of the following 3x3 grid dataset. It is not possible for the branch decomposition to pair the global maximum with the global minimum. There is no monotone path between them. To show that no branch decomposition of a contour tree is equivalent to the extended persistence of the dataset I will demonstrate that extended persistence necessarily pair the global minimum with the global maximum. 
+
+%*Show the extended persistence filtration of the W3x3*
+%*Show the branch decomposition*
 
 
 % @TODO Add quote
-As you can see these methods produce very different pairings. We will conclude that the claims made in [] are either false of not well defined. The correct way to phrase this is the following. "Our definition of persistence is quivalent to extended persistence for the join and split trees. It is not directly applicable in the case of the contour tree itself in terms of the formalism it's built on".
+%As you can see these methods produce very different pairings. We will conclude that the claims made in [] are either false of not well defined. The correct way to phrase this is the following. "Our definition of persistence is quivalent to extended persistence for the join and split trees. It is not directly applicable in the case of the contour tree itself in terms of the formalism it's built on".
 
 
-It so happens that a w-structure that this dissertation is devoted to causes not only computational difficulties, but also serve as counterexamples to pose theoretical difficulties as well. To further cement statement we will us show a more general general result in the following chapter which holds for all filtrations of path-connected spaces.
+%It so happens that a w-structure that this dissertation is devoted to causes not only computational difficulties, but also serve as counterexamples to pose theoretical difficulties as well. To further cement statement we will us show a more general general result in the following chapter which holds for all filtrations of path-connected spaces.
 
 
 %The maps in the ascending filtrations are induced via the inclusion maps between the nested spaces $M_i \subseteq M_j$  where $i \le j$. The more interesting case if between the relative homology groups. First of all the isomorphism between $H_n(M) = H_n(M, M^{c_n})$ comes from that fact that $M^{c_n} = \emptyset$ and quotienting by the empty sets leaves a group unchanged. The show where the consecutive maps come from we will give the following example.
@@ -276,9 +330,9 @@ It so happens that a w-structure that this dissertation is devoted to causes not
 
 \subsection{Extended Persistence on Path-Connected Domains}
 
-The final step we take on this journey will be to prove a more an original and more general results that will solidify our claim completely.
+The final step we take on this journey will be to prove the following original and more general result.
 
-\begin{prop} In the extended persistence of a Path-Connected domain the global minimum pairs with the global maximum in the 0th homology \end{prop}
+\begin{prop} In the extended persistence of filtration a Morse function with a Path-Connected domain the global minimum pairs with the global maximum in the 0th homology \end{prop}
 
 \begin{proof}
     Let $M$ be a Path-Connected domain and let $M_1 \subseteq M_2 \subseteq ... \subseteq M_n$ be a filtration of $M$. This filtration induces etended persistence 
