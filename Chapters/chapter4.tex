@@ -64,9 +64,9 @@ $$ X_0 \subseteq X_1 \subseteq ... \subseteq X_{n-1} \subseteq X_n = X$$
 A concrete example of this is Figure \ref{fig:filt-sc}.
 
 
-\begin{figure}[h]%
+\begin{figure}%
     \centering
-    \includegraphics[scale=0.3]{./images/chapter4/filt-combined.eps}%
+    \includegraphics[scale=0.085]{./images/chapter4/example-filtration.eps}%
     \caption{Filtration of a Simplical Complex}%
     \label{fig:filt-sc}%
 \end{figure}
@@ -161,13 +161,35 @@ If we had taken the superlevel sets of $M$ we would have obtained a different fi
 $$ H_n(M^{c_1}) \overset{i_*}{\longrightarrow} H_n(M^{c_2}) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(M^{c_{n-1}}) \overset{i_*}{\longrightarrow} H_n(M^{c_n}) = H_n(M).$$
 
 
-% @TODO Do this
-Here are two examples of filtrations and explanations of bar diagrams.
 
 
 Finally we will define what we call the persistence of a homology class.
 
 \begin{defn} The persistence of a single homology class in persistent homology that is born at time $t_1$ and dies at time $t_2$ is $t_1 - t_2$.  \end{defn}
+
+% @TODO Do this
+    There are two primary ways to visualize the persistence pairing produces by persistent homology. The first in through persistence diagrams \cite{comp-topo}. In the persistence diagrams the pairs are visualised as points in the Carthesian coordinate system above the main diagonal $y = x$. Example []. The second way is through barcode diagrams. You can see the barcode digram on fig[]. For every simplical complex in the filtration we have a number of starting lines equal to the number of generators for the homology classes. These lines feed into each other according to where the induced by inclusion homomorphism take them in the next simplical complex. 
+
+\begin{figure}[h]%
+    \centering
+    \includegraphics[scale=0.085]{./images/chapter4/bar-diagram.eps}%
+    \caption{Barcode Diagram of a Filtration}%
+    \label{fig:bar-diag}%
+\end{figure}
+
+\begin{figure}[h]%
+    \centering
+    \includegraphics[scale=0.085]{./images/chapter4/diagram.eps}%
+    \caption{Persistence Diagram of a Filtration}%
+    \label{fig:per-diag}%
+\end{figure}
+
+
+% @TODO Add reference
+Furthermore when two classes merge we must choose which one survives and which one dies. By established convention [] we will use the Elder Rule. By the Elder Rule the class that was born first continues to persistent and the younger one is destroyed.
+
+
+%Here are two examples of filtrations and explanations of bar diagrams.
 
 
 %Let us now restrict $M$ to be compact and contractable. This will ensure that the Reeb Graph of $M$ is a Contour Tree. We would like to tackle the claim made in \cite{ct-branch-decomp} that the persistent homology pairs are equivalent to branch decomposition pairs. We can immediately see that this claim is either false of ill-defined. The major reason for this is that essential homology classes do not get paired. But in the branch decomposition schemes all critical points are paired.
@@ -229,16 +251,113 @@ This is already of major difference between the two. Furthermore the paper on br
 
 We will demonstrate that they are not with a small counter example. This counter example will show that at least one pair in both is necessarily different. In contour trees where the global minimum and the global maximum are not connected via a monotone path branch decomposition cannot by definition pair them as the endpoints of a branch. Extended persistence on the other hand does pair them as the global maximum is the first class in the descending relative filtration that is homologous to the essential class born at the global minimum. To reduce the stress caused by the reader's feverish anticipation of this counter example we will foreshadow that it is a contour tree with a w-structure. This w-structure is what separates the global minimum from the global maximum.
 
-Let us first begin with an example data set show in fig. The contour tree of this data set is shown in fig and a branch decomposition of this contour tree is shown in fig. The extended persistence of the 0th is shown in fig. We can clearly see the following:
+Let us first begin with an example data set show in fig. Let us call that $X$. The contour tree of this data set is shown in fig and a branch decomposition of this contour tree is shown in fig. The ascending filtration of this data set is shown in fig. The ascending filtration consists of nine simplical complexes $\{X_1, X_2, ..., X_9\}$. According to that filtration we can produce the persistence diagram on fig[]. The extended persistence of the 0th is shown in fig. 
+
+According to our extended persistence computation the pair are $(2, 5)$ and $(1, 9)$. The first pair comes from ordinary persistence. We can see on fig [] that a component is born in time $2$ and dies in time $t$. The second pair is of the global minimum and global maximum. It comes from extended persistence. To verity this observe that $H_0(X_9) = \mathbb{Z}$ because there is one one connected component. The next homology group in the sequence in the group is $H_0(X, X^9) = \overset{\sim}{H}_0(X / X^9) = \overset{\sim}{H}_0(X / \{9\}) = \overset{\sim}{H}_0(X) = 0$. It follows that the induced map $i_* : H_0(X_9) \to H_0(X, X^9)$ is the zero map. Therefore the homology class in $H_0(X, X^9)$ that is born at time 1 at the global minimum must die time 9 and so $(1, 9)$ is a pair in extended persistence.
+
+Here is the summary of you findings.
 
 \begin{itemize}
     \item There is no monotone path between the global minimum and global maximum in the data set.
     \item There is no monotone path between the global minimum and global maximum in the contour tree.
     \item No branch decomposition of the contour tree can pair the global minimum and the global maximum.
-    \item Extended persistence pair the global minimum and the global maximum.
+    \item Extended persistence pairs the global minimum and the global maximum.
 \end{itemize}
 
-Therefore this counter examples demonstrates that branch decomposition is equivalent to extended persistence in the counter example. There they are not equivalent in general. But they are equivalent on some contour trees. Examine the simple contour tree on fig []. Let us now go a step further and demonstrate a whole class of counter examples where they are not equal. This class will be that of all contour trees where there is no monotone path between the global minimum and the global maximum. It is already clear that in the branch decomposition of such trees they will not be paired. All we have to do is prove that extended persistence does pair them.
+This counter examples demonstrates that branch decomposition is not always equivalent to extended persistence. But they are equivalent on some contour trees. Examine the simple contour tree on fig []. Let us now go a step further and demonstrate a whole class of counter examples where they are not equal. This class will be that of all contour trees where there is no monotone path between the global minimum and the global maximum. It is already clear that in the branch decomposition of such trees they will not be paired. All we have to do is prove that extended persistence does pair them.
+
+
+
+\begin{figure}[h]%
+    \centering
+    \subfloat[Original Data Set]{{\includegraphics[scale=0.4]{./images/chapter4/w3x3-grid.eps}}}%
+    \qquad
+    \subfloat[Contour Tree]{{\includegraphics[scale=0.3]{./images/w3x3.eps}}}%
+    \qquad
+    \subfloat[Branch Decomposition.]{{\includegraphics[scale=0.3]{./images/branch-decomposition-W3x3.eps}}}%
+    \caption{Branch Decomposition of the Contour tree.}%
+    \label{fig:example}%
+\end{figure}
+
+Here is the ascending filtration.
+
+\begin{figure}[h]%
+    \centering
+    \includegraphics[scale=0.08]{./images/chapter4/asc-filt.eps}%
+    \caption{Ascending filtration of the Simplical Complex}%
+    \label{fig:filt-sc}%
+\end{figure}
+
+\begin{figure}[h]%
+    \centering
+    \includegraphics[scale=0.08]{./images/chapter4/ph.eps}%
+    \caption{Extended Persistence of the Simplical Complex}%
+    \label{fig:filt-sc}%
+\end{figure}
+
+
+\subsection{Extended Persistence on Path-Connected Domains}
+
+The final step we take on this journey will be to prove the following original and more general result.
+
+\begin{prop} In the extended persistence of filtration a Morse function with a Path-Connected domain the global minimum pairs with the global maximum in the 0th homology \end{prop}
+
+\begin{proof}
+    Let $M$ be a Path-Connected domain and let $M_1 \subseteq M_2 \subseteq ... \subseteq M_n$ be a filtration of $M$. This filtration induces etended persistence 
+
+$$ 0 = H_0(M_{c_1}) \rightarrow ... \rightarrow H_0(M_{c_n}) = H_0(M) = H_0(M, M^{c_n}) \rightarrow ... \rightarrow H_0(M, M^{c_{1}}) = 0.$$
+
+As $M$ is Path-Connected it has one path-connected component and therefore $H_0(M) = H_0(M_0) \simeq  \mathbb{Z}_2$.  Our aim here will be to show that all of the $H_0(M, M^{c_i})$ are trivial. This will mean that the single homology class that exists in $H_0(M)$ will die at $H_0(M, M^{c_n})$ which is exactly the global maximum.
+
+
+% @TODO Define Excision
+% @TODO  Add the thing where this holds - H_n(M / M^{c_i}, pt) = \overset{\sim}{H}_n(M / M^{c_i})
+As a corollary of the Excision Theorem we have that
+
+$$H_0(M, M^{c_i}) = H_0(M / M^{c_i}, pt) = \overset{\sim}{H}_0(M / M^{c_i})$$  
+
+where $pt = M^{c_i} / M^{c_i}$.
+
+Now let us explore the reduced homology of the topological space $M / M^{c_i}$. We will show that is it path-connected and therefore the reduced homology is trivial.
+
+
+% @TODO Add quote
+By definition $M$ is path connected. Consider the function $\pi: M \to M/ M^{c_i}$ that takes a point to it's equivalent class. By point set topology [] we know that $\pi$ is continuous. We can also infer that $\pi$ is surjective. Indeed there there is no equivalence class that no point maps to. Furthermore the continuous image of a path connected is connected by []. As we have that $M$ is path-connected therefore $\pi(M) = M / M^{c_i}$ is path-connected. 
+
+By [] we have that $H_0(M / M^{c_i}) = \mathbb{Z}_2$ and by [] that $H_0(M / M^{c_i}) = \overset{\sim}{H}_0(M / M^{c_i}) \bigoplus \mathbb{Z}_2$
+
+We can conclude that $H_0(M, M^{c_i}) = \overset{\sim}{H}_0(M / M^{c_i}) = 0$
+
+Therefore the map induced by the inclusion of the pairs $(M, \emptyset) \to (M, M^{c_n})$ will map the essential homology class of $H_0(M_n)$ to zero. This mean that the global minimum pairs with the global maximum.
+
+\end{proof}
+
+Following this proposition we can only conclude that in any contractable domain with a w-structure that separates the global minimum with the global maximum branch decomposition is not the same as extended persistence.
+
+\subsection{Extended Persistence and Join/Split Trees - Thoughts on future directions}
+
+What we have uncovered is not the complete story. There is a deeper connection between extended persistence and contour trees in general. If we look at alternative algorithms for constructing the 0th homology specifically we can see that the extended persistence of an ascending filtration is equivalent to branch decomposition of the join tree and the extended persistence is equivalent to a branch decomposition of the split tree.
+
+Going back to the claim made \cite{ct-branch-decomp} we see that there is truth to it if we adjust it to extended persistence and apply specifically to join and split trees. Here future questions that arise based on this fact.
+
+\begin{itemize}
+    \item By using the persistence pairs on other homology group we can produce split and join tree for the cycles, void, etc... We can them combine them like we combine the join and split trees for the contour. What kind of a structure does that yield?
+    \item Can we compute the contour tree directly from homology. Can we find a natural continuous function between the level sets of a filtration. Would the persistence of this sequence be equivalent to the contour tree. In higher dimensions would be equivalent to the previous point?
+    \item Who killed Laura Palmer and will the new Twin Peaks be good?
+\end{itemize}
+
+
+
+%In this final section we will present examples for how extended persistence on the 0th homology is actually equivalent to computing join and split tree.
+
+%*Don't know if I can prove this yet, but it probably won't be too hard. But then again it may be.*
+
+%*Should I keep this or not?*
+
+
+
+
+
 
 
 % @TODO Check spelling in references.
@@ -326,57 +445,3 @@ Therefore this counter examples demonstrates that branch decomposition is equiva
 %Show that extended persistence pairing are not equivalent to branch decomposition pairing. Say the paper is either wrong or had something else in mind which is not clarified well enough.
 
 %Emerge victorious and have the plebeians chant you name in the streets. All Hail Petros all hail Petros.
-
-
-\subsection{Extended Persistence on Path-Connected Domains}
-
-The final step we take on this journey will be to prove the following original and more general result.
-
-\begin{prop} In the extended persistence of filtration a Morse function with a Path-Connected domain the global minimum pairs with the global maximum in the 0th homology \end{prop}
-
-\begin{proof}
-    Let $M$ be a Path-Connected domain and let $M_1 \subseteq M_2 \subseteq ... \subseteq M_n$ be a filtration of $M$. This filtration induces etended persistence 
-
-$$ 0 = H_0(M_{c_1}) \rightarrow ... \rightarrow H_0(M_{c_n}) = H_0(M) = H_0(M, M^{c_n}) \rightarrow ... \rightarrow H_0(M, M^{c_{1}}) = 0.$$
-
-As $M$ is Path-Connected it has one path-connected component and therefore $H_0(M) = H_0(M_0) \simeq  \mathbb{Z}_2$.  Our aim here will be to show that all of the $H_0(M, M^{c_i})$ are trivial. This will mean that the single homology class that exists in $H_0(M)$ will die at $H_0(M, M^{c_n})$ which is exactly the global maximum.
-
-
-% @TODO Define Excision
-% @TODO  Add the thing where this holds - H_n(M / M^{c_i}, pt) = \overset{\sim}{H}_n(M / M^{c_i})
-As a corollary of the Excision Theorem we have that
-
-$$H_0(M, M^{c_i}) = H_0(M / M^{c_i}, pt) = \overset{\sim}{H}_0(M / M^{c_i})$$  
-
-where $pt = M^{c_i} / M^{c_i}$.
-
-Now let us explore the reduced homology of the topological space $M / M^{c_i}$. We will show that is it path-connected and therefore the reduced homology is trivial.
-
-
-% @TODO Add quote
-By definition $M$ is path connected. Consider the function $\pi: M \to M/ M^{c_i}$ that takes a point to it's equivalent class. By point set topology [] we know that $\pi$ is continuous. We can also infer that $\pi$ is surjective. Indeed there there is no equivalence class that no point maps to. Furthermore the continuous image of a path connected is connected by []. As we have that $M$ is path-connected therefore $\pi(M) = M / M^{c_i}$ is path-connected. 
-
-By [] we have that $H_0(M / M^{c_i}) = \mathbb{Z}_2$ and by [] that $H_0(M / M^{c_i}) = \overset{\sim}{H}_0(M / M^{c_i}) \bigoplus \mathbb{Z}_2$
-
-We can conclude that $H_0(M, M^{c_i}) = \overset{\sim}{H}_0(M / M^{c_i}) = 0$
-
-Therefore the map induced by the inclusion of the pairs $(M, \emptyset) \to (M, M^{c_n})$ will map the essential homology class of $H_0(M_n)$ to zero. This mean that the global minimum pairs with the global maximum.
-
-\end{proof}
-
-Following this proposition we can only conclude that in any contractable domain with a w-structure that separates the global minimum with the global maximum branch decomposition is not the same as extended persistence.
-
-\subsection{Extended Persistence and Join/Split Trees}
-
-In this final section we will present examples for how extended persistence on the 0th homology is actually equivalent to computing join and split tree.
-
-*Don't know if I can prove this yet, but it probably won't be too hard. But then again it may be.*
-
-*Should I keep this or not?*
-
-
-
-
-
-
-
