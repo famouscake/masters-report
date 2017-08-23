@@ -1,633 +1,172 @@
 % @TODO Change this
-\chapter{Something "W" This Way Comes!}
+\chapter{Background}
 \label{chapter2}
 
-We will now continue the discussion on the difficulties of parallelising the algorithm for the computation of the contour tree in a more formal setting. In this Chapter we will develop theory that captures the informal description we outlined previously. We will use this theory to construct three algorithms for the detection of the largest w-structure in a height tree. We will also provide pseudocode, proof of correctness and proof of the space and time complexity of all presented algorithms.
-
-\section{W-Paths in Height Graphs}
-
-What we are interested in are the paths in the height tree which form a zigzag pattern. As shown in fig[] they can be decomposed into monotone paths of alternating direction that share exactly one vertex. More formally, if $P$ is a path in a height tree we can always decompose it into vertexwise maximal monotone subpaths $(P_1, P_2, ..., P_k)$ such that $P_i \subseteq P$, $|P_i \cap P_{i+1}| = 1$ and $P_i \cup P_{i+1}$ is not a monotone path for $i \in \{1, 2, ..., k-1\}$ and $k \ge 1$. 
-
-One way to characterise paths in a height tree is by the number of subpaths in their monotone path decomposition. The maximum path with respect to this property is precisely the lower bound on the parallel algorithm introduced in []. As a special case we must note that paths that can be decomposed into less than four monotone paths do not pose an algorithmic problem. To simplify this characterisation note that the number of subpaths in the monotone decomposition is exactly the number of vertices in which we change direction as we traverse the path. We shall name those special vertices kinks.
-
-A kink in a path is a vertex whose two neighbours are either both higher or both lower. Given the path $(u_1, u_2, ... , u_k)$ an inside vertex $u_i \ne u_1, u_k$ is a kink when $h(u_i) \notin \big( min(h(u_{i-1}),~h(u_{i+1}),~max(h(u_{i-1}),~h(u_{i+1}) \big)$. To avoid cumbersome notation in this context we shall adopt a slight abuse of notation and in the future write similar statements as $h(u_i) \notin $ or $ \in $ $\big(h(u_{i-1}),~h(u_{i+1}) \big)$ where it will be understood that the lower bound of the interval is the smaller of the two and the upper bound the larger.
-
-We can use the number of kinks in a path to define a metric on it. Intuitively this is similar to how the length of a path measures the number of edges between it's vertices. We will make an analogous definition of the w-length of a path as the number of inside vertices which are kinks. Let us denote a path from $u$ to $v$ as $u \rightsquigarrow v$ and with $d(u \rightsquigarrow v)$ measure the length of the longest path between $u$ and $v$ and with $w(u \rightsquigarrow v)$ the path with the largest number of kinks (or the longest w-path). One immediate observation we can make is that $w(u \rightsquigarrow v) < d(u \rightsquigarrow v)$ for any two vertices in any graph. This follows from that fact that the longest path between $u$ and $v$ also has the largest number of vertices. A path with $k$ vertices has length $k-1$ and $k-2$ internal vertices which may or may not be kinks.
+The two key concepts we will introduce in this dissertation are the Contour Tree and Persistent Homology. In order to be able to do this we have to first take a step back and walk the reader through a range of other mathematical disciplines. The preliminaries include Set Theory, Point Set Topology, Differential Topology and Algebraic Topology. We will opt for introducing these fields in the computational aspect and give the reader the necessary intuition behind the main definitions and results we will use in the following chapters.
 
 
-\section{W-Paths in Height trees}
+\section{Point Set Topology}
 
-We will now restrict our attention to height trees. Those are unsurprisingly height graph which are trees. The first key property of trees will make use of is that there is a unique path between any two vertices. This allows us to slightly simplify some of our notation.  Instead of  $d(u \rightsquigarrow v)$ and $w(u \rightsquigarrow v)$ we will write $d(u, v)$ and $w(u, v)$ respectively.  
+Point Set Topology is the backbone of topology. It forms the underlying framework on top of which mathematicians build the concepts of continuous spaces and functions. As with many other mathematical disciplines topology is the study of sets that posses mathematical structure \cite{intro-topo}. Through point set topology we can define the mathematical structure known as the topology of a set. The topology of a set aims to introduce structure and make rigorous the notion of whether two elements of a set are close or not. Elements of a set which are close or near to one another are said to be a part of an open set. Furthermore if we have two open sets we can combine them to obtain more open sets. Let us now introduce the formal rules of the process.
 
-We are now fully prepared to unveil that which we seek - the longest w-path in a tree (the one with the most kinks). As there is a unique path between any two vertices this can be posed as an optimisation problem as follows:
+\begin{defn} Let $X$ be a set and $\tau$ be a set of subsets of $X$. The set $\tau$ is a topology on $X$ when the following holds:  \end{defn}
 
-$$ \max_{u, v \in V(T)}\{ w(u \rightsquigarrow v) \} =  \max_{u, v \in V(T)}\{ w(u, v) \} $$
+\begin{itemize}
+    \item $X \text{ and } \emptyset \in \tau$.
+    \item If $U \text{ and } V \in \tau$ then $U \cap V \in \tau$.
+    \item If $\{U_\lambda\}_{\lambda \in \Lambda}$ is a family of subsets of $X$, where $U_\lambda \in \tau$ for all $\lambda \in \Lambda$, then 
+        $\bigcup_{\lambda \in \Lambda}{U_\lambda} \in \tau$.
+\end{itemize}
 
-The search space is quadratic in the number of vertices and this can be computed by running a modified version of Breadth First Search (BFS) from every vertex in the tree. This modified BFS computes the w-distances from a starting vertex to all others. The presudocode for this modification is presented in []. The running time for this is $O(n^2)$ and is far from satisfactory given that the actual algorithm for construction the contour tree runs in time $O(n\alpha(n))$. This is because in practical terms a $O(n^2)$ algorithm is completely unusable on datasets which a near linear time algorithm can process.
+We will call the elements of $X$ points and the elements of $\tau$ open sets or simply open. An open set is an open neighbourhood of a point when the point is in the open set. We must stress that the topology we endow on a set is by no means unique. For example if $X$ is any set then on topology may be $\tau = \{\emptyset, X\}$ and another may consist of all subsets of $X$. 
 
-And indeed we can do better. As the reader may have noticed the definitions we have made so far are analogous to the task of computing the longest path between any two vertices of a tree. This is completely intentional as we will demonstrate how algorithms for computing the longest path in a tree can be modified to produce the longest w-path instead. Finding the longest path of a graph in the general case is an \em NP-hard\em. Fortunately the Contour Tree is a tree. The longest path in a tree is known in the literature as it's diameter and has a polynomial time algorithm. The two most popular linear time algorithms found in the literature I will denote as Double Breadth First Search (2xBFS) and Dynamic Programming (DP). We will now take a look at how these algorithms work and hint at how they can be adapted in the next chapter.
+Let us now introduce the topology we are going to use on $\mathbb{R}^n$. It is called the standard topology and it is based on the standard definition of distance between points in Euclidean space. Let $x = (x_1, x_2, ..., x_n)$ be a point in $\mathbb{R}^n$. The we can define the open ball around $x$ or radius $\epsilon$ as $B_\epsilon(x) = \{y \in \mathbb{R}^n: d(x, y) < \epsilon\}$ where we define the distance function as $d(x, y) = \sqrt{\sum_{i=1}^n{(x_i - y_i)^2}}$. The standard topology on $\mathbb{R}^n$ consists of the open balls around all points of all possible radii and their finite intersections and arbitrary unions.
 
+The next thing we would like to do is to define a special class of functions that preserve the properties of a topological space. Those are the continuous functions.
 
-\subsection{Double Breadth First Search}
+\begin{defn} A function $f : X \to Y$ is said to be continuous when the preimage of an open set in $Y$ is an open set in $X$. \end{defn}
 
-This algorithm works in two phases. First it picks any vertex in the tree, say $s$, and finds the one farthest from it using Breadth First Search (BFS). Let us call that vertex $u$. In the second phase it runs a second BFS from $u$ and again records the farthest one from it. Let us call that $v$. The output of the algorithm is the pair of vertices $(u, v)$ and the distance between them, $d(u, v)$. That distance is the diameter of the tree.
-
-This algorithm has linear time complexity as it consists of two consecutive linear graph searches. It's correctness if a direct consequence of the following Lemma.
-
-\begin{lem} Let $s$ be any vertex in a tree. Then the most distant vertex from $s$ is an endpoint of a graph diameter. \end{lem}
-
-
-The proof of this Lemma can be found at []. In the next section we shall demonstrate how this proof can be modified to produce a near optimal algorithm linear time algorithm for finding a path whose w-length is bounded from bellow by the w-diameter of a tree.
-
-%his algorithm relies on the property that given any vertex in a tree, the leaf that is furthest away from it is the endpoint of a diameter of the tree. The algorithm works by running a BFS from any vertex and recording the vertex that is the furthest. We then proceed by running a second BFS rooted at that vertex. The second BFS produces the diameter of the tree by the property we stated. The proof for this algorithm can be found at [].
-
-\subsection{Dynamic Programming}
-
-The second approach is based on the Dynamic Programming paradigm. It is most often applied to optimisation problems that exhibit recursive substructures of the same type as the original problem. The key ingredients in developing a dynamic-programming algorithm are [Into to Algorithms]:
-
-
-\begin{enumerate}
-    \item Characterise the structure of the optimal solution.
-    \item Recursively define the value of an optimal solution.
-    \item Compute the value of the optimal solution.
-\end{enumerate}
-
-
-Naturally, trees exhibit optimal substructure through their subtrees. For our intents and purposes we shall define a subtree as a connected subgraph of a tree. We will only consider rooted trees in the context of this algorithm and we must define the analogously. In a rooted tree let $v$ and $u$ be two vertices such that $v$ is the parent and $u$ is the child. We shall define the subtree rooted at $u$ as the maximal (vertex-wise) subgraph of $T$ that contains $u$ but does not contain $v$. We will denote it as $T_u$. Clearly the rooted subtree at $u$ is smaller than $T$ as it does not contain at least one of the vertices of the $T$ namely - $v$. This definition will allows us to recursively consider all subtrees of a rooted tree $\{T_u\}_{u \in V(G)}$. Also note that if all vertices in $T_u$ except $u$ inherit their parent from $T$ then $T_u$ is also a rooted subtree - it's root being $u$.
-
-To continue we will need to define two functions on the vertices $T$. Let $h(u)$ be the height of the subtree rooted at $u$. The height is defined as the longest path in $T_u$ from $u$ to one of the leaves of $T_u$. We will also define $D(u)$ longest path in $T_u$. The function we will maximize is $D(s)$ where $s$ is the root of $T$. With these two function we are now ready to recursively define the value of the optimal solution:
-
-$$ D(v) = max\bigg\{ \max\limits_{u \in N(v)}\bigg(D(u)\bigg), \max\limits_{u, w \in N(v)}\bigg(h(u) + h(w) + 2\bigg) \bigg\}. $$
-
-The base case for this recursive formula is at the leaves of $T$. If $u$ is a leaf of $T$ then $V(T_u) = \{u\}$. This allows us to set $h(u) = 0$ and $D(u) = 0$ and consider all leaves as base cases. We are guaranteed to reach the base case as each subtree is strictly smaller and we bottom out at the leaves.
-
-This algorithm can be implemented in linear time through Depth First Search (DFS) by using two auxilary arrays that hold the values for $h(u)$ and $D(u)$ for every $u \in V(T)$. We will omit a formal proof of correctness and refer the reader to []. The proof relies on the fact that the longest path in a rooted tree either passes through the root and is entirely contained in the subtrees rooted the children of the root.
-
-%@TODO Fix sentece before
-
-\section{W Diameter Detector}
-
-We will now step into the realm of w-detection. Before we outline the proposed algorithms we must establish two key properties which hold the difference between the tree diameter algorithms and their modification to tree w-diameter algorithms.
-
-\begin{defn} Subpath Property  \end{defn}
-
-Let $a \rightsquigarrow b$ be a path and $c \rightsquigarrow d$ it's subpath. Then $w(a, b) \le w(c, d)$. 
-
-This property follows from the fact that all kinks of the path from $c$ to $d$ are also kinks of the path from $a$ to $b$. An important thing to note is that in the case of path length if one of the paths is a proper subpath of the other then the inequality is strict. This does not have to be the case with w-paths for the w-length, decreases only when we remove a kink from a path.
-
-\begin{defn} Path Decomposition Property Property  \end{defn}
-
-    Let $a \rightsquigarrow b$ be the path $(a, u_1, u_2, ..., u_k, b)$ and $u_i$ be an inside vertex for any $i \in \{1, 2, ..., k\}$. Then: 
+In formal notation if $U \in Y$ is open in $Y$ then $f^{-1}(U)$ is open in $X$. This definition captures the intuitive understanding we have of continuity from calculus - if we "slightly adjust" the output of a function in $Y$ then there should be only a "slight change" in input in $X$. The "slight change" is formalised by considering all points in a single open set, as we can think of them as being "near". This is the reason why continuous functions do appear to be one "continuous whole" when plotted as in for example []. 
     
-    $$w(a, b) = w(a, u_i) + w(u_i, b) + w_{a \rightsquigarrow b}(u)$$
-    
-   where:
-    
-   $$
-   w_{a \rightsquigarrow b}(u_i) = \left\{
-       \begin{array}{@{}l@{\thinspace}l}
-           \text{0}  &: \text{if } h(u_i) \in \big(h(u_{i-1}),~h(u_{i+1}) \big) \text{ // $u_i$ is not a kink} \\
-           \text{1} &: \text{otherwise // $u_i$ is a kink.} \\
-       \end{array}
-   \right.
-   $$
 
-   Indeed $u_i$ can be a kink in the path from $a$ to $b$, but it cannot be a kink in the paths from $a$ to $u_i$ and from $u_i$ to $b$ because it is an endpoint of both. All other kinks are counted by either $w(a, u_i)$ or $w(u_i, b)$. When making use of path decomposition property in future proofs we must account for whether the vertex we are decomposing a path at is a kink in that path or not.
+% @TODO Add quote
+If $f$ is a bijection and $f^{-1}$ is also continuous we will call $f$ a homeomorphism. Homeomorphisms play a special role in topology. Two topological spaces are homeomorphic when there exists a homeomorphism between then. As continuous functions preserve open sets it follows that the two spaces are topologically identical. *See for example [].* Homeomorphism is the appropriate equivalence relation for topological spaces []. Indeed one of the thing topologists are most interested in is classifying spaces up to homeomorphism. We will call a property of a space that is preserved under homeomorphisms a topological invariant.
 
+Now let us to introduce our first topological invariant - path connectedness. It captures the idea that there is a path between any points in a space. But how do we define a path rigorously?
 
-\subsection{Linear Time Algorithm - 2xBFS}
+\begin{defn} Let $X$ be a topological space and let $x, y \in X$ be any two points. A path between $x$ and $y$ in $X$ is a continuous function $f: [0, 1] \to X$ such that $f(0) = x$ and $f(1) = y$.  \end{defn}
 
-We shall first explore how we can modify the Double Breadth First Search algorithm to compute the w-diameter of a height tree. The new algorithm will follow exactly the same steps. The only exception is that it will run a modified version of BFS that computes w-distances [see algorithm next page] from a given root vertex to all others in the tree. The algorithm works by first running a BFS from any vertex in the graph and then records the leaf that is farthest in terms of w-length. This furthest leaf is guaranteed to be either the endpoint of a path in the tree whose w-length least that of the actual w-diameter of the tree minus two. 
 
+% @TODO Add this
+Paths in a topological space have a very natural geometric interpretation. * What is it? *. Using this definition we can define a path-connected topological space as follows.
 
-\begin{algorithm}
-\caption{Computing the W Diameter of a Height Tree.}
+\begin{defn} A topological space $X$ is said to be path-connected if there exists a path between any two points $x, y \in X$  \end{defn}
 
-\begin{algorithmic}[1]
+This deceptively simple looking definition actually holds the overarching methodology for reasoning about algebraic invariants of topological spaces. In this case we have employed a two parameter family of utility functions to "measure" a global property of the topological space. The two parameter family is the collection of all paths between all pairs of points.
 
-\Function{W\_BFS}{T, root}
-    \State root.d = 0
-    \State root.$\pi$ = root
-    \State furthest = root
+A very important property of path-connectednes is that the continuous image of a path-connected is path-connected. Properties like this are crucial in the task of differentiating between topological spaces. If for example one space is path-connected and another one is not there there cannot exists a homeomorphism between them. Consequently they are not homeomorphic and therefore different in the eyes of a topologist.
 
-    \State Q = $\emptyset$
-    \State Enqueue(Q, root)
+Now we will present our last definition. That of a topological manifold. A spaces that is locally resembles Euclidean space.
 
-    \While {Q $\ne \emptyset$}
-        \State u = Dequeue(Q)
 
-        \If {u.d $>$ furthest.d}
-            \State furthest = u
-        \EndIf
+\begin{defn} A $d-manifold$ is topological space where every point has an open neighbourhood that is homeomorphic to $\mathbb{R}^d$.  \end{defn}
 
-        \ForAll {v $\in$ T.$Adj$[u]} 
-            \If {v.$\pi$ == $\emptyset$}
-                \State v.$\pi$ = u
-                \If {h(u) $\notin$ \big(h(v),~h(u.$\pi$)\big)}
-                    \State v.d = u.d + 1
-                \Else
-                    \State v.d = u.d
-                \EndIf
+Examples or 0-dimensional manifolds are points. Examples of one dimensional manifolds are lines, circles and graphs. Examples for 2-dimensional manifolds are the surfaces we are familiar with from geometry such as the sphere, the torus and so on. *Manifolds are the playground where topology meets geometry.* 
 
-                \State Enqueue(Q, v)
+It is often hard to analyse a space just using it's topology. This is why in the following two chapter we will employ additional tools from other fields of mathematics to investigate the topology of a space. Two such tools are differentiable function and combinatorial decomposition of a space into simplex pieces.
 
-            \EndIf
-        \EndFor
-    \EndWhile
-    \State Return furthest
-\EndFunction
 
-\Function{Calculate\_W\_Diameter}{T}
-    \State s = <any vertex>
-    \State u = W\_BFS(T, s)
-    \State v = W\_BFS(T, u)
-    \State return v.d
-\EndFunction
+%Contractable Space.
 
-\end{algorithmic}
-\end{algorithm}
+%Path Connected Space.
 
-%\newtheorem{w-algorithm}{The W Detection Algorithm is Correct.}
-Before proving the correctness of the algorithm we must first establish two useful properties that relate the w-length of a path to it's subpaths.
+%Homotopy.
 
+%All of the low level stuff.
 
-\begin{lem} The Algorithm produces the endpoints of a path who is at most 2 kinks shy of being the kinkiest path in the tree. \end{lem}
+%Manifolds.
 
+%Submanifold.
 
-\begin{proof}
-Let $T$ be a height tree and $s \in V(T)$ be the initial vertex we start the first search at. After running the modified BFS twice we obtain two vertices $u$ and $v$ such that:
+%Genus of a manifold.
 
-\begin{equation}
-    \label{eq:su_all}
-    w(s, u) \ge w(s, t), \forall t \in V(T)
-\end{equation}
 
-\begin{equation}
-    \label{eq:uv_all}
-    w(u, v) \ge w(u, t), \forall t \in V(T)
-\end{equation}
+%It is often hard to analyse a space just using it's topology.
 
-Furthermore let $a$ and $b$ be two leaves that are the endpoints of a path that is a w-diameter. For any such pair we know that:
+%This is why we will use additional tools to investigate the topology of a space.
 
-\begin{equation}
-    \label{eq:ab_all}
-    w(a, b) \ge w(c, d), \forall c, d \in V(T)
-\end{equation}
+%Two such tools are differentiable function and decomposition into a simplical complex.
 
-By this equation we have that $w(a, b) \ge w(u, v)$. Our goal in this proof will be to give a formal lower bound on $w(u, v)$ in terms of $w(a, b)$. To this end let $t$ be the first vertex in the path between $a$ and $b$ that the first BFS starting at $s$ discovers. We can infer that $t$ cannot be $a$ or $b$ unless $s$ is equal to $a$ or $b$.
+\section{Differential Topology}
 
-The proof can then be split into several cases depending on the relative positions of $s$, $t$, $a$, $b$ and $u$. \linebreak
+Differential topology is the study of differentiable functions defined on smooth manifolds. One of the leading fields of differential topology is that of Morse Theory. Morse theory is the study of the deep relation between spaces and function defined on them. One of the main goals is to determine the shape of a shape by analysing a functions that can be defined on it. For example using methods from differential topology we can show that the real line and the circle have different global topological properties. See Appendix.
 
-{\em Case 1. When the path from $a$ to $b$ does not share any vertices with the path from $s$ to $u$.}
+One way we can study smooth manifolds via differentiable functions is by analysing the critical points of the functions. This however is an enormous task in it's own right. This is why we will restrict ourself to a special class of differentiable functions called Morse functions.
 
-{\em Case 1.1. When the path from $u$ to $t$ goes through $s$.}
 
+\begin{defn} A function $f: M \to \mathbb{R}^n$ is a Morse Function if $f$ is smooth and at critical points the Hessian (matrix of second partial derivatives) is full rank.   \end{defn}
 
+In this dissertation we will restrict out attention even further and consider Morse functions whose codomain is $\mathbb{R}$. By defining a Morse function on a manifold we are able to decompose it into many subsets and analyse those to obtain some global information. The concepts is made clear with the definition of level sets, sublevel sets and super level sets.
 
-% @TODO Explain that the dotted lines are paths.
-\begin{figure}%
-    \centering
-    \includegraphics[center, scale=0.5 ]{./images/2xbfs-case-1-1.eps}
-    \caption{Relative position of vertices in Case 1.1 }%
-    \label{fig:case1.1}%
-\end{figure}
+\begin{defn} A level set at a value $h$ of a Morse function $f: M \to \mathbb{R}$ is the set $f^{-1}(\{h\}) = \{x \in M: f(x) = h \}$   \end{defn}
 
-In this case $s \rightsquigarrow u$ is a subpath of $t \rightsquigarrow u$, which in turn means that $w(t, u) \ge w(s, u)$. By equation \ref{eq:uv_all} we also have that $w(s, u) \ge w(s, a)$. We can therefore conclude that $w(t, u) \ge w(a, t)$ as $s \rightsquigarrow a$ is a subpath of $t \rightsquigarrow a$.
+Sublevel sets are defined in terms of intervals of the form $[-\infty, a]$ and are the preimage $f^{-1}([-\infty, a]) = \{x \in M: f(x) \in [-\infty, a] \}$. Superlevel sets are defined analogously in terms of intervals of the form $[a, \infty]$. Furthermore we shall call the path-connected components of a level set contours.
 
-Now via path decomposition of $a \rightsquigarrow b$ and $u \rightsquigarrow b$ at $t$ have that:
+Morse functions ensures the following properties which we will make use of in the future:
 
-$$ w(a, b) = w(b, t) + w(t, a) + x  $$
-$$ w(u, b) = w(b, t) + w(t, u) + y .$$
+\begin{itemize}
+    \item None of the critical points are degenerate.
+    \item Changes in the topology of sub(super)level sets only happen at critical values. 
+    \item A Morse function defined on a close surface has a finite number of critical points.
+\end{itemize}
 
-Where $x, y \in \{0, 1\}$ depending on whether there is a kink at $t$ for the path from $a$ to $b$ and from $u$ to $b$ respectively. As $w(t, u) \ge w(a, t)$ we can show that:
+\subsection{Reeb Graph}
 
+% @TODO Define the quotient topology.
 
-$$ w(u, b) \ge w(b, t) + w(t, a) + y $$
-$$ w(u, b) \ge w(b, t) + w(t, a) + x - x + y $$
-$$ w(u, b) \ge w(a, b) - x + y $$
-$$ w(u, b) \ge w(a, b) + (y - x) $$
+The Reeb Graph is a tool that encapsulates the evolution of the level sets of a continuous function. It does so by tracking how the connected connected components in the level sets appear, disappear and split or join together. When the function is Morse, an edge in the Reeb Graph corresponds to a sequence of contours in the level sets whose topology does not change. The vertices correspond to critical points where the topology of those components does changes (when they appear, dissapear, split or join). Morse theory ensures that critical points occur at distinct values of the parameter and are isolated. This removes any ambiguities that may arise in the construction of the graph. Furthermore that fact that their number is finite on a close surface and the fact that they only happen at critical values make this computation tractable.
 
-But as $w(u, v) \ge w(u, b)$ (by equation \ref{eq:uv_all}) we obtain that: Sha
-$$ w(u, v) \ge w(a, b) + (y - x) $$
 
-Considering all possible values that $x$ and $y$ can take, we can see that the minimum value for the right hand side of the inequality is at $y = 0$ and $x = 1$. The final conclusion we may draw is that $w(u, v) \ge w(a, b) -1$.
+\begin{defn}
+Given a topological space $X$ and a continuous function $f: X \to \mathbb{R}$ we can define an equivalence relation $\sim$ such that two points $x, y$ in $X$ are equivalent when there exists a path between them in a level set $f^{-1}(\{h\})$ for some $h \in \mathbb{R}$. The Reeb Graph is the quotient space $X \big/ \sim$ together with the quotient topology.
+\end{defn}
 
+Intuitively we can think of the Reeb Graph of a space where connected components of $X$ are contracted to a single point. We can turn the resulting topological graph into a combinatorial structures by recording all the vertices and edges between them.
 
+*SHOW LOTS OF PICTURES*
 
-%$a\rightsquigarrow b$
 
-{\em Case 1.2. When the path from $u$ to $t$ does not go through $s$.}
 
-\begin{figure}%
-    \centering
-    \includegraphics[center, scale=0.5 ]{./images/2xbfs-case-1-2.eps}
-    \caption{Relative position of vertices in Case 1.2 }%
-    \label{fig:case1.2}%
-\end{figure}
 
-If the path from $u$ to $t$ does not go through $s$ then the paths $s \rightsquigarrow t$ and $s \rightsquigarrow u$ have a common subpath. Let $s'$ be the last common vertex in that subpath. We will be able to produce s proof that is similar to the previous case by considering $s'$ in the place of $s$. We must only account for whether $s'$ is a kink in one of the paths $s \rightsquigarrow u$ or $s \rightsquigarrow t$. We know that $w(t, u) \ge w(s', u)$ (as a subpath) and through path decomposition of  $s \rightsquigarrow a$ and $s \rightsquigarrow u$ at $s'$ we obtain that:
+% @TODO Define a topological graph.
+%The Reeb Graph is indeed homeomorphic to a topological graph. *Explain Why*
 
-$$ w(s, a) = w(s, s') + w(s', a) + x $$
-$$ w(s, u) = w(s, s') + w(s', u) + y $$
+%There are two important equations that \cite{comp-topo} relate the Betti Numbers of the topological space $X$ and the quotient space $X \big/ _\sim$
 
-where $x,y \in \{0, 1\}$ indicate whether $s'$ is a kink in the corresponding path as before. By equation \ref{eq:su_all} we know that $w(s, u) \ge w(s, a)$ and therefore:
+%$$ \beta_0(X \big/ _\sim) = \beta_0(X) $$
+%$$ \beta_1(X \big/ _\sim) \le \beta_1(X) $$.
 
-$$ w(s, s') + w(s', u) + y \ge w(s, s') + w(s', a) + x  $$ 
-$$ w(s', u) + y \ge w(s', a) + x $$ 
-$$ w(s', u) \ge w(s', a) + (x - y).$$ 
+%We remind the reader that a contractable domain is on that is homotopic to single point. In the homology of such a space there is only one connected component and all other homology groups are trivial. Therefore $\beta_0 = 1 \text{ and } \beta_n = 0, n \in {1, 2, ...}$. A direct consequence of this is that the Reeb Graph of a contractable space is a tree regardless of the function defined on it.
 
-Since $s'$ lies on the path from $t$ to $u$ we have that $w(t, u) \ge w(s', u)$ by the subpath property. We can use this to conclude the following:
+\section{Algebraic Topology}
 
-$$ w(t, u) \ge w(s', a) + (x - y).$$ 
 
-From the fact that $t \rightsquigarrow a$ is a subpath of $s' \rightsquigarrow a$ it follows that $w(s', a) \ge w(t, a)$. This allows us to infer that:
+% @TODO Incorrect English in last sentece
+Algebraic Topology is a branch of topology that uses tools from the field of abstract algebra to study topological spaces. The primary goal is to derive algebraic structures such as groups, rings are vector spaces from topological spaces that remain invariant under continuous mappings. Modern Algebraic Topology has it's roots in combinatorially defined topological space \cite{comb-alg-topo}. Unlike Point Set Topology and Differential Topology this allows us to obtain exact algorithm for computing the algebraic invariant we are interested in. To make matters clearer firstly we will introduce one of the most basic combinatorial topological space - Simplicial Comlexes and then we will introduce one of the earliest discovered algebraic invariants - the Euler Characteristic.
 
-$$ w(t, u) \ge w(t, a) + (x - y). $$ 
+\subsection{Simplicial Complexes}
 
-Now we are ready to proceed in a similar manner as the previous case. We will decompose the paths from $b$ to $a$ and from $b$ to $u$ at the vertex $t$ as follows:
+Simplicial Complexes are a way of representing a topological space as a decomposition into smaller pieces. In order to understand simplicial complexes we must first understand what their basic building blocks are. The definitions here are taken from \cite{comp-topo}.
 
-$$ w(b, a) = w(b, t) + w(t, a) + z  $$
-$$ w(b, u) = w(b, t) + w(t, u) + w  $$
-$$ w(b, u) \ge w(b, t) + w(t, a) + (x - y) + w $$
-$$ w(b, u) \ge w(b, t) + w(t, a) + z - z + (x - y) + w $$
-$$ w(b, u) \ge w(a, b) - z + (x - y) + w $$
-$$ w(b, u) \ge w(a, b) + (x - y) + (w - z) $$
+\begin{defn} Let $\{v_0, ..., v_k\}$ be points in $\mathbb{R}^d$. The convex convex combination of the points is the sum $\sum_{i=0}^k{\lambda_ix_i}$ where $\lambda_i \ge 0$ and $\sum_{i=0}^n{\lambda_i} = 1$.  \end{defn}
 
-The minimum value for the right hand side of this equation is at $x, w = 0$ and $y, z = 1$. Using the fact that $w(u, v) \ge w(u, b)$ we finally obtain $ w(u, v) \ge w(a, b) - 2 $.
+If we decide to take the subset of $\mathbb{R}^d$ covered by all possible convex combination we obtain the convex hull of the points. 
 
+\begin{defn} Let $\{v_0, ..., v_k\}$ be points in $\mathbb{R}^{k+1}$. We will call the convex combination of those points the $k-simplex$ defined by the points.  \end{defn}
 
-{\em Case 2. When the path from $a$ to $b$ shares at least one vertex with the path from $s$ to $u$.}
+In the definition above $k$ is called the simplex. We will only be considering simplices of dimension up to three as we will be modeling actual spacial phenomena with them. We will call the simplices of dimension $0, 1, 2, 3$ vertices, edges, triangles and tetrahedron respectively. See example []. A face of a simplex is the convex hull of a non-empty subsets of it's points. Thus the points that define the simplex are it's vertices.
 
-\begin{figure}%
-    \centering
-    \includegraphics[center, scale=0.5 ]{./images/2xbfs-case-2.eps}
-    \caption{Relative position of vertices in Case 2 ($t$ could be equal to $s'$). }%
-    \label{fig:case2}%
-\end{figure}
+To obtain a simplical complex all we have to do is take the union of a number of simplices in the same dimension and glue them along common faces without allowing self-intersection. More formally:
 
-% @TODO This is not complete!
-%As we already know $w(s, u) \ge w(s, a)$. Furthermore $w(s, u) \ge w(t, u)$ and $w(s, a) \ge w(t, a)$ as they are subpaths of $s \rightsquigarrow u$ and $s \rightsquigarrow a$ respectively. Therefore $w(t, u) \ge w(t, a)$. We can now decompose the paths from $b$ to $a$ and from $b$ to $u$ at the vertex $t$ as follows:
+\begin{defn} A simplical complex $K$ is a finite collection of simplices such that if $\tau$ is a simplex $K$ then all faces of $\tau$ must be simplicies in $K$. Furthermore the intersection of two simplicies in $K$ is either empty or a common face of both.  \end{defn}
 
-We can do a path decomposition as follows:
+Show example [].
 
-$$ w(s, u) = w(s, t) + w(t, u) + x $$
-$$ w(s, a) = w(s, t) + w(t, a) + y $$
+\subsection{Euler Characteristic}
 
-As $w(s, u) \ge w(s, a)$ (by equation \ref{eq:uv_all})we obtain that:
+The first topological invariant of algebraic nature we shall encounter is the Euler Characteristic. It is denoted as $\chi$ and it assigns an integer to suitably nice spaces through a generalisation of counting \cite{elementary-applied-topology}. The concept was originally defined for polyhedra as a alternating sum of the form $|V| - |E| + |F|$, where $V$ is the set of vertices, $E$ the set of edges and $F$ the set of faces. This allowed for the classification of the Platonic solids [fig].
 
-$$ w(s, t) + w(t, u) + x  \ge w(s, t) + w(t, a) + y $$
-$$ w(t, u) \ge w(t, a) + (y - x) $$
+% @TODO Define CW complexes, simplical complexes may not generalise polyhedra
+The Euler Characteristic can be generalized to all spaces that can be decomposed into a finite number of cells. Let us first consider simplical complexes because they generalise polyhedra. The natural generalisation of the alternating sum is to continue it indefinitely with the number of 3-cells, then 4-cells, etc., as follows
 
-If we again decompose the paths from $b$ to $a$ and from $b$ to $u$ at $t$ we obtain:
+$$ \chi = k_0 - k_1 + k_2 - ... = \sum_{i}{(-1)^i~k_i}, $$
 
-$$ w(b, a) = w(b, t) + w(t, a) + z  $$
-$$ w(b, u) = w(b, t) + w(t, u) + w  $$
-$$ w(b, u) \ge w(b, t) + w(t, a) + (x - y) + w $$
-$$ w(b, u) \ge (w(b, t) + w(t, a) + z) - z + (x - y) + w $$
-$$ w(b, u) \ge w(a, b) - z (x - y) + w $$
-$$ w(b, u) \ge w(a, b) + (x - y) + (w - z). $$
+where all $k_i$ is the number of $i$ dimensional simplicies and $k_i = 0$ for $i$ bigger than some $n \in \mathbb{Z}^+$ and all $k_i$ for $i \le n$ are positive integers. 
 
-Where similarly to the previous case the rightful conclusion is that $ w(u, v) \ge w(a, b) - 2 $.
+* Show Examples *
 
-Based on these cases we can have shown that that for any input tree the algorithm will produce a w-path that is at most two kinks less than the actual maximum w-path.
+\begin{lem}   The Euler Characteristic is homotopy invariant. \end{lem}
 
+This results allows to compute in practice $\chi$ of manifolds by considering any of their finite triangulations. As long as there is a homeomorphism between a manifold and triangulation $\chi$ will not change. We will be well advised to pick the triangulations with the least number of simplices to improve computational efficiency. For example the octahedron is a triangulation of a sphere and therefore the Euler Characteristic of the sphere is zero. For further information on this subject we refer the reader to [].
 
-\end{proof}
 
-\begin{lem} The time complexity of the algorithm is $O(|V|)$. \end{lem}
-
-\begin{proof}
-    The modified BFS function has the same time complexity of BFS as all we have added is an "\em if, then, else\em"~statement. The time complexity of BFS is $O(|V| + |E|)$, but in a tree $|E| = |V| - 1$, so the overall complexity is $O(2|V| - 1) = O(|V|)$. 
-    Running the modified BFS function twice remains in linear, thus the overall complexity of the algorithm is linear as well.
-\end{proof}
-
-\begin{lem} The space complexity of the algorithm is $O(|V|)$. \end{lem}
-
-\begin{proof}
-    Completely analogous to the standard BFS algorithm, this algorithm uses the same amount of memory in the standard memory model.
-\end{proof}
-
-\subsection{Pathological Cases in 2xBFS}
-
-Here are examples of the pathological case where the w-diameter outputted by the 2xBFS algorithm is different than the actual w-diameter. Look at Fig. \ref{fig:path-cases}. There is one example corresponding to all proof cases. In all the examples the vertex outputted by the first BFS function would be $u$ after which the longest path would be outputted as $u \rightsquigarrow a$ or $u \rightsquigarrow b$. The problem is that $w(u, a) = w(u, b) = 1$, but $w(a, b) = 1$ or $2$ in the first example. Note that even if we adapt the algorithm so that it finds the vertex with largest w-length away and breaks ties with normal distance, we will still be able to apply these examples. We just need to augment them by subdividing the path to $u$ to make if further away from $a$ and $b$, but keep the same w-lenght between $s, a, b u$.
-
-\begin{figure}%
-    \centering
-
-    \subfloat[Pathological Example for Case 1. 1 (-1 of actual w-diameter).]{{\includegraphics[scale=0.4]{./images/2xbfs-path-case-1-1.eps}}}%
-    \qquad
-    \subfloat[Pathological Example for Case 1. 2 (-2 of actual w-diameter).]{{\includegraphics[scale=0.4 ]{./images/2xbfs-path-case-1-2.eps}}}%
-    \qquad
-    \subfloat[Pathological Example for Case 2 (-2 of actual 2-diameter).]{{\includegraphics[scale=0.6 ]{./images/2xbfs-path-case-2.eps}}}%
-    \caption{Branch Decomposition of a Contour tree.}%
-    \label{fig:path-cases}%
-\end{figure}
-
-
-
-\subsection{Attempts at resolving the accuracy of 2xBFS}
-
-
-% @TODO Chapter 3 here may change.
-
-For the intents of purpose of this dissertation the accuracy of this algorithm is sufficient. In large enough data sets this estimate provides enough insight to correlate the observed iterations needed to collapse the split and join trees and the resulting w-diameter of the tree. This is demonstrated empirically in Chapter 3. Regardless of such practical considerations it is still of inherent theoretical interest to investigate how we may be able to obtain a more accurate modification of this algorithm.
-
-One key observation we can make is that on the second run of the BFS we get a w-path that is necessarily longer or equal to one found in the first BFS search. A natural question to ask is whether running the BFS a third, fourth or for that matter nth time would result in the actual w-diameter. On every successive iteration we get a w-path that is longer or equal to the previous one, because w-length is a symmetric path property ($w(a, b) = w(b, a)$). By doing this we can hope that we will eventually obtain a w-path closer to the w-diameter. However there is no guarantee that this will happen. In fact in some cases it is possible that each successive BFS will return the same path over and over again. Obverse how in @TODO fig[] all iterations of BFS go from the vertex $u$ to the vertex $v$ and then from $v$ to $u$ and so on. 
-
-
-A different heuristic we can apply is to run the algorithm multiple times from different starting points and keep the maximum value found. This approach is somewhat reliable, but may still fail to find the w-diameter. Consider @TODO fig[]. That artificial example shows that there can simply be too few starting points which would produce the w-diameter.
-
-
-% @TODO Redo Last Paragraph.
-In the search for a better solution let $s$ be a starting vertex and let the vertices $U = \{u_1, u_2, ..., u_n\}$ be the furthest away in terms of w-distance and $W = \{w_1, w_2, ..., w_n\}$ be the ones second furthest away. By the proof of the algorithm we know that not necessarily all vertices in those sets would produce a w-diameter. Thus lets us define $R \subseteq U \cup W$ as the set of vertices which are endpoints of a w-diameter. As we have shown we can construct an example where $|R| = 2$ and $|U \cup W|$ is arbitrarily large. Can we then find some property of the vertices in $R$ and pick them out in the first phase of the algorithm? *This I will leave open for the future generations to ponder. I hope in doing so all people of the world will unite unite and end all wars and prejudices in order to work towards this common good!*
-
-\subsection{Dynamic Programming Algorithm - DP}
-
-
-% @TODO 
-*Idea redefine $N(u) = N(u) / u.\pi$ so you can simplify notation.*
-
-While it is encouraging that we have obtained an algorithm that bounds the w-diameter it is also quite unsatisfactory that we were not able to directly obtain it. To remedy this we will resort to modifying the second tree diameter algorithm that we outlined previously. We will use the same optimisation strategy i.e. dynamic programming by making two key changes. Instead of the function $h(u)$ that computes the height of a subtree with root $u$ we will use the function $w(u)$ that stores the longest w-path that starts at the root of the subtree. We will remane the function that stores the value of the optimal solution for subroblems from $D(u)$ to $W(u)$ accordingly. To summarise $W(u)$ returns the length of the largest w-path in the subtree $T_u$ and $w(u)$ the length of the largest w-path in $T_u$ that starts at $u$.
-
-This may seem like a simple substitution at first glance, but the devil is in the details. As in the previous modification all additional difficulties stem from the difference in combining path lengths and path w-lengths. Let us begin by examining how the w-height of a vertex is computed from the w-heights of its children. Let $s$ be a vertex in $T$ and let us assume the we have computed the w-heights of its children recursively. In the case of computing the height we can simply set $h(s) = \max\limits_{u \in N(s)}\big( h(u) \big) + 1$. We cannot do so with the w-height because w-length can remain the same if we do not extend the maximum w-path with a kink.  To demonstrate this let us assume that $u \in N(s)$ is such that $w(u) = \max\limits_{v \in N(s)}(w(v))$. Then if we wish to extend the maximum w-path that ends at $u$ to $s$ we must account for whether $u$ becomes a kink in it. If none of the children of $s$ with maximum w-height form a kink when extending to $s$ then the w-height of $s$ does not increase.
-
-To see how we can obtain the w-height of $s$ let $u$ be any of it's children and $L_u = \{u_1, u_2, ..., u_k\}$ be all children of $u$ through which a w-path with length $w(u)$ passes through. Then we can compute the w-height of $s$ as: $w(s) = \max\limits_{u \in N(s)}\{ h(u) + \max\limits_{v \in L_u}(w_{s, v}(u)) \}$. In other words there may be multiple w-paths with the same maximal w-length that end at $u$. If possible we must pick the one that would make $u$ form a kink with $s$. If not we can use any of them. There is no point in looking at paths of lesser w-length as it can only increase by one and at best match the maximum ones.
-
-
-In the tree diameter scenario path combination is straightforward. For a tree with root $s$ we first find two distinct children $u, v \in N(s)$ of $s$ such that $h(u)$ and $h(v)$ is maximum amongst all children and $u \ne v$ (otherwise we get a walk and not a path). Next we will combine them to obtain the longest path that goes through $s$. This path combination yield the sum $h(u) + h(v) + 2$, where we account for the two additional edges $us, sv \in E(T_s)$. This reasoning of course extends to all subtrees in $T$. In the latter case of w-path combinations we must be vigilant of which vertices become kinks in the path combinations. Let us observe a similar scenario where $s$ is the root the tree and $u, v \in V(T_s)$ are two of the children with maximal values for $w(u)$ and $w(v)$. We would ideally like to combine $w(u)$ and $w(v)$ like so: $w(u) + w(v) + w_{u, v}(s)$. This however is not correct! There is a hidden assumption in the sum that the only vertex that can become a kink in this path combination is $s$. Contrary to this, in fact $u$ and $v$ can also become kinks. Observe that $w(u) \text{ and } w(v)$ are the w-length of two paths - one starting at $u$ and ending in a leaf of $T_u$ and one starting at $v$ and ending in a leaf of $T_v$. In the new path, both $u$ and $v$ can become inside vertices and depending on whether they become kinks or not the sum may further increase by two. To account for this we must also look at the children of $u$ and $v$ through which a maximum w-path passes. 
-
-
-This process is similar to the one for obtaining the w-height of a vertex and is described by the following formula: 
-
-$$\max\limits_{\substack{u, v \in N(s) \\ u \ne v}}\{ h(u) + \max\limits_{t \in L_u}(w_{s, t}(u)) + h(v) + \max\limits_{t \in L_v}(w_{s, t}(v)) + w_{u, v}(s)\}$$
-
-Thus the formula that describes the optimal solution can be written as:
-
-
-% @TODO Finish This.
-
-$$ W(s) = max\Bigg\{ \max\limits_{u \in N(s)}\bigg(W(u)\bigg), \max\limits_{\substack{u, v \in N(s) \\ u \ne v}} \bigg( h(u) + \max\limits_{t \in L_u}(w_{s, t}(u)) + h(v) + \max\limits_{t \in L_v}(w_{s, t}(v)) + w_{u, v}(s)\bigg) \Bigg\}. $$
-
-As before the optimal solution is either entirely in one of the subtrees of the children of a vertex or in the path combination of two of the children of the vertex.
-
-Here is the pseudocode for the algorithm.
-
-\begin{algorithm}{}
-\caption{Computing the W Diameter of a Height Tree.}
-\begin{algorithmic}[1]
-
-%\Function{W\_DFS}{T, s}
-    \State{\textbf{Function}W\_DFS}(T, s)
-
-    % If we are at a leaf Base Case
-    \State // Base Case
-    \If {|T.$Adj$[s]| == 1 AND s.$\pi \ne $ s}
-        \State s.W = 0
-        \State s.w = 0
-        \State return
-    \EndIf
-
-    % Forwards DFS visit
-
-    \State // DFS Visit
-    \ForAll {u $\in$ T.$Adj$[s]} 
-        \If {u.$\pi$ == $\emptyset$}
-            \State u.$\pi$ = s
-            \State W\_DFS(T, u)
-        \EndIf
-    \EndFor
-
-    % Backtracking
-    \\
-
-    \State // After all neighbours are visited
-
-    \State // Calculate w-height of s
-    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
-        \If {L[u] == $\emptyset$}
-            \State H[s] = max(H[s], H[u]);
-        \Else
-            \ForAll {v $\in$ L[u]$/u$} 
-                \State H[s] = max(H[s], H[u] + $w_{v, s}(u)$);
-            \EndFor
-        \EndIf
-    \EndFor
-
-    \State // Find all children that contribute to the a w-height path
-    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
-        \If {L[u] == $\emptyset$ AND H[s] == H[u]}
-            \State L[s] = L[s] $\cup$ u
-        \Else
-            \ForAll {v $\in$ L[u]$/u$} 
-                \If {H[s] = max(H[s], H[u] + $w_{v, s}(u)$)}
-                    \State L[s] = L[s] $\cup$ u
-                \EndIf
-            \EndFor
-        \EndIf
-    \EndFor
-
-    \State // Find the maximum path combination
-    \State maxCombine = 0
-    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
-
-        \ForAll {v $\in$ T.$Adj$[s]$/s.\pi$} 
-
-            \If {v == u}
-                \State continue
-            \EndIf
-
-            \State temp = H[u] + H[v]
-
-            \If {L[u] $\ne$ $\emptyset$}
-                \ForAll {t $\in$ L[u]$/u$} 
-                    \If {$w_{t, s}(u) == 1$}
-                        \State temp = temp + 1
-                        \State break
-                    \EndIf
-                \EndFor
-            \EndIf
-
-            \If {L[v] $\ne$ $\emptyset$}
-                \ForAll {t $\in$ L[v]$/u$} 
-                    \If {$w_{t, s}(v) == 1$}
-                        \State temp = temp + 1
-                        \State break
-                    \EndIf
-                \EndFor
-            \EndIf
-            \If {$w_{u, v}(s) == 1$}
-                \State temp = temp + 1
-            \EndIf
-            \State maxCombine = max(maxCombine, temp)
-        \EndFor
-
-    \EndFor
-
-\end{algorithmic}
-\end{algorithm}
-    
-\begin{algorithm}{}
-\caption{Computing the W Diameter of a Height Tree. Part 2}
-\begin{algorithmic}[1]
-
-    \State // Find maximum subproblem solution
-    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
-        \State O[s] = max(O[s], O[u])
-    \EndFor
-
-    \State // Take the bigger of the two
-    \State O[s] = max(O[s], maxCombine)
-
-%\EndFunction
-
-\Function{Calculate\_W\_Diameter}{T}
-    \State s = <any vertex>
-    \State s.$\pi$ = s
-    \State W\_DFS(T, s)
-    \State return s.W
-\EndFunction
-
-\end{algorithmic}
-\end{algorithm}
-
-
-%\begin{algorithmic}[1]
-
-%\Function{W\_DFS}{T, s}
-
-    %% If we are at a leaf
-    %\If {|T.$Adj$[s]| == 1 AND s.$\pi \ne $ s}
-        %\State s.W = 0
-        %\State s.w = 0
-        %\State return
-    %\EndIf
-
-    %% Forwards DFS visit
-    %\ForAll {u $\in$ T.$Adj$[s]} 
-        %\If {u.$\pi$ == $\emptyset$}
-            %\State u.$\pi$ = s
-            %\State W\_DFS(T, u)
-        %\EndIf
-    %\EndFor
-
-    %% Backtracking
-    %\\
-    %\State $Array$ p
-    %\ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
-        %\State p[u] = 0
-        %\ForAll {v $\in$ T.$Adj$[u]$/u$} 
-            %\State p[u] = max(p[u], v.h + $w_{v, s}(u)$) 
-        %\EndFor
-    %\EndFor
-
-    %\State maxCombine = 0
-    %\ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
-        %\ForAll {v $\in$ T.$Adj$[s]$/s.\pi$} 
-        %\State maxCombine = max(maxCombine, p[u] + p[v] + $w_{u, v}(s)$)
-        %\EndFor
-    %\EndFor
-
-    %\\
-    %\State maxSubsolution = 0
-    %\ForAll {u $\in$ T.$Adj$[s]} 
-        %\State maxSubsolution = max(maxSubsolution, u.W)
-    %\EndFor
-    %\\
-    %\State s.W = max(s.maxCombine, s.maxSubsolution)
-
-%\EndFunction
-
-%\Function{Calculate\_W\_Diameter}{T}
-    %\State s = <any vertex>
-    %\State s.$\pi$ = s
-    %\State W\_DFS(T, s)
-    %\State return s.W
-%\EndFunction
-
-%\end{algorithmic}
-%\end{algorithm}
-
-* Not sure if this is enough *
-
-Let us not prove that the algorithm is correct. 
-
-\begin{lem} The computation for the longest w-path that goes through the root of a subtree is correct. \end{lem}
-\begin{proof}
-    Let $s$ be the root of the current subtree $T_s$ in the computation of the algorithm. Suppose that our algorithm has identified that the longest path through $s$ has $t$ kinks. Suppose for the sake of contradiction that there is another w-path with at least $t+1$ kinks that goes through $s$.
-
-    That path must go through two of the children of $s$. Let those children be $u$ and $v$. We must have that the value of $h(u) + \max\limits_{t \in L_u}(w_{s, t}(u))$ is maximum amongst all children of $s$. Otherwise we could pick a bigger one to create a longer w-path with $v$. But if $u$ is such a vertex then either it or one with the same value would have been picked by our algorithm. This argument also holds for $v$ by symmetry.
-
-    We have found that our algorithm either must have computed either $u \text{ and } v$ or children $s$ equivalent to them. By the way we combine paths we always take the maximum children which if possible form a kink with $s$. Therefore the maximum w-path that passes through $s$ has exactly $t$ kinks.
-
-    Contradiction!
-
-    * Alternative I can proof this without contradiction just by showing directly any w-path is smaller than the one produced by my algorihtm*
-
-\end{proof}
-
-
-\begin{lem} The Algorithm produces the w-diameter of a height tree. \end{lem}
-
-\begin{proof}
-
-    We just showed the longest w-path through a root vertex is computed correctly. As the value of the optimal solution is taken in the same way as in the dynamic programming tree algorithm then the correctness of our algorithm follows directly from it.
-
-\end{proof}
-
-
-%\begin{prop} Given a rooted tree $T$ the w-diameter of $T$ either passes through the root or is entirely contained in one of the subtrees of the children of the root. \end{prop}
-
-%\begin{proof}
-    %This is trivially true there is simply nowhere else it can be.
-%\end{proof}
-
-%Therefore the optimal solution is obtain either through one of the optimal solutions of the children or through path combination. All we have to do is show that path combination produces the longest w-path that goes through the root of a subtree. The rest will follow from the prop[]. It is the same as the tree diameter algorithm.
-
-%\begin{prop} The combine path subroutine compute the correct answer. \end{prop}
-
-%\begin{proof}
-    %This is pretty obvious. We are using maximum path and maximising the oportunities for kinks. If there are two maximum paths all with kinks we will detect them. There cannot be a kinkier path there is simply nowhere it could be as it has to pass through the root and two of it's children.
-%\end{proof}
-
-%As path combination is correct then the optimal sumproblem function is correct. Then the whole algorithm must be correct.
-
-We will now take a look at the time complexity of the proposed solution. We can summarise it in the following formula is:
-
-$$ O\bigg( |V| + |E| + \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} + \sum_{u \in V}{d(u)^2}  \bigg) $$
-
-Where $\sum_{u \in V}{\sum_{v \in N(u)}{d(v)}}$ is the loop over all children of children and $\sum_{u \in V}{d(u)^2}$ is the double loop over all children in the final path combination.
-
-Firstly we can show that:
-
-$$ O\bigg( \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} \bigg) = O(|V|) $$
-
-This is because as we are in tree, every vertex will be visited exactly once as a child of a child. If it were visited twice then there would be two distinct paths to that vertex which would mean a cycle. 
-
-The other argument is more difficult to bound. One thing that is clear is that 
-
-$$ \sum_{u \in V}{d(u)^2} \ge \sum_{u \in V}{d(u)} = 2|E|$$
-
-This is true because the degree of a vertex is a positive integer and for any $x \in Z^+, x^2 \ge x$. This lower bound shows that it may be possible to obtain linear time complexity. I will demonstrate how we can bound it from above. 
-
-A triangle is the complete graph on three vertices. As trees have no cycles they cannot have induced triangles. Therefore for any edge in a tree $uv \in E(T)$ we have that $d(u) + d(v) \le |V|$. Indeed, if we do not have an induced triangle there are no vertices that $d(u)$ and $d(v)$ count twice. Summing over all edges we get that:
-
-$$ \sum_{uv \in E(T)}{d(u) + d(v)} \le |E|.|V| $$
-
-The key to solving this is to notice is that if we expand the summation every term $d(u)$ will be present exactly $d(u)$ times (one for each of it's edges). This allows us to obtain that:
-
-$$ 2|E| \le \sum_{u \in V(T)}{d(u)^2} \le |E|.|V| $$
-
-Overall for the two sums we have shown that:
-
-$$ O\bigg( \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} \bigg) = O(|V|)  , ~~ O\bigg( \sum_{u \in V(T)}{d(u)^2} \bigg) = O(|V|.|E|).$$
-
-Therefore the time complexity of the dynamic programming solution is:
-
-$$ O\big( |V| + |E| + |V| + |V|.|E|  \big) = O\big(|V|.|E|\big).$$
-
-
-% @TODO Add a reference for the lemma
-The running time is quadratic. Theoretically this is no better than a brute force exhaustive search. Despite this we have reasons to believe that it has the potential for better practical performance. The main reason that leads us to this conclusion is that the quadratic behaviour comes from the double loop on the children of all vertices. We know from the \textbf{lemma in previous chapter}  that in any tree for any vertex of degree $d$ there are at least $d$ distinct leaves. Therefore for any vertex of high degree there will be as many vertices which are base cases for the recursion and will take constant processing time. This behaviour is/is not demonstrated in the next chapter where implementations of both w-diameter algorithms are compared empirically.
-
-
-\cite{parikh1980adaptive}

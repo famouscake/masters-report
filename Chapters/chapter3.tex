@@ -1,195 +1,162 @@
-\chapter{Empirical Study}
+% @TODO Change this
+\chapter{Contour Tree Construction}
 \label{chapter3}
+
+%When the domain of the Reeb Graph is a contractable topological space 
+Let us now assemble the pieces needed to introduce Contour Trees and their computation - Morse function and simplical complexes.
+
+The Reeb Graph of a contractable topological space is connected and acyclic. This allows us to define this special case of the Reeb Graph as the Contour Tree. In this dissertation we will limit ourselves to practical spacial data analysis where data that is regularly sampled from two or three dimensional Euclidean space. Examples for this are medical imaging [], X-ray crystallography [], terrain mapping data [] and other. 
+
+% @TODO Add Fig
+The resolution of any sampling process is limited and if we are to leverage the machinery we have introduced so far we must assume that there is an underlying continuous function present in the space. Our only option in this case is to construct an approximation of this function based on the values we have sampled. This is usually done by constructing a simplicial complex where the data points are the vertices and we add higher dimensional simplicies to completely fill the space between them (see fig[]). The resulting data structure we will call a simplical mesh. The values of the approximation function on the simplicies are obtained via linear interpolation between the verticies of each simplex. 
+
+As long as the original values we have sampled are unique we can show that the resulting linear interpolation function is a Morse function and that the critical values are critical points are the vertices of the mesh. This is one of the key properties that enables efficient computation of the contour tree. We will discuss how to deal with non unique values in the coming sections.
+
+\section{Algorithms for Computing Contour Trees}
+In this section we will present the state of the art in current algorithm for contour tree construction. They are based on the work of []. 
+
+Explain more algoirthms.
+
+%\section{Input Data Format}
+
+%% @TODO Add example and citation for irregular domains
+%In order to simplify out implementation without much loss in generality we will assume that the input data comes in the form of a real valued $n \times m$ matrix or more appropriately in our context grid. The gird represents the values of vertices of a two dimensional simplicial mesh where the vertices are "evenly spaced" measurements. See example []. The algorithms presented here can be extended to a grid of any number of dimensions or even to irregular grids. See []. 
+
+%The underlying simplicial mesh is assumed to be a triangulation of the vertices [] and the values at the edges and faces of the mesh are obtained through piecewise-linear interpolation based solely on the values of the vertices. Our final assumption is that the input values in the grid are unique. This ensures that the interpolated function is Morse and the it's critical points lie in unique vertices.
+
+%If we are only computing the contour tree of the mesh and not bothering with extracting contours and level sets uniqueness of data values allows us to avoid having to compute the interpolation function and to only work with the values at the vertices of the mesh.
+
+\section{Height Trees}
+
+In order to discuss the algorithms for computing contour tree we must first establish some notation and useful properties about height graphs and trees. A height graph is a graph $G = (V, E)$ together with a real valued function $h$ defined on the vertices of $G$. A height tree is unsurprisingly a height graph which is a tree. Contour trees are examples of height trees and in the spirit of the assumptions we have made about our input data in the previous subsection we will assume all vertices have unique heights. In other words $h(u) \ne h(v)$ for all $u ,v \in V(G)$ where $u \ne v$. The function $h$ naturally induces a total ordering on the vertices. From now on we will assume the vertices of $G$ are given in ascending order. That is to say, $V(G) = \{v_1, v_2, ... , v_n\}$ where $h(v_1) < h(v_2) < ... < h(v_n)$. This lets us work with the indices of the vertices without having to compare their heights directly. In this notation $h(v_i) < h(v_j)$ when $i < j$.
+
+%@TODO Remove this if you will not use it.
+
+Introducing the height function allows us to talk about ascending and descending paths. A path in the graph is a sequence of vertices $(u_1, u_2, ... , u_k)$ where $u_i \in V(G)$ for $i \in \{1, 2, ..., k\}$ and $u_iu_{i+1} \in E(G)$ for $i \in \{1, 2, ..., k-1\}$. Furthermore a path in a height graph is ascending whenever $h(u_1) < h(u_2) < ... < h(u_k)$. Conversely if we traverse the path in the opposite direction it would be descending. We will simply call these paths monotone whenever we wish to avoid committing to a specific direction of travel.
+
+When working with height graphs it is useful to extend the definition of a degree of a vertex by taking the height function into account.
+
+\begin{defn} Let $G$ be a height graph and $v$ a vertex of $G$. The up degree of $v$ is defined as the number of neighbours with higher value. It is denoted as $\delta^+(v) = \big|\{ u \in N(v) : h(u) > h(v) \}\big|$.   \end{defn}
+
+The down degree of $v$ is defined analogously as $\delta^-(v) = \big|\{ u \in N(v) : h(u) < h(v) \}\big|$. 
+
+In the context of height trees the definitions of up and down degrees of a vertex allows us distinguish between two types of leaves - lower and upper leaves.
+
+\begin{defn} Let $G$ be a height graph and $v$ a vertex of $G$. If  $\delta^+(v) = 1$ and $\delta^-(v) = 0$ then $v$ is a lower leaf.  \end{defn}
+
+Conversely if $\delta^+(v) = 0$ and $\delta^-(v) = 1$ then $v$ is an upper leaf. We will see in the next chapter how we can use these two types of leaves to construct the contour tree.
+
+\section{Join and Split Trees}
+
+% @TODO Add example
+The contour tree can be associated with two other trees. Those are the join and split trees. They each contain one half of the topological information of the contour tree. The join tree contains information for the contours that join together and the split tree holds the information for the contours that split apart. See example []. More formally the join tree of a contour tree summarises the evolution of the connectivity of the sublevel sets of the interpolation function and the split tree of the superlevel sets. The two are symmetric just as in the way sublevel and super level sets are - relative to the direction of travel of the interpolation function.
+
+Every contour tree is associated with a unique pair of join and split trees. The core idea behind the algorithm for computing the contour tree is that the join and split trees can be combined together to produce the contour tree. The core observation that makes this possible is that the join and split trees of the mesh and of the contour tree of the mesh are the same. The algorithm that is proposed in[] leverages those two insights and has two phases. First it constructs the join and split trees of the mesh and then combines them to obtain the contour tree.
+
+Let us now examine how join and split trees are compute. We will describe for the process for the join tree only as it is completely analogous in the split tree case. 
+
+\begin{defn} A join component is a connected component in the sublevel set $f^{-1}(\{h\})$ at some $h \in \mathbb{R}$.  \end{defn}
+
+Let us now formalise the notion of tracking join components and constructing a join tree. Let us work in the general setting where $X$ is any path-connected topological space and $h : X \to \mathbb{R}$ is a function defined on $X$. The claims we make will hold in the special case where $X$ is a simplicial complex. Let us consider all sublevel sets $X_t = h^{-1}((-\infty, t]) = \{x \in X : h(x) \in (-\infty, t] \}$. They form a one parameter family $\{X_t\}_{t \in \mathbb{R}}$ of nested subsets where $X_a \subseteq X_b$ whenever $a \le b$. What the join tree captures is how the connectivity of the sublevel sets changes as the parameter $t$ is increased. 
+    
+To visualise this process we can contract every join component to a point much like we did in the Reeb graph. The only difference here is that the equivalence relation is defined for all points in a sublevel set $h^{-1}((-\infty, t])$ instead of a level set $h^{-1}(\{t\})$. Because of this change and because join components can only merge the join tree is a tree. Furthermore if $X_m = X$ is the last sublevel set for some $m \in \mathbb{R}$ then all join components merge into one because $X$ is path connected.
+
+* Here is a beautiful example of this. *
+
+% @TODO Add citation
+In order to compute the join tree of our input mesh we will perform an upwards sweep on the vertices. We will use the union-find data structure [] to keep track of which join components vertices are in. Initially all vertices will be places in their unique connected component. At the end of the sweep they will all be in the same component. Then we perform an upwards sweep through the vertices and check if the current vertex merges two or more join components. If it does we add an edge between that vertex and the oldest vertex in the join components in merges in the merge tree.
+
+
+% @TODO Define Join Saddles and Subdivided edges
+Not all vertices of the mesh will be in the join tree. Only those which correspond to local maxima and to join saddles. This will pose a problem upon combining the join and split trees. To avoid this problem we can augment the join tree by adding all missing vertices. This is done through edge subdivision []. Let $a \text{ and } b$ be two adjacent vertices in the join tree.  Let $\{v_1, v_2, ..., v_n\}$ be vertices in the mesh that are not in the join tree that are given in ascending order in terms of height.  Suppose that $h(a) < h(v_i) < h(b)$ for all $i \in \{1, 2, ..., n\}$ and the vertices $v_i$ are in the same connected component of $X_b - h^{-1}(\{b\}) = h^{-1}((-\infty, b))$. In order to augment the join tree with the first vertex we subdivide the edge $ab$ and label the new vertex as $v_1$. Next we subdivide $v_1b$ and label the new vertex as $v_2$. We continue to do so and on the $k$th step we subdivide the edge $v_{k-1}b$ and label the new vertex as $v_k$.
+
+Note that the same augmentation can be applied to the contour tree as well.
+
+* Show some pretty pictures join, aug join, split, aug split, contour, aug contour*
+
+The second step of the algorithm is to combine the join and split trees to produce the contour tree. We will in fact be combining the augmented join tree with the augmented split tree to obtain the augmented contour tree. Removing the augmentation of the contour tree is then left as an optional final step.
+
+The first step in merging the two it to identify all leaves of the contour tree and their incident edges. We can recognize them immediately from the join and split trees using the following property.
+
+\begin{defn} Property of leaves from Hamish's dissertation   \end{defn}
+
+
+% @TODO Define vertex contraction and quote property.
+Once we have those we can remove them from the join and split trees via vertex contraction. Another remarkable we have is that after applying vertex contraction the new join and split are of the subgraph of the contour tree induced by all non-leaves. This means that we can obtain the so called 1nd order leaves (vertices of distance 1 from a leaf) from the new join and split trees by the first property and add those to the contour tree. We can repeat this process iteratively by "pruning" until we have no more vertices left in the join and split trees. Upon reaching this state the contour tree is fully computed.
+
+* See example with pretty pictures *
+
+\section{Serial Algorithm}
+
+To summarise what we obtained so far, here is the overall algorithm for computing the contour tree.
+
+\textbf{Step 1.} Read input grid and convert it to a triangulated mesh.
+
+\textbf{Step 2.} Compute the Join and Split Tree of the input mesh.
+
+\textbf{Step 3.} Iteratively prune leaves and adjacent from the Join and Split tree and add them to the Contour Tree until they are empty.
+
+\textbf{Step 4.} Remove augmentation if necessary and output contour tree.
+
+The running time of this algorithm is $O(n\alpha(n))$ where alpha is the inverse Ackerman function. For all practical intents and purpose the running time of this algorithm is linear. It's space complexity is linear as well.
+
+\section{Parallel Algorithm}
 
 * ----- <roadsign> Peter Construction Co. </roadsign> *
 
-% @TODO Define a W-Structure.
 
-In this chapter we will study the w-structures empirically by implementing the algorithms that we can developed in Chapter \ref{chapter2} and using them to analyse real world data sets. The reason for studying them in practise is to learn more about them and explore how exactly they slow down computation. To accomplish this we will set two primary objectives. Firstly to correlate the iterations needed to collapse the contour tree in the merge phase of the algorithm with its w-diameter. This aims to give strength to the hypothesis that the w-structures do slow down computation in practise. Secondly to demonstrate that w-structures are found in real world data and do appear more abundantly as the size of datasets increases. 
-
-In addition to out primary objectives there are some additional topics, related to the empirical study, that will be explored
-
-\begin{itemize}
-    \item Description the implementation of all used algorithms.
-    \item Demonstration of the running time of the implementations of the algorithms.
-    \item Correlating iterations for collapse with w-diameter of randomly generated tree.
-    \item Determining the smallest 2-dimensional grid dataset that exhibits a w-structure.
-    \item Discussion on the kinds of structures in raw data that produce w-structures in the contour trees.
-    \item Discussion on whether it is possible to determine the w-diameter of a datasets without computing it's contour tree beforehand.
-    %\item Exploring the statistical distribution of w-structures in randomly generated trees.
-\end{itemize}
-
-%The first step to overcoming a problem is to learn about it. We .
-%As a result of this study we will be able to shed light on the practical obstacles that the w-structures pose. 
-
-\section{Implemented Algorithms}
-
-For the purpose of the empirical study we implemented all three w-diameter algorithms we developed in the previous chapter. Those are the brute force algorithm, the 2xBFS and DP algorithms. In order to produce the contour trees of real life data sets we also implemented the serial version of the contour tree algorithm that is based directly on \cite{carr-masters}. To test our implementations for correctness we required the generations of more data sets than we had. This is why we have also written three small utility programs. One generates randomly populated data grids of size $n \times m$, the second generates random trees on $n$ vertices and lastly one that generates all $n \times m$ permutations of data grids populated with the numbers from $1$ to $n \times m$.  All algorithms were implemented in C++ and all algorithms are serial.
-
-The first algorithm that we implemented was the algorithm for computing the contour tree. To keep the implementation of this algorithm straightforward we have opted for working with two dimensional data sets only. To ensure the correctness of the implementation we have ran the code against code provided by Dr. Hamish Carr that implements the same algorithm. We have found that the two implementations produce the same output for all data sets we have tested - both from real data and random data.
-
-For the brute force algorithm and the 2xBFS algorithms we based our implementation entirely on the pseudocode provided in the previous chapter. The source code for those can be found in the appendix. For the DP algorithm we had to implemented a bottom up approach because the recursive one we suggested in the previous chapter was not efficient enough for large data sets. To adapt the algorithm to a bottom approach we firstly ran a standard Breadth First Search from a node in the tree. With it we computed the leaves, 1st order leaves, 2nd order leaves and so on. After this we extracted all of the code that was used in the backtracking phase of the Depth First Search and applied it first to all leaves, than 1st order leaves and so on. This ensured that all children of a vertex were computed before the node it self and allowed us to avoid using recursion at the expense of some additional preprocessing and higher memory footprint for storing the order of a vertex.
-
-In order to test the w-diameter algorithms we compared their output to one another because there is no other way to establish the ground truth. We considered the brute force algorithm to be the most reliable because it's correctness if most obviously seen and because it is the easiest to implement and hence reduced the chance of programming error. In all of out tests including real and random data the brute force and DP algorithms produced identical results and the 2xBFS algorithm produces results of no more than two less. This is consistent with the proofs we presented in the previous section.
-
-The utility program that generates randomly populated $n \times m$ grids was straightforward forward and only required two nested loops and the generation of uniform random numbers. The program for generating permutations was done by generating all permutation on the numbers $\{1, 2, ..., n \times m\}$ and them reshaping the permutations into a $n \times m$ array. The program for generating random trees was developed using the union-find data structure. We start off will a graph on $n$ vertices and $0$ edges. We start adding edge between randomly selected vertices and we use the union-find data structure to make sure they are not in the same connected component. For if they are we would be introducing a cycle. This process repeats until all vertices are not in the same connected component.
-
-The only third party program that was used was provided by Hamish Carr and it was his implementation of this contour tree algorithm. 
-
-% @TODO Describe how
-%Another algorithm I implemented is one that generates all possible $n \times m$ 2-d grids. The objective here is to find the minimum one that produces a w-structure.
-
-%Lastly I implemented the algorithm in [] that computes extended persistence. I did this to verify the claims that I will make in the next chapter about the pairing of the global minimum and maximum.
-
-%All of the implementation are serial and not attempt has been made to parallelise them. There was simply no point in that as it is not the main objective of this dissertation.
-
-%I have also used several third party applications. The first one is Hamish Carr's serial and parallel implementations of the CT. I have also used software that computer persistent homology called Perseus* to test the correctness of the implementation of the one I have.
-
-\subsection{Datasets}
-
-* Ask Hamish about these. *
+In the year 2016 there was a paper [] published that introduced a data parallel implementation of the contour tree algorithm. The algorithm follows the same two phases of first computing join and split trees and them combining them. We will neglect the details in the new data-parallel way of computing join and split trees as they are not as relevant to the dissertation and the problem we are addressing.  
 
 
-\subsection{Running Times}
+% @TODO Talk about works and shit and parallelism and add lemma ref
+The merge phase of the new algorithm has remained large unchanged. The only difference is that leaves are batched and processed in parallel. This is where the bottleneck of the parallel algorithm lies. Imagine a long chain such as in example []. If we do this approach then our parallel algorithm will be no better than a serial one. We are bottlenecked by the structure of the tree. 
 
-% @TODO Run tests again with new BFS
+On the other hand if we are able to collapse long chains such as that then effectively we obtain a tree with no vertices of degree two. By out lemma [] we have that at least half of it's vertices will be leaves and all leaves can be processed in parallel.
 
-% @TODO Fix the end of this paragraph.
-Now we will demonstrate that the running times of the algorithms we have implemented correspond to the theoretical results we proved in the previous chapter. We will only test the 2xBFS and DP algorithms because they are the only novel ones. As such they have not yet been implemented to out knowledge. The biggest contribution here is demonstrating is that the DP algorithm does scale linearly with randomly generated data input. This shows that the average running time of that algorithm may be linear and not quadratic which we have shown to be it's worse case running time. A more detailed algorithmic analysis is needed to prove this theoretically. We will defer doing so for now.
+There is a way to collapse chains with a monotone paths. This is a short description of it. There is however no way to collapse non monotone chain. Therefore long chain with many zig zags in them serialize the parallel algorithm. Out main goal will be to explore long zig zag chains such as that one and try to find a way for the algorithm to collapse them and have logarithmic collapse.
 
-The following chart shows the running time of the two algorithms on a sequence of randomly generated trees. The number of vertices in the trees is plotted on the horizontal axis and the running time in seconds is plotted in the vertical axis.
+* Explain the zig zags better, but don't go into too much detail until the next chapter.*
 
-% @TODO Do this propertly fix the Map in the image (Column D)
+\section{Contour Tree Simplification}
+
+Contour Trees are summary of the connectivity of the level sets of a Morse function. They are primarily used in scientific visualisation. A central problem in visualisation is simplifying the data that is presented to enable human comprehension. The contour tree of a large enough data set can quickly become an unwieldy beast in it's own right. This is why it is vital to employ techniques that simplify remove parts of the contour tree that correspond to less "significant" topological features.
+
+One such technique is Branch Decomposition. It was first introduced in \cite{ct-branch-decomp}. It involved decomposing the contour tree into a set of disjoint monotone paths which cover all edges of the tree. This is called branch decomposition and the trivial one is where we take every vertex to be a separate path. A more complex one is shown in this example. Furthermore a branch decomposition is hierarchical when there is exactly one branch that connects two leaves and every other branch connects a leaf to an interior node.
+
+The branches in this scheme represent pair of critical points and form the basis for topological simplification that can be applied. We apply a simplification by removing a branch that does not disconnect the tree. This produces a hierarchy of cancellations like in example []. We define the persistence of a branch to be the bigger of the difference between it's end points and the persistence of it's children. Branches of high persistence reflect more prominent features in the tree. We apply the simplification by removing branches with low persistence that do not disconnect the tree.
 
 \begin{figure}%
     \centering
-    \includegraphics[center, scale=0.7 ]{./images/running-time.eps}
-    \caption{Running time of 2xBFS (blue) and DP (red) on randomly generated trees. }%
-    \label{fig:case1.1}%
+    \subfloat[Contour Tree.]{{\includegraphics[scale=0.4]{./images/w3x3.eps}}}%
+    \qquad
+    \subfloat[Branch Decomposition.]{{\includegraphics[scale=0.4 ]{./images/branch-decomposition-W3x3.eps}}}%
+    \caption{Branch Decomposition of a Contour tree.}%
+    \label{fig:example}%
 \end{figure}
 
-This graph shows that the running time of the two algorithm on randomly generated data sets is linear. 
-
-This is further supported by the statistical analysis through linear regression. *Do line linear regression and output findings*
-
-Let us now analyse the running time of the algorithms on real data. We can see on the following table that the linear relationship between the two still holds. The "Factor" column indicated how many times slower DP is compared to 2xBFS.
+%\includegraphics[center, scale=0.5 ]{./images/branch-decomposition-W3x3.eps}
+%\includegraphics[center, scale=0.5]{./images/w3x3.eps}
 
 
-% @TODO Optimise code to run on last GTopo.
-\begin{center}
-\begin{tabular}{l*{6}{c}r}
-Dataset             & Vertices          & 2xBFS          & DP            & Factor \\
-\hline
-vanc                & 378               & 0.000254	& 0.000477      & 1.88 \\
-vancouverNE         & 4851              & 0.003125	& 0.006393      & 2.05 \\
-vancouverNW         & 4900              & 0.003165	& 0.006536      & 2.07 \\
-vancouverSE         & 4950              & 0.002927	& 0.008382      & 2.86 \\
-vancouverSW         & 5000              & 0.003119	& 0.006285      & 2.02 \\
-vancouverSWNE       & 1250              & 0.000784	& 0.001408      & 1.80 \\
-vancouverSWNW       & 1250              & 0.000862	& 0.001490      & 1.73 \\
-vancouverSWSE       & 1275              & 0.000815	& 0.001651      & 2.03 \\
-vancouverSWSW       & 1225              & 0.000814	& 0.001412      & 1.73 \\
-icefield            & 57600             & 0.040002      & 0.070194      & 1.75 \\
-pukaskwa            & 881600            & 0.551351      & 0.973880      & 1.76 \\
-gtopo30w020n40      & 28800000          & -1            & -1            & -1 \\
+% @TODO Todo talk about how this is used to remove noise and artifacts in data.
 
-\end{tabular}
-\end{center}
-
-% @TODO What would further tests include?
-
-The running time of 2xBFS is as we can expect linear. The more interesting finding we obtained is that on average in practise the running time of DP is linear as well. Our hypothesis that that the expected running time would drop to linear on trees is proven to be correct by the data. Further tests would include ...
-
-\section{Analysing w-diameter}
-
-I will analyse three types of datasets. Two of the types are taken from real life data and one is synthetic. The first type is data that is the elevation of a mountain range in Canada. The second one is images. The third one is randomly generated graphs. The goal here is firstly to demonstrate where w-structures appear in the contour trees of real life data. The second goal is to analyse random graphs and derive statistical information on the probability of having large w-structures in contour trees of large data sets.
+% @TODO Remove Stay Tuned
+The paper \cite{ct-branch-decomp} cites that the persistence defined in that way is similar to persistence first defined in \cite{persistence-original}. In Chapter N of this dissertation we will demonstrate that this claim is either incorrect of misleading. Stay tuned folks.
 
 
-% @TODO Define the augmented and unaugmented controur tree
-This table is for augmented contour trees.
 
-\subsection{Mountain Range Data}
+%First we have to triangulate the mesh.
 
-This is elevation data taken from the Canadian Mountains. *Ask Hamish about info on the data* *Ask which algorihm to use for iterations*
+%Then the mesh is a height graph.
 
+%And the contour tree is a height tree.
 
-%Oh Canada is so great and amazing. Oh motherland of maple and Celine Dione I bow before you beautiful nature and spectacular mountains.
+%Now define the join and split trees.
 
-%The datasets are all part of something. Explain where they are from.
+%Say they are equal for the mesh and the CT
 
-% @TODO Add iterations needed for collapse 
+%Compute the join/split tree of the mesh.
 
-% @TODO Finish table. Iterations are taken from PPPContourTreeCriticalOpenMP
+%Now combine them using the combination algorithm.
 
-\begin{center}
-\begin{tabular}{l*{6}{c}r}
-Dataset             & Vectices  & 2BFS  & DP    & NBFS  & Diameter  & Iterations\\
-\hline
-vanc                & 378       & 2     & 2     & 2     & 311       & 2  \\
-vancouverNE         & 4851      & 4     & 5     & 5     & 1338      & 5  \\
-vancouverNW         & 4900      & 5     & 5     & 5     & 1456      & 5  \\
-vancouverSE         & 4950      & 6     & 6     & 6     & 1306      & 5  \\
-vancouverSW         & 5000      & 4     & 4     & 4     & 1977      & 4  \\
-vancouverSWNE       & 1250      & 5     & 5     & 5     & 423       & 4  \\
-vancouverSWNW       & 1250      & 3     & 3     & 3     & 712       & 3  \\
-vancouverSWSE       & 1275      & 3     & 3     & 3     & 759       & 3  \\
-vancouverSWSW       & 1225      & 2     & 2     & 2     & 845       & 3  \\
-icefield            & 57600     & 7     & 7     & 7     & 12280     & 6  \\
-pukaskwa            & 881600    & 180   & 182   & N/A   & 374866    & 94 \\
-gtopo30w020n40      & 28800000  & 8     & 10    & N/A   & 15766966  & 8  \\
-
-\end{tabular}
-\end{center}
-
-All the vancouver data sets are similar. There we have a very low w-diameter compared to diameter. Speculate as to why that may be the case.
-
-The most interesting case is pukaskwa. Notice how pukaskwa has 881600 edges this means that under logarithmic collapse we should take 13 iteration. Instead we do 90. This is a problem, no?
-
-\subsection{Images}
-
-*Find some images and test them and write about them.*
-
-\subsection{Random Data}
-
-Do random trees to get the distribution of Ws.
-Do random trees to get the iterations correlation of Ws.
-
-Talk about the value of random data in providing statistics. It may not be realistic but we may draw conclusion about the distribution of w-diameters in random trees.
-
-This is taken from generating random data sets and taking the distribution of the w-diameters of the trees. As you can see it kind of looks like a normal distribution. Interesting is it not? Talk about random samples and the law of large numbers.
-
-Here the overall conclusion that can be obtained from this analysis.
-
-\subsection{Conclusions}
-
-These are the conclusions from the empirical study.
-
-\begin{itemize}
-    \item The w-diameter of a tree is a much better upper bound on the algorithm.
-    \item The w-diameter can severely prevent logarithmic collapse.
-    \item The w-diameter becomes prevalent in random samples of randomly generated tree. Therefore the law of large number will affect it.
-\end{itemize}
-
-
-Also find some data sets to analyse. Maybe do some medical 3-dimentional data sets.
-
-Talk about why random data sets may not be completely reliable.
-
-*Show some graphs and shit*
-
-*Make some reflective summary of scheize*
-
-\section{Finding the smallest W-structure}
-
-An interesting question that arises is what is the smallest dataset that produces a w-structure of at least three kinks. This has educational value. It's also useful for out general understanding. It will also serve as a very important counterexample in the next chapter. It is good for counterexamples to be as small as possible. That way they it's easier to articulate the counterarguments.
-
-\section{Getting the w-diameter from raw data}
-
-This analysis was all well and good, but it doesn't do too much good as it is done after the contour tree has been computed. The next step is to produce and algorithm that either produces it from raw data or produces it from the join and split tree. The hope for this would that is there is some priori information before going into the merge phase of he algorithm, we may be able to avoid the serialisation along the kinky paths.
-
-\section{Future work for the empirical study.}
-
-Summarise things say what was successful, what was not. That kind of stuff.
-
-This chapter does seem short. This is because most of the work put in the dissertation has either been theoretical which is in the previous chapters. or on impelmenting the newly created algorithms, which are in the appendix.
-
+%There are many algorithms for computing the contour tree. But the Great Khan of all algorithms is the ONE. And then there's the parallel one!

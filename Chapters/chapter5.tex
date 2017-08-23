@@ -1,6 +1,206 @@
-\chapter{Conclusion}
+% @TODO Change this
+\chapter{Homology}
 \label{chapter5}
 
-This has been a thrillig journey through the depths of algebraic topology. We have ventures through arcane domains where few brave men and women have ever set foot. We came out victorius and our battle scars will remind us of the glorious adventures of the past.
+\section{Homology}
 
-* I'll write the intro and conclusion once everything else it complete because they depend on things not yet int. *
+The guiding principle behind the Euler Characteristic was to decompose a space into cells, count them and perform cancellations based on the parity of the dimension of the cells. This approach yields important information about a topological space, but we can hope to gain more by generalising it. We shall accomplish this by leveraging the mathematical machinery of Homology. Homology is a tool that was first developed to measure the topological complexity high dimensional manifolds \cite{persistence-original} by identifying what other manifolds can be embedded or surround them. For example with homology we can detect that there is a hole in the torus.
+
+The theory of Homology comes in two flavours - \textbf{simplical} and \textbf{singular}. Simplicial homology is geared towards analysing simplical complexes and singular homology is the appropriate generalisation for arbitrary topological spaces. In this dissertation we restrict attention on singular homology because we are primarily interested in the computational aspect of homology. For this weed tractable spaces. We will however on occasion refer to singular homology when we desire to leverage a more general result from the relevant theory. More information on singular homology can be found in the following sources \cite{algebraic-topology, elementary-applied-topology}
+
+
+% @TODO Finish this
+Homology is built around the interplay between the two key concepts of \textbf{cycles} and \textbf{boundaries}. Let us consider the simplical complex depicted on Figure \ref{fig:hom-sc} as an example. It consists of four vertices $\{a, b, c, d\}$, five edges $\{ab, bc, ca, db, cb\}$ and one face $\{abc\}$. The boundary of a simplex consists of its codimension-1 faces. For example the boundary of the 1-dim simplex $ab$ consists of the 0-dim simplices $a \text{ and } b$. The boundary of the 2-dim simplex $abc$ consists of the 1-dim simplices $ab, ac \text{ and } cb$. A cycle on the other hand consists of the simplices that form the boundary of a simplex that is of one dimension higher (regardless of whether that bigger simplex is in the complex). In our example we can observe that the edges $ab, bc, ca$ and $bd, dc, cb$ form a 1-dim cycle.  This also happens to be in line with the graph theoretic definition. The first and last vertex of the paths formed by those edges are the same. A more geometric way to put it is that the edges enclose an 2-dim area of space.  To expand this definition to higher dimensional cycles picture the faces of the tetrahedron. They would form a 2-cycle as they completely enclose a 3-dim volume. In general an n-cycle consists of simplices that are the boundary of a n+1-dim simplex
+
+\begin{figure}[h]%
+    \centering
+    \includegraphics[scale=0.4]{./images/chapter1/homology-sc.eps}%
+    \caption{An Example Simplical Complex}%
+    \label{fig:hom-sc}%
+\end{figure}
+
+
+
+
+Notice also that the paths formed by the edges $bc, ca, ab$ and $ca, ab, bc$ are also cycles. The only difference is which vertex they start and end at. We would like to disregard the choice of starting point completely because those three paths represent the same structure in the simplical complex. To this end we shall introduce additive algebraic notation. In this notation the same cycle would be written as $ab + bc + ca$.  We will soon demonstrate that additive notation is not only used to illustrate the point of disregarding edge order. Its more important aspect is that it allows us to treat sums of edges as linear combinations in an abstract vector space.
+
+The interplay between between cycles and boundaries is in asking the question - which cycles in the complex are \textbf{not} the boundary of a higher dimensional simplex. This is important because these cycles cannot be contracted to a point. The lack of higher dimensional simplex the enclose means there is a void of some dimension in our simplex.
+
+Let us be more formal now. To begin with, we will operate with vector spaces over the field of coefficients $\mathbb{Z}_2 = \{0, 1\}$ together with the standard operations of addition and multiplication modulo two. We could develop the same theory with the familiar coefficient in $\mathbb{R}$ but we would sacrifice geometric intuition and computational efficiency later on. The building blocks of the homology of a simplical complex $X$ are:
+
+
+\begin{itemize}
+    \item The \textbf{vector spaces of n-chains} of $X$. This is denoted as $C_n(X)$. It is an abstract vector space with basis all the n-simplices of $X$ for $n \in \{0, 1, 2, ..., \}$.
+    \item The \textbf{boundary maps} of the n-chains of $X$. These are linear maps between consecutive vector spaces of n-chains. It is denoted as $\partial_n : C_n(X) \to C_{n-1}(X)$.
+\end{itemize}
+
+In our previous example $C_0(X)$ was the vector space that is spanned by the vertices $\{a, b, c, d\}$. We write this as $C_0(X) = span(\{a, b, c, d\})$. A vector in $C_0(X)$ is a linear combination of the basis vectors using coefficients in $\mathbb{Z}_2$. Let $\sigma \in C_0(X)$ be a vector, then we can express it as $\sigma  = \alpha_0a + \alpha_1b + \alpha_2c + \alpha_3d$ where $\alpha_i \in \{0 ,1\}$ for every $i = 0, 1, 2, 3$. Going a dimension up $C_1(X) = span(\{ab, bc, ca, cd, bd\})$. As we pointed out earlier the cycle that consists of the edges $bc, cd, db$ is represented by the sum or linear combination $bc + dc + bd = 0ab + 1bc + 0ca + 1cd + 1bd$ and has coordinates $(0, 1, 0, 1, 1)$ in $C_1(X)$ with respect to the basis we have chosen.
+
+* Badly explained redo this *
+We may of course wish to work with to use a different basis for some of the n-chains. The operation of change of basis is useful in linear algebra and can have an effect on the computational efficiency, especially when dealing with projections and quotient spaces. We can use any linear combinations of the simplicies so long as they have the same span and form a basis. For example $C_0(X) = span(\{a + b, b, c, c + d\})$ because the vectors $(1, 1, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0) \text { and } (0, 0, 1, 1,)$ are linearly independent.
+
+The boundary maps are defined analogously to how we presented them in the beginning of the section. The effect a boundary map has on a basis element $\sigma \in C_n(X)$ is that it returns the linear combination consisting of basis elements of $C_{n-1}(X)$ that are codimension-1 faces of $\sigma$. If $\sigma$ is the affine combination of the vertices $[v_0, v_1, ..., v_n]$ then we define it's boundary as:
+
+$$ \partial(\sigma) = \partial([v_0, v_1, ..., v_n]) = \sum_{i=0}^{n}[v_0, ... , \hat{v_i}, ..., v_n] $$
+
+We would also like to extend $\partial$ linearly. Linear functions commute with vector addition and scalar multiplication. This allows us to know everything that is to know about a linear function through it's effect on the basis vectors of its domain. This is because in the general setting for a linear function $f : V \to W$ we have that: $ f\big(\sum_{i}{a_iv_i}\big) = \sum_i{a_if(v_i)} $. We have demonstrated the effects of $\partial_n$ on the basis vectors of $C_n(X)$. All we have to do is extend it linearly. This results in the following definition:
+
+
+$$ \partial\bigg(\sum_{\sigma}a_{\sigma}\sigma\bigg) = \partial\bigg(\sum_{\sigma}{a_{\sigma}[v_{\sigma_0}, v_{\sigma_1}, ..., v_{\sigma_n}]}\bigg) = \sum_{\sigma}{a_{\sigma} \sum_{i=0}^{n}[v_{\sigma_0},..., \hat{v}_{\sigma_i}, ..., v_{\sigma_n}]} .$$
+
+
+% @TODO Chain complex more generally.
+What we have thus obtained is a collection of vector spaces together with linear maps between. We will call it a chain complex. This is the quiver representation of a chain complex of a simplicat comples of dimension n.
+
+
+$$ C_n(X) \overset{\partial_n}{\longrightarrow} C_{n-1}(X) \overset{\partial_{n-1}}{\longrightarrow} ... \overset{\partial_2}{\longrightarrow} C_1(X) \overset{\partial_1}{\longrightarrow} C_0(X) $$
+
+For convenience we can extend this chain on both sided with the zero dimensional vector space as follows:
+
+$$ 0 \overset{\partial_{n+1}}{\longrightarrow} C_n(X) \overset{\partial_{n}}{\longrightarrow} C_{n-1}(X) \overset{\partial_{n-1}}{\longrightarrow} ... \longrightarrow C_1(X) \overset{\partial_1}{\longrightarrow} C_0(X) \overset{\partial_0}{\longrightarrow} 0. $$
+
+In this sequence $\partial_{n+1} \text{ and } \partial_{0}$ are zero maps. In the case of $\partial_{n+1}$ it maps the zero vector of $0$ to the zero vector of $C_n(X)$ and $\partial_0$ maps all vectors in $C_0(X)$ to the zero vector in $0$.
+
+Let us now translate the geometric intuition we have of cycles and boundaries to domain of algebra. The boundaries are provided to us by the boundary maps. Thus the set of all boundaries in $C_n(X)$ is given by the image of $C_{n+1}(X)$ under $\partial_{n+1}$ or $im(\partial_{n+1})$. The cycles in $C_n(X)$ are given by all the vectors in $C_n(X)$ that go to the zero vector of $C_{n-1}(X)$ under $\partial_n$. Intuitively the boundary of an n-chain is zero exactly when all of the faces of the simplices in the chain have even parity and cancel in our binary algebra. The set of all vectors that go to the zero vector under the boundary map $\partial$ is precisely the kernel of $\partial$ or $ker(\partial)$.
+
+From linear algebra we know that for a linear function $f: V \to W$, $ker(f)$ is a linear subspace of $V$ and $im(f)$ is a subspace of $W$. In the context of chain complexes this means that the images and kernels of all the boudary maps are linear subspaces of their respective n-chains. Before learning how the interplay between cycles and boundaries is translated in this setting we must present the following fundamental theorem
+
+\begin{lem} Fundamental Lemma of Homology. $(\partial_{n-1} \circ \partial_n) (\sigma) = 0, \text{ for every } \sigma \in C_{n}(X)$. \end{lem}
+
+\begin{proof}
+    We will only sketch the intuitive outline of the proof and refer the reader to \cite{algebraic-topology} for a more complete version.
+
+    Let us consider the boundary of $\sigma \in C_n(X)$ which is $\partial_n(\sigma)$. It contains all of the n-1 faces of $\sigma$. Furthermore every n-2 face of $\sigma$ belongs to exactly two n-1 faces of sigma. Therefore they will cancel out in the second boundary operation $\partial_{n-1}\partial_n(\sigma)$.
+\end{proof}
+
+
+\begin{cor}  For every two consecutive boundary maps $\partial_n$ and $\partial_{n-1}$ in a chain complex $im(\partial_n) \subseteq ker(\partial_{n-1})$. \end{cor}
+
+\begin{proof}
+    If the image of $\partial_n$ were not in the kernel of $\partial_{n-1}$ then there would be at least one n-chain $\sigma$ for which $(\partial_{n-1} \circ \partial_n) (\sigma) \ne 0$. By the Fundamental Lemma of Homology this is not possible.
+\end{proof}
+
+
+% @TODO and example
+* Add the definitions of quotient in the appendix *
+
+We can obtain the kernel as a way of detecting the cycles in chain complex. But how can we disregard the cycles that are covered by a boundary? The answer is another algebraic operation. The quotient of the cycles and their subspace the boundaries. What the quotient operation does is to effectively send all cycles that consist entirely of boundaries to zero. *Show example with previous example*. This is precicely how we define the n-th homology of a chain map.
+
+
+\begin{defn} The n-th homology group of a chain map is vector space $H_n(X) = ker(\partial_{n+1})\big/im(\partial_n)$. \end{defn}
+
+From linear algebra \cite{lin-alg-done-right} we know two important things about the quotient $H_n(X)$. The first one is that the quotient of a vector space and its subspace is a vector space. The second one is that the dimension of the quotient space is equal to the difference of the dimension of the vector space and the dimension of the subspace. Therefore $H_n(X)$ is a vector space and $dim(H_n(X)) = dim(ker(\partial_{n+1})) - dim(im(\partial_n))$. Elements of the homology groups are called homology classes.
+
+*I will now give you some example of homology computations. Connect them to Euler characteristic*
+
+% @TODO Redo this
+Now that we have ventured into the algebra and computed something based on the topology of the space it is time to interpret those results. 
+What we are most interested is the dimension of the homology groups. The dimension of a finite dimensional vector space is the number of vectors in a basis of that vector space. Thus if $H_n(X) \simeq \mathbb{Z}_2^m$ then $dim(H_n(X)) = m$. The dimensions of the homology groups are also known as the Betti numbers. The Betti numbers have the following topological interpretation.
+
+
+\begin{itemize}
+    \item Betti zero - $b_0$ is the number of connected components
+    \item Betti one - $b_1$ is the number one dimentional holes in a space or holes.
+    \item Betti two - $b_3$ is the number two dimentional holes in a space or voids.
+\end{itemize}
+
+
+% @TODO What is nice enough?
+The higher order Betti numbers represent the number of higher dimensional holes. Given a nice enough topological space we can expect the Betting numbers from a point onwards to all be zero. This of course means that the according homology group are the zero dimensional vector space.
+
+*Give example with the torus*
+
+This is exactly what we wanted from Homology. An apparatus that allows us distinguish topological spaces based on the connectivity of their n-dimensional simplical complexes.
+
+* Leave this or not? *
+
+Before going forward we must note that we did not have to use coeficients in $\mathbb{Z}_2$ we could have equally used coeficients in $\mathbb{Z}$ but $\mathbb{Z}$ is not a field and we would have obtained that the $C_n(X)$ and $H_n(X)$ are not vector spaces but free abelian groups. If instead we had picked any arbitrary ring we would have obtained free modules instead of free abelian groups. We did indeed lose some information but sticking to vector spaces. The Betti numbers are not always equal, but by the Coeficient Theorem they are for suitably nice spaces. We readily refer the reader to \cite{algebraic-topology} to learn about those. We shall continue the treatment of the subject in the same spirit of vector spaces.
+
+
+There are two more notions we need to define to be able to fully utilise the power of homology - that of reduced and relative homology.
+
+The need for reduced homology arises from a slight inconsistency in the interpretation of the homology groups. Take for example the topological space that consists of a single point. In that topological space all homology groups except for the $H_0$ are trivial. It is convenient in many application to make $H_0$ behave like the rest of the homology group and specifically be trivial in our example. In this sense path-connected topological spaces will have trivial zeroth homology. The geometrical interpretation of this extension is the reduces 0th homology counts the number of voids that separate path connected components of a topological space.
+
+In formal terms we augment the chain complex of a topological space $X$ with one additional group $\mathbb{Z}$.
+
+$$ ... \longrightarrow C_1(X) \longrightarrow C_0(X) \overset{\epsilon}{\longrightarrow} \mathbb{Z}_2 \longrightarrow 0 $$
+
+In this augmented chain the function $\epsilon: C_0(X) \to \mathbb{Z}_2$ is defined as $\epsilon\big(\sum_{i}n_i\sigma_i\big) = \sum_{i}n_i$. The value of $\epsilon$ is equal to the parity of the number of simplicies in the chain. We will define the reduces homology as the homology of the augmented chain complex or $\overset{\sim}{H}_n(X)$. We have that $\overset{\sim}{H}_n(X) = H_n(X)$ for $n > 0$ and $\overset{\sim}{H}_0(X) \bigoplus \mathbb{Z}_2 = H_0(X) $
+
+Another useful notion is that of relative homology. Just as in abstract algebra we can extract useful properties of quotient groups a natural question to ask is whether we can do something similar in the setting of algebraic topology and quotient spaces. 
+
+Let $A$ be a subcomplex of $X$. Let us then define $C_n(X, A) = C_n(X) / C_n(A)$ and define a new relative chain complex as
+
+$$ ... \longrightarrow C_n(X, A) \longrightarrow ... \longrightarrow C_1(X, A) \longrightarrow C_0(X, A) \longrightarrow 0. $$
+
+This is a chain complex because...
+
+% @TODO Explain Why
+More importantly the relative homology $H_n(X, A)$ is not defined as $H_n(X) / H_n(A)$ but as the homology of the chain complex defined above. As the boundary maps take $C_n(A)$ to $C_{n-1}(A)$ the boundary maps induce relative boundary maps on the chain complex. We call the cycles and boundaries of the relative chain complex relative chains and relative boundaries.
+
+Intuitively here is how we can think of the relative homology classes \cite{algebraic-topology}.
+
+A relative chain $\alpha$ is a relative cycle when it's boundary $\partial\alpha $ is in $C_n(A)$.
+
+A relative cycle $\alpha$ is trivial in the homology when it's the sum of a boundary $\partial \beta$ of $\beta \in C_{n+1}(X)$ and a chain $\gamma \in C_n(A)$.
+
+There is a way to relate the this purely algebraic machinery to our geometric intuition for "nice" enough spaces.
+
+
+% @TODO Give example with disc and sphere!
+
+
+% @TODO Finish this.
+\begin{thm} Excision - Let $X$ be a topological space, let $A \subseteq X$ and let $U \subseteq A$ where the closure of $U$ is contained in the interiour of $A$. Then   \end{thm}
+
+
+A corollary of this is that if $A$ is a close subcomplex of $X$ then $H_n(X, A) \simeq \overset{\sim}{H}_n(X/A, A/A)$ where $A/A$ is a single point in $X/A$. This allows us to leverage our geometric intuition about quotient space to compute homology groups.
+
+\section{Induced Maps on Homology}
+
+Before introducing ourselves with persistent homology we will take a slight detour in order to introduce the last piece that we are missing to enable its construction. There is a general result in singular homology that shows the interaction of continuous maps and homomorphisms between homology groups.
+
+\begin{defn} Let $X$ and $Y$ be two topological spaces. Let $f: X \to Y$ be a continuous function. Then $f$ induces a homomorphism $f_*: H_n(X) \to H_n(Y)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
+
+This means that if we have a continuous function between two spaces we can immediately associate the homology classes of $X$ to those of $Y$. All we have to do to obtain the induced map is to compose the simplices with the continuous function $f$. The details of this process are outlines in \cite{algebraic-topology}.
+
+
+% @TODO WHY?!
+This general result is not appropriate for simplicial complexes. WHY?! We need a more tracktable definition to aid us in our computation. We will thus present the following combinatorially flavoured definition given by \cite{combinatorial-algebraic-topology}. 
+
+
+\begin{defn} Let $X$ and $Y$ be two finite abstract simplicial complexes. A function $f: X \to Y$ is a simplical map when if $\sigma$ is a simplex of $X$ then $f(\sigma)$ is a simplex of $Y$. \end{defn}
+
+The two most important observations we can make based on this defitions are the following:
+
+\begin{itemize}
+    \item The composition of two simplicial maps is simplicial.
+    \item When $Y$ is a subcompex of $X$ the inclusion map is a simplicial map.
+\end{itemize}
+
+
+% @TODO Define a homology class
+The reason why we introduced simplicial maps is so that we can pose the following question. If there is a simplical map between two simplicial complexes, can we use it to relate their homology classes? The answer is yes, we can thanks to \cite{combinatorial-algebraic-topology}!
+
+
+% @TODO Are simplicial maps continuous?
+
+\begin{defn} Let $X$ and $Y$ be two simplical complexes and $f: X \to Y$ be a simplicial map. Then $f$ induces a homomorphism $f_*: H_n(X) \to H_n(Y)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
+
+The homomorphism is induces by taking the simplicies of a chain through the simplicial map and the considering the homology class the chain ends up in (if any). Detail on this can be found in \cite{combinatorial-algebraic-topology}.
+
+We will further expand this definition to also cover relative chain maps and relative homologies.
+
+\begin{defn} Let $X$ and $Y$ be two simplical complexes and let $A \subseteq X$ and $B \subseteq Y$ be two subcomplexes. Let $f: X \to Y$ be a simplicial map such that $f(A) \subseteq B$. Then $f$ induces a homomorphism $f_*: H_n(X, A) \to H_n(Y, B)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
+
+We will use the shorthand $f: (X, A) \to (Y, B)$ for functions that satisfy the criteria of this definition. The function $f$ is called this a simplicial map between simplicial pairs (analogous to continuous map between topological pairs in \cite{algebraic-topology}). 
+
+
+% @TODO Define absolute homology
+The homomorphism is induced by running the relative homology classes through the simplicial map and recording which class their image lands in. The primary type of map we will use in this chapter is a specific kind of simplicial map - the inclusion map. The reason for this will become clear in the following section. In the case of absolute homology when $X$ is a simplicial complex and $A$ is a subcomplex of $X$ there is a natural inclusion map $i: A \to X$ which is injective but not necessarily surjective. It takes the simplicies of $A$ to exactly the same simplicies of $X$ and leaves the simplicies outside of $A$ untouched. 
+
+We shall define the inclusion of relative homology analogously. Let $B$ be another subcomplex of $X$ such that $A$ is also a subcomplex of $B$, or $A \subseteq B \subseteq X$. Then let $i : X \to X$ be the identity map. As $A \subseteq B$ then the restriction $i_A: A \to B$ is a well defined function and therefore $i(A) \subseteq B$. Therefore there is a map $i$ between the pairs $(X, A)$ and $(X, B)$ such that $i(A) \subseteq B$ by the previous definition this map induces a homomorphism $i_* : H_n(X, A) \to H_n(X, B)$.
+
+
+% @TODO Should I talk about chain maps?
+% @TODO Add proof for all of this?

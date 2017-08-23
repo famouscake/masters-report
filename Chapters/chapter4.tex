@@ -1,450 +1,633 @@
-\chapter{Persistent Homology and Contour Trees}
+% @TODO Change this
+\chapter{Something "W" This Way Comes!}
 \label{chapter4}
 
-We will now take a look at one of the tools that has made topological data analysis so viable in the recent years. This tool is called Persistent Homology (PH). It is primarily used for measuring topological features such as shapes. This is done by analysing the homology of subsets of the entire space. To accomodate this new concept we must first introduce some additional properties of the relations of homologies of topological spaces and their continous images. Following our theoretical foray we will examine the practical aspects of the computation of persistent homology and its relation to the computation and simplification of contour trees.
+We will now continue the discussion on the difficulties of parallelising the algorithm for the computation of the contour tree in a more formal setting. In this Chapter we will develop theory that captures the informal description we outlined previously. We will use this theory to construct three algorithms for the detection of the largest w-structure in a height tree. We will also provide pseudocode, proof of correctness and proof of the space and time complexity of all presented algorithms.
 
-\section{Induced Maps on Homology}
+\section{W-Paths in Height Graphs}
 
-Before introducing ourselves with persistent homology we will take a slight detour in order to introduce the last piece that we are missing to enable its construction. There is a general result in singular homology that shows the interaction of continuous maps and homomorphisms between homology groups.
+What we are interested in are the paths in the height tree which form a zigzag pattern. As shown in fig[] they can be decomposed into monotone paths of alternating direction that share exactly one vertex. More formally, if $P$ is a path in a height tree we can always decompose it into vertexwise maximal monotone subpaths $(P_1, P_2, ..., P_k)$ such that $P_i \subseteq P$, $|P_i \cap P_{i+1}| = 1$ and $P_i \cup P_{i+1}$ is not a monotone path for $i \in \{1, 2, ..., k-1\}$ and $k \ge 1$. 
 
-\begin{defn} Let $X$ and $Y$ be two topological spaces. Let $f: X \to Y$ be a continuous function. Then $f$ induces a homomorphism $f_*: H_n(X) \to H_n(Y)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
+One way to characterise paths in a height tree is by the number of subpaths in their monotone path decomposition. The maximum path with respect to this property is precisely the lower bound on the parallel algorithm introduced in []. As a special case we must note that paths that can be decomposed into less than four monotone paths do not pose an algorithmic problem. To simplify this characterisation note that the number of subpaths in the monotone decomposition is exactly the number of vertices in which we change direction as we traverse the path. We shall name those special vertices kinks.
 
-This means that if we have a continuous function between two spaces we can immediately associate the homology classes of $X$ to those of $Y$. All we have to do to obtain the induced map is to compose the simplices with the continuous function $f$. The details of this process are outlines in \cite{algebraic-topology}.
+A kink in a path is a vertex whose two neighbours are either both higher or both lower. Given the path $(u_1, u_2, ... , u_k)$ an inside vertex $u_i \ne u_1, u_k$ is a kink when $h(u_i) \notin \big( min(h(u_{i-1}),~h(u_{i+1}),~max(h(u_{i-1}),~h(u_{i+1}) \big)$. To avoid cumbersome notation in this context we shall adopt a slight abuse of notation and in the future write similar statements as $h(u_i) \notin $ or $ \in $ $\big(h(u_{i-1}),~h(u_{i+1}) \big)$ where it will be understood that the lower bound of the interval is the smaller of the two and the upper bound the larger.
 
-
-% @TODO WHY?!
-This general result is not appropriate for simplicial complexes. WHY?! We need a more tracktable definition to aid us in our computation. We will thus present the following combinatorially flavoured definition given by \cite{combinatorial-algebraic-topology}. 
+We can use the number of kinks in a path to define a metric on it. Intuitively this is similar to how the length of a path measures the number of edges between it's vertices. We will make an analogous definition of the w-length of a path as the number of inside vertices which are kinks. Let us denote a path from $u$ to $v$ as $u \rightsquigarrow v$ and with $d(u \rightsquigarrow v)$ measure the length of the longest path between $u$ and $v$ and with $w(u \rightsquigarrow v)$ the path with the largest number of kinks (or the longest w-path). One immediate observation we can make is that $w(u \rightsquigarrow v) < d(u \rightsquigarrow v)$ for any two vertices in any graph. This follows from that fact that the longest path between $u$ and $v$ also has the largest number of vertices. A path with $k$ vertices has length $k-1$ and $k-2$ internal vertices which may or may not be kinks.
 
 
-\begin{defn} Let $X$ and $Y$ be two finite abstract simplicial complexes. A function $f: X \to Y$ is a simplical map when if $\sigma$ is a simplex of $X$ then $f(\sigma)$ is a simplex of $Y$. \end{defn}
+\section{W-Paths in Height trees}
 
-The two most important observations we can make based on this defitions are the following:
+We will now restrict our attention to height trees. Those are unsurprisingly height graph which are trees. The first key property of trees will make use of is that there is a unique path between any two vertices. This allows us to slightly simplify some of our notation.  Instead of  $d(u \rightsquigarrow v)$ and $w(u \rightsquigarrow v)$ we will write $d(u, v)$ and $w(u, v)$ respectively.  
 
-\begin{itemize}
-    \item The composition of two simplicial maps is simplicial.
-    \item When $Y$ is a subcompex of $X$ the inclusion map is a simplicial map.
-\end{itemize}
+We are now fully prepared to unveil that which we seek - the longest w-path in a tree (the one with the most kinks). As there is a unique path between any two vertices this can be posed as an optimisation problem as follows:
 
+$$ \max_{u, v \in V(T)}\{ w(u \rightsquigarrow v) \} =  \max_{u, v \in V(T)}\{ w(u, v) \} $$
 
-% @TODO Define a homology class
-The reason why we introduced simplicial maps is so that we can pose the following question. If there is a simplical map between two simplicial complexes, can we use it to relate their homology classes? The answer is yes, we can thanks to \cite{combinatorial-algebraic-topology}!
+The search space is quadratic in the number of vertices and this can be computed by running a modified version of Breadth First Search (BFS) from every vertex in the tree. This modified BFS computes the w-distances from a starting vertex to all others. The presudocode for this modification is presented in []. The running time for this is $O(n^2)$ and is far from satisfactory given that the actual algorithm for construction the contour tree runs in time $O(n\alpha(n))$. This is because in practical terms a $O(n^2)$ algorithm is completely unusable on datasets which a near linear time algorithm can process.
 
-
-% @TODO Are simplicial maps continuous?
-
-\begin{defn} Let $X$ and $Y$ be two simplical complexes and $f: X \to Y$ be a simplicial map. Then $f$ induces a homomorphism $f_*: H_n(X) \to H_n(Y)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
-
-The homomorphism is induces by taking the simplicies of a chain through the simplicial map and the considering the homology class the chain ends up in (if any). Detail on this can be found in \cite{combinatorial-algebraic-topology}.
-
-We will further expand this definition to also cover relative chain maps and relative homologies.
-
-\begin{defn} Let $X$ and $Y$ be two simplical complexes and let $A \subseteq X$ and $B \subseteq Y$ be two subcomplexes. Let $f: X \to Y$ be a simplicial map such that $f(A) \subseteq B$. Then $f$ induces a homomorphism $f_*: H_n(X, A) \to H_n(Y, B)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
-
-We will use the shorthand $f: (X, A) \to (Y, B)$ for functions that satisfy the criteria of this definition. The function $f$ is called this a simplicial map between simplicial pairs (analogous to continuous map between topological pairs in \cite{algebraic-topology}). 
+And indeed we can do better. As the reader may have noticed the definitions we have made so far are analogous to the task of computing the longest path between any two vertices of a tree. This is completely intentional as we will demonstrate how algorithms for computing the longest path in a tree can be modified to produce the longest w-path instead. Finding the longest path of a graph in the general case is an \em NP-hard\em. Fortunately the Contour Tree is a tree. The longest path in a tree is known in the literature as it's diameter and has a polynomial time algorithm. The two most popular linear time algorithms found in the literature I will denote as Double Breadth First Search (2xBFS) and Dynamic Programming (DP). We will now take a look at how these algorithms work and hint at how they can be adapted in the next chapter.
 
 
-% @TODO Define absolute homology
-The homomorphism is induced by running the relative homology classes through the simplicial map and recording which class their image lands in. The primary type of map we will use in this chapter is a specific kind of simplicial map - the inclusion map. The reason for this will become clear in the following section. In the case of absolute homology when $X$ is a simplicial complex and $A$ is a subcomplex of $X$ there is a natural inclusion map $i: A \to X$ which is injective but not necessarily surjective. It takes the simplicies of $A$ to exactly the same simplicies of $X$ and leaves the simplicies outside of $A$ untouched. 
+\subsection{Double Breadth First Search}
 
-We shall define the inclusion of relative homology analogously. Let $B$ be another subcomplex of $X$ such that $A$ is also a subcomplex of $B$, or $A \subseteq B \subseteq X$. Then let $i : X \to X$ be the identity map. As $A \subseteq B$ then the restriction $i_A: A \to B$ is a well defined function and therefore $i(A) \subseteq B$. Therefore there is a map $i$ between the pairs $(X, A)$ and $(X, B)$ such that $i(A) \subseteq B$ by the previous definition this map induces a homomorphism $i_* : H_n(X, A) \to H_n(X, B)$.
+This algorithm works in two phases. First it picks any vertex in the tree, say $s$, and finds the one farthest from it using Breadth First Search (BFS). Let us call that vertex $u$. In the second phase it runs a second BFS from $u$ and again records the farthest one from it. Let us call that $v$. The output of the algorithm is the pair of vertices $(u, v)$ and the distance between them, $d(u, v)$. That distance is the diameter of the tree.
 
+This algorithm has linear time complexity as it consists of two consecutive linear graph searches. It's correctness if a direct consequence of the following Lemma.
 
-% @TODO Should I talk about chain maps?
-% @TODO Add proof for all of this?
-
-\section{Persistent Homology}
-
-% @TODO Define filtrations.
-% @TODO Introduce filtrations and VR complexes.
-
-Persistent Homology emerged in the early 2000s in the this work of \cite{persistence-original}. The original motivation for introducing it was to better model point cloud data through filtrations of Vietoris Ribs complexes. Persistent Homology has since grown into a general methodology that can be applied any filtration of a topological space. To best illustrate what persistent homology is let us consider a filtration of a simplical complex $X$. 
-
-$$ X_0 \subseteq X_1 \subseteq ... \subseteq X_{n-1} \subseteq X_n = X$$
-
-A concrete example of this is Figure \ref{fig:filt-sc}.
+\begin{lem} Let $s$ be any vertex in a tree. Then the most distant vertex from $s$ is an endpoint of a graph diameter. \end{lem}
 
 
-\begin{figure}%
-    \centering
-    %\includegraphics[scale=0.085]{./images/chapter4/example-filtration.eps}%
-    \caption{Filtration of a Simplical Complex}%
-    \label{fig:filt-sc}%
-\end{figure}
+The proof of this Lemma can be found at []. In the next section we shall demonstrate how this proof can be modified to produce a near optimal algorithm linear time algorithm for finding a path whose w-length is bounded from bellow by the w-diameter of a tree.
 
-We have obtained a one parameter sequence of nester subcomplexes. Another way to think of this is that we start with simplicial complex and iteratively add new simplicies to it. It is customary to call the index of this filtration time to make it more indicative of a process that evolves in time. We can already compute the homology groups of the individual $X_i$. The key insight in persistent homology was to as the question whether we can track the evolution of individual homology classes in the homology groups as we go from one complex to the next. This is made possible by the subset relation between all of the $X_i$. As discussed in the previous section the inclusion map is the natural map between a set and it's superset. More formally we have inclusion maps $i_{i, j}: X_i \to X_j$ for $i \le j$ because $X_i \subseteq X_{i+1} \subseteq ... \subseteq X_j$. 
-By only considering the inclusion maps between consecutive $X_i$ and $X_{i+1}$ we can build the following chain of simplicial complexes
+%his algorithm relies on the property that given any vertex in a tree, the leaf that is furthest away from it is the endpoint of a diameter of the tree. The algorithm works by running a BFS from any vertex and recording the vertex that is the furthest. We then proceed by running a second BFS rooted at that vertex. The second BFS produces the diameter of the tree by the property we stated. The proof for this algorithm can be found at [].
+
+\subsection{Dynamic Programming}
+
+The second approach is based on the Dynamic Programming paradigm. It is most often applied to optimisation problems that exhibit recursive substructures of the same type as the original problem. The key ingredients in developing a dynamic-programming algorithm are [Into to Algorithms]:
 
 
-$$ X_0 \overset{i}{\longrightarrow} X_1 \overset{i}{\longrightarrow} ... \overset{i}{\longrightarrow} X_{n-1} \overset{i}{\longrightarrow} X_n$$
+\begin{enumerate}
+    \item Characterise the structure of the optimal solution.
+    \item Recursively define the value of an optimal solution.
+    \item Compute the value of the optimal solution.
+\end{enumerate}
 
 
-% @TODO Introduce Chain Maps
-where we have renamed all inclusion maps to $i$ and infer them from context. We have already shown that the inclusion maps are simplical and that simplical maps induce homomorphisms on homology groups through chain maps inducing. This lets us transform the sequence directly to the homology groups like so:
+Naturally, trees exhibit optimal substructure through their subtrees. For our intents and purposes we shall define a subtree as a connected subgraph of a tree. We will only consider rooted trees in the context of this algorithm and we must define the analogously. In a rooted tree let $v$ and $u$ be two vertices such that $v$ is the parent and $u$ is the child. We shall define the subtree rooted at $u$ as the maximal (vertex-wise) subgraph of $T$ that contains $u$ but does not contain $v$. We will denote it as $T_u$. Clearly the rooted subtree at $u$ is smaller than $T$ as it does not contain at least one of the vertices of the $T$ namely - $v$. This definition will allows us to recursively consider all subtrees of a rooted tree $\{T_u\}_{u \in V(G)}$. Also note that if all vertices in $T_u$ except $u$ inherit their parent from $T$ then $T_u$ is also a rooted subtree - it's root being $u$.
 
-$$ H_n(X_0) \overset{i_*}{\longrightarrow} H_n(X_1) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(X_{n-1}) \overset{i_*}{\longrightarrow} H_n(X_n).$$
+To continue we will need to define two functions on the vertices $T$. Let $h(u)$ be the height of the subtree rooted at $u$. The height is defined as the longest path in $T_u$ from $u$ to one of the leaves of $T_u$. We will also define $D(u)$ longest path in $T_u$. The function we will maximize is $D(s)$ where $s$ is the root of $T$. With these two function we are now ready to recursively define the value of the optimal solution:
 
-Here it is important to note that the induced maps $i_*$ do not have to be the inclusion maps on the homology groups. They can easily fail to be injective when for example two homology classes in some $H_n(X_i)$ map to the same homology class $H_n(X_{i+1})$ due to the introduction of a new boundary. This contradicts the fact that inclusion maps are injective. The induces homomorphisms encode the local topological changes in the homology of consecutive complexes in the filtration. We will introduce the following terminology to help us interpret this information:
+$$ D(v) = max\bigg\{ \max\limits_{u \in N(v)}\bigg(D(u)\bigg), \max\limits_{u, w \in N(v)}\bigg(h(u) + h(w) + 2\bigg) \bigg\}. $$
 
+The base case for this recursive formula is at the leaves of $T$. If $u$ is a leaf of $T$ then $V(T_u) = \{u\}$. This allows us to set $h(u) = 0$ and $D(u) = 0$ and consider all leaves as base cases. We are guaranteed to reach the base case as each subtree is strictly smaller and we bottom out at the leaves.
 
-% @TODO You may not be right about death here
-\begin{itemize}
-    \item A homology class is \textbf{born} if it is not the image of a class in the previous complex in the filtration under $i_*$.
-    \item A homology class \textbf{dies} if its image under $i_*$ is the zero element or when it is merged with another class (they have the same iamge).
-    \item A homology class \textbf{persists} if its image under $i_*$ is not zero.
-\end{itemize}
+This algorithm can be implemented in linear time through Depth First Search (DFS) by using two auxilary arrays that hold the values for $h(u)$ and $D(u)$ for every $u \in V(T)$. We will omit a formal proof of correctness and refer the reader to []. The proof relies on the fact that the longest path in a rooted tree either passes through the root and is entirely contained in the subtrees rooted the children of the root.
 
-In order to produce a detailed computation of the persistent homology of a filtration we would have to compute all homology groups of all complexes and then compute all inclusion maps. Doing so by hand is cumbersome and more importantly far too lengthy. We will avoid doing it in favour of presented diagrams of the evolution of the homology classes and appeal to the reader's geometric and topological intuition to argue their correctness.
+%@TODO Fix sentece before
 
-*Let us look at the following example. Show a pretty picture and explain it*
+\section{W Diameter Detector}
 
-Given the persistence homology of a filtration we can pose the question of how we can rank the classes based on their "significance". We are most interested in the classes that persist for a large number of steps in the filtration. Such classes are exactly the ones we consider significant and are said to have high persistence. Ephemeral classes on the other hand are consider to have very low significance and can be neglected. In practise such classes often correspond to statistical noise or sampling error.
+We will now step into the realm of w-detection. Before we outline the proposed algorithms we must establish two key properties which hold the difference between the tree diameter algorithms and their modification to tree w-diameter algorithms.
 
+\begin{defn} Subpath Property  \end{defn}
 
-% @TODO Should you add X_i here istead of just t_i?
+Let $a \rightsquigarrow b$ be a path and $c \rightsquigarrow d$ it's subpath. Then $w(a, b) \le w(c, d)$. 
 
-To quantify this precisely we will produce the so called persistence pairs. A persistence pair $(t_1, t_2)$ is a pairing of two timestamps - the birth and death time of a homology class. Every class is associated with a pair such as this where $t_1$ is the birth time, $t_2$ is the death time and the class has persisted in all $t_1 \le t_i \le t_2$. In the cases of classes that never die such as *this one in that example* we will assume that their death time is $\infty$. We will call such classes essential and others inessential as in \cite{comp-topo}.
+This property follows from the fact that all kinks of the path from $c$ to $d$ are also kinks of the path from $a$ to $b$. An important thing to note is that in the case of path length if one of the paths is a proper subpath of the other then the inequality is strict. This does not have to be the case with w-paths for the w-length, decreases only when we remove a kink from a path.
 
-% @TODO Why is this true?
-There is a theorem that states that the persistence digram of a filtration encodes all of the information about the persistent homology groups.
+\begin{defn} Path Decomposition Property Property  \end{defn}
 
-*Examples*
-
-Finally we will describe an algorithm for computing the persistence pairs. It requires us order all of the simplices in the complex $\sigma_1, \sigma_2, ..., \sigma_n$ according to these rules \cite{ph-a-survey}.
-
-\begin{itemize}
-    \item $\sigma_i$ precedes $\sigma_j$ when $\sigma_j$ was introduced later in the filtration than $\sigma_i$
-    \item $\sigma_i$ precedes $\sigma_j$ when $\sigma_i$ is a face of $\sigma_j$
-\end{itemize}
-
-Not instead of having to compute the homology groups of all complexes in the filtration individually and then computing the induces maps we can perform the whole computation in a single matrix reduction. Let $D$ be an $n\times n$ matrix and such that.
-
+    Let $a \rightsquigarrow b$ be the path $(a, u_1, u_2, ..., u_k, b)$ and $u_i$ be an inside vertex for any $i \in \{1, 2, ..., k\}$. Then: 
+    
+    $$w(a, b) = w(a, u_i) + w(u_i, b) + w_{a \rightsquigarrow b}(u)$$
+    
+   where:
+    
    $$
-   D[i, j] = \left\{
+   w_{a \rightsquigarrow b}(u_i) = \left\{
        \begin{array}{@{}l@{\thinspace}l}
-           \text{1}  &: \text{if } \sigma_i \text{ is a codimension 1 face of } \sigma_j \\
-           \text{0}  &: \text{otherwise} \\
+           \text{0}  &: \text{if } h(u_i) \in \big(h(u_{i-1}),~h(u_{i+1}) \big) \text{ // $u_i$ is not a kink} \\
+           \text{1} &: \text{otherwise // $u_i$ is a kink.} \\
        \end{array}
    \right.
    $$
 
-In other matrix $D$ is a matrix that holds the boundaries of all simplicies in a single matrix. It is called the combined boundary matrix. Now we can perform the following reduction just by column operations.
+   Indeed $u_i$ can be a kink in the path from $a$ to $b$, but it cannot be a kink in the paths from $a$ to $u_i$ and from $u_i$ to $b$ because it is an endpoint of both. All other kinks are counted by either $w(a, u_i)$ or $w(u_i, b)$. When making use of path decomposition property in future proofs we must account for whether the vertex we are decomposing a path at is a kink in that path or not.
+
+
+\subsection{Linear Time Algorithm - 2xBFS}
+
+We shall first explore how we can modify the Double Breadth First Search algorithm to compute the w-diameter of a height tree. The new algorithm will follow exactly the same steps. The only exception is that it will run a modified version of BFS that computes w-distances [see algorithm next page] from a given root vertex to all others in the tree. The algorithm works by first running a BFS from any vertex in the graph and then records the leaf that is farthest in terms of w-length. This furthest leaf is guaranteed to be either the endpoint of a path in the tree whose w-length least that of the actual w-diameter of the tree minus two. 
 
 
 \begin{algorithm}
-\caption{Reduce Combined Boundary Matrix}
+\caption{Computing the W Diameter of a Height Tree.}
 
 \begin{algorithmic}[1]
 
+\Function{W\_BFS}{T, root}
+    \State root.d = 0
+    \State root.$\pi$ = root
+    \State furthest = root
 
-\ForAll {j $\in$ \{1, 2, ..., n\}} 
-    \While {$\exists j': j' < j \text{ and } low(j') == low(j) $}
-        \State Add column $j'$ to column $j$.
+    \State Q = $\emptyset$
+    \State Enqueue(Q, root)
+
+    \While {Q $\ne \emptyset$}
+        \State u = Dequeue(Q)
+
+        \If {u.d $>$ furthest.d}
+            \State furthest = u
+        \EndIf
+
+        \ForAll {v $\in$ T.$Adj$[u]} 
+            \If {v.$\pi$ == $\emptyset$}
+                \State v.$\pi$ = u
+                \If {h(u) $\notin$ \big(h(v),~h(u.$\pi$)\big)}
+                    \State v.d = u.d + 1
+                \Else
+                    \State v.d = u.d
+                \EndIf
+
+                \State Enqueue(Q, v)
+
+            \EndIf
+        \EndFor
     \EndWhile
-\EndFor
+    \State Return furthest
+\EndFunction
+
+\Function{Calculate\_W\_Diameter}{T}
+    \State s = <any vertex>
+    \State u = W\_BFS(T, s)
+    \State v = W\_BFS(T, u)
+    \State return v.d
+\EndFunction
 
 \end{algorithmic}
 \end{algorithm}
 
-The proof of this algorithm is outlined in \cite{persistence-original}.
+%\newtheorem{w-algorithm}{The W Detection Algorithm is Correct.}
+Before proving the correctness of the algorithm we must first establish two useful properties that relate the w-length of a path to it's subpaths.
 
-% @TODO What kind does the manifold have to be?
-Now let us apply this general theory to a Morse theoretic context. Let $M$ be a triangulation of a smoothly embeded 2-manifold in $\mathbb{R}^3$ and let $f : M \to \mathbb{R}$ be a Morse function. From Morse theory we know that the changes in topology can only happen at finitely many critical points of $M$. Let $c_1 < c_2 < ... < c_n$ be those critical points. Let us now use the sublevel sets $M_{c_i}$  to make a filtration of $M$.We obtain the following filtration which we will call ascending
 
-$$ M_{c_1} \subseteq M_{c_2} \subseteq ... \subseteq M_{c_{n-1}} \subseteq M_{c_n} = M.$$
+\begin{lem} The Algorithm produces the endpoints of a path who is at most 2 kinks shy of being the kinkiest path in the tree. \end{lem}
 
-From this filtration we can produce the following persistent homology chain
-
-$$ H_n(M_{c_1}) \overset{i_*}{\longrightarrow} H_n(M_{c_2}) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(M_{c_{n-1}}) \overset{i_*}{\longrightarrow} H_n(M_{c_n}) = H_n(M).$$
-
-If we had taken the superlevel sets of $M$ we would have obtained a different filtration. We will call that the descending filtration of $M$.
-
-$$ H_n(M^{c_1}) \overset{i_*}{\longrightarrow} H_n(M^{c_2}) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(M^{c_{n-1}}) \overset{i_*}{\longrightarrow} H_n(M^{c_n}) = H_n(M).$$
-
-
-
-
-Finally we will define what we call the persistence of a homology class.
-
-\begin{defn} The persistence of a single homology class in persistent homology that is born at time $t_1$ and dies at time $t_2$ is $t_1 - t_2$.  \end{defn}
-
-% @TODO Do this
-    There are two primary ways to visualize the persistence pairing produces by persistent homology. The first in through persistence diagrams \cite{comp-topo}. In the persistence diagrams the pairs are visualised as points in the Carthesian coordinate system above the main diagonal $y = x$. Example []. The second way is through barcode diagrams. You can see the barcode digram on fig[]. For every simplical complex in the filtration we have a number of starting lines equal to the number of generators for the homology classes. These lines feed into each other according to where the induced by inclusion homomorphism take them in the next simplical complex. 
-
-
-% @TODO Return these.
-
-%\begin{figure}[h]%
-    %\centering
-    %%\includegraphics[scale=0.085]{./images/chapter4/bar-diagram.eps}%
-    %\caption{Barcode Diagram of a Filtration}%
-    %\label{fig:bar-diag}%
-%\end{figure}
-
-%\begin{figure}[h]%
-    %\centering
-    %\includegraphics[scale=0.085]{./images/chapter4/diagram.eps}%
-    %\caption{Persistence Diagram of a Filtration}%
-    %\label{fig:per-diag}%
-%\end{figure}
-
-
-% @TODO Add reference
-Furthermore when two classes merge we must choose which one survives and which one dies. By established convention [] we will use the Elder Rule. By the Elder Rule the class that was born first continues to persistent and the younger one is destroyed.
-
-
-%Here are two examples of filtrations and explanations of bar diagrams.
-
-
-%Let us now restrict $M$ to be compact and contractable. This will ensure that the Reeb Graph of $M$ is a Contour Tree. We would like to tackle the claim made in \cite{ct-branch-decomp} that the persistent homology pairs are equivalent to branch decomposition pairs. We can immediately see that this claim is either false of ill-defined. The major reason for this is that essential homology classes do not get paired. But in the branch decomposition schemes all critical points are paired.
-
-%There is however yet more reason to pursue this. Slightly after the paper of branch decomposition was published, there emerged a way to extend the persistent homology scheme so that all critical points get paired. Using this will allows us to directly compare it to the branch decomposition of a contour tree. 
-
-%We will now show that computing the persistent homology of the descending and ascending filtration of $M$ is equivalent to constructing the join and split tree of $M$ respectively.
-
-%* Show that this is the case *
-
-%* SHOW EXAMPLES *
-
-% Define extended persistence.
-
-\section{Extended Persistence}
-
-*CAN THE SAME CRITICAL POINT BE TWO TWINGS?*
-
-We have seen from the definition and computations of persistent homology that not all critical points are paired. Those that give birth the essential persistent homology classes will not be paired because they are never destroyed pass the final simplex in the filtration. This leads to incompleteness in the persistence pairings which we would to remedy. Our goal in extending persistence it to find a natural and intuitive way to pair the essential homology classes. In terms of filtrations of triangulations of manifolds based on the sub/superlevel sets of a Morse functions this means that all critical points will be paired in some homology.
-
-*SHOW EXAMPLE*
-
-* REDO FIRST SENTENCE *
-The way we have paired the remaining critical points in the above example is hopefully both symmetric and consistent with our intuition (developed in the example above). But how do we justify doing so theoretically? Enter extended persistence. The main idea behind extended persistence is to follow the ascending pass of persistent homology with a descending pass where once we reach a class that is homologous to a essential class in the ascending filtration we consider it to be destroyed and thus paired. To justify this algebraically we would like to make this process a consequence of a new augmented chain that starts with the zero homology group and ends with the zero group. This way we have an assurance that every class that is born will eventually die.
-
-Our initial instinct here might be to just directly apply persistent homology twice. Once on the ascending and the on the descending filtration. The problem that arises is in relating the classes of the two different filtrations. We are able to merge both filtrations into a single long chain, but the induced maps of the two filtrations flow in different directions. Here is an example of what would happen if we attempt this
-
-$$ 0 = H_n(M_{c_1}) \rightarrow ... \rightarrow H_n(M_{c_n}) = H_n(M) = H_n(M^{c_1}) \leftarrow ... \leftarrow H_n(M^{c_{n}}) = 0.$$
-
-The direction of the arrows is accordance with the how the homomorphisms are induced. To verify this consider that $M_{c_i} \subseteq M_{c_j}$ and $M^{c_j} \supseteq M^{c_j}$ for $i \le j$. This can be remedied if we find a way to reverse the directions of the arrows in the descending filtration. The issue in finding new maps to induce homomorphisms in the opposite direction is that we will sacrifice the our intuition which captures the evolution of homology classes. This is because other induced homomorphisms will not be natural and as such will be harder to interpret. If we wish to keep using natural inclusion maps we must instead resort to changing the homology groups we use. Let us opt for a descending filtration of relative homology groups like so:
-
-$$ H_n(M) = H_n(M, M^{c_n}) \rightarrow H_n(M, M^{c_{n - 1}}) \rightarrow ... \rightarrow H_n(M, M^{c_{1}}) = 0 $$
-
-
-% @TODO By which def (end of paragraph)
-In this relative filtration the homomorphisms are induced by inclusions on the relative homology groups. To see this let $(M, M^{c_i})$ and $(M, M^{c_{i+1}})$ two consecutive pairs. The inclusion map from $M$ to $M$ takes the superlevel set $M^{c_i}$ in the superlevel set $M^{c_{i+1}}$ because $M^{c_i} \subseteq M^{c_{i+1}}$. By definition [] this is a simplicial map from $(M, M^{c_i})$ and $(M, M^{c_{i+1}})$ and thus induces a homomorphism between $H_n(M, M^{c_i})$ and $H_n(M, M^{c_{i+1}})$.
-
-The final step to complete our desired sequence is to "glue" these two filtrations together at the point $ H_n(M_{c_n}) = H_n(M) = H_n(M, M^{c_n})$. The second equality holds because $M^{c_n} = \emptyset$ and quotienting by the empty set leaves the underlying relative chain complexes unchanged. Putting this all together yields the following chain of homology groups.
-
-$$ 0 = H_n(M_{c_1}) \rightarrow ... \rightarrow H_n(M_{c_n}) = H_n(M) = H_n(M, M^{c_n}) \rightarrow ... \rightarrow H_n(M, M^{c_{1}}) = 0.$$
-
-% @TODO Is that really what a close subcomplex is?
-
-This augmented filtration justifies the pairing of essential classes according to the intuitive understanding we obtained from example []. The only issue is that the relative homology groups are difficult to interpret on their own. To aid our comprehension of what exactly occurs in the relative filtration we shall employ the Excision Theorem where $H_n(M, M^{c_i}) = H_0(M / M^{c_i}, pt) = \overset{\sim}{H}_0(M / M^{c_i})$ where $M^{c_i}$ is a closed subcomplex of $M$ as required for all $i \in \{1, 2, 3, ..., n\}$. 
-
-* Take a look at example how the complex is built and the how it unwinds itself *
-
-\includegraphics[scale=0.2,center]{./images/extended-ph.eps}
-
-\subsection{Extended Persistence and Branch Decomposition}
-
-In this subsection we will tackle a claim that has been made in the paper that first introduced branch decomposition of contour trees. The claims is the following : "... we define the persistence of a branch to be the greater of its length and the persistence of each of it children. This definition differs from the definition of persistence given in [10] because it takes into consideration the topological obstructions. " \cite{ct-branch-decomp}. In that quote the reference to "[10]" is to the original paper that introduced persistent homology \cite{persistence-original}.
-
-Let us unpack the claim piece by piece. Firstly the paper only redefines how the persistence of the branches is computed and branches are pair of critical points. Therefore for this to be equivalent to the persistence pairs, both methods must  produce equivalent pairs. It is clear from this definition that the actual persistence pairings stay the same, we only compute the persistence value in a different way. What we will aim to show is that the pairings produced by persistent homology are in themselves different from the pairings produces by branch decomposition. After this it will not matter how the actual persistence of branches is computed as they are fundamentally different things. Lastly the paper claims that the branch decomposition definition differs from persistent homology in that "it takes into consideration the topological obstructions.". It is not clear exactly what the authors meant by "topological obstructions". These obstructions are not defined in the paper nor in subsequent publications. This does not stop us from working with the definition because we will demonstrate a second way in which persistence differs from branch decomposition.
-
-The first major difference we can find comes from the fact that persistent homology as it was originally defined does not pair all critical points. As we discussed previously the pairings of essential homology classes are not defined because they never die in the filtration. In the case of contour trees we will be dealing will simply connected contractable domains. Such domains have a single connected component and therefore have exactly one essential homology class in the 0th homology. This is the class that is born at the global minimum, or the first simlicial complex in the filtration. In branch decomposition on the other hand all critical points are paired.
-
-This is already of major difference between the two. Furthermore the paper on branch decomposition clearly cites the original paper for persistent homology and not the subsequence paper on extended persistence where this issue is remedied. In fact it cannot reference that paper. The branch decomposition paper has been published in January of 2004 and the paper that clearly defines Extended Persistence as such has been published in January of 2009 \cite{persistence-extended}. There is however more to this story. The concept of pairing critical points unpaired by persistence goes further back than the 2009 paper and can be traced to the paper \cite{extreme-elevation} which was also published in January of 2004. The paper outlines the initial concept of extended persistence in the specific case of 2-manifolds embedded in $\mathbb{R}^3$. This means that the idea of pairing all critical points was present when the claim was made. All of lets us the take this a step further. We will now test whether branch decomposition is equivalent to extended persistence.
-
-We will demonstrate that they are not with a small counter example. This counter example will show that at least one pair in both is necessarily different. In contour trees where the global minimum and the global maximum are not connected via a monotone path branch decomposition cannot by definition pair them as the endpoints of a branch. Extended persistence on the other hand does pair them as the global maximum is the first class in the descending relative filtration that is homologous to the essential class born at the global minimum. To reduce the stress caused by the reader's feverish anticipation of this counter example we will foreshadow that it is a contour tree with a w-structure. This w-structure is what separates the global minimum from the global maximum.
-
-Let us first begin with an example data set show in fig. Let us call that $X$. The contour tree of this data set is shown in fig and a branch decomposition of this contour tree is shown in fig. The ascending filtration of this data set is shown in fig. The ascending filtration consists of nine simplical complexes $\{X_1, X_2, ..., X_9\}$. According to that filtration we can produce the persistence diagram on fig[]. The extended persistence of the 0th is shown in fig. 
-
-According to our extended persistence computation the pair are $(2, 5)$ and $(1, 9)$. The first pair comes from ordinary persistence. We can see on fig [] that a component is born in time $2$ and dies in time $t$. The second pair is of the global minimum and global maximum. It comes from extended persistence. To verity this observe that $H_0(X_9) = \mathbb{Z}$ because there is one one connected component. The next homology group in the sequence in the group is $H_0(X, X^9) = \overset{\sim}{H}_0(X / X^9) = \overset{\sim}{H}_0(X / \{9\}) = \overset{\sim}{H}_0(X) = 0$. It follows that the induced map $i_* : H_0(X_9) \to H_0(X, X^9)$ is the zero map. Therefore the homology class in $H_0(X, X^9)$ that is born at time 1 at the global minimum must die time 9 and so $(1, 9)$ is a pair in extended persistence.
-
-Here is the summary of you findings.
-
-\begin{itemize}
-    \item There is no monotone path between the global minimum and global maximum in the data set.
-    \item There is no monotone path between the global minimum and global maximum in the contour tree.
-    \item No branch decomposition of the contour tree can pair the global minimum and the global maximum.
-    \item Extended persistence pairs the global minimum and the global maximum.
-\end{itemize}
-
-This counter examples demonstrates that branch decomposition is not always equivalent to extended persistence. But they are equivalent on some contour trees. Examine the simple contour tree on fig []. Let us now go a step further and demonstrate a whole class of counter examples where they are not equal. This class will be that of all contour trees where there is no monotone path between the global minimum and the global maximum. It is already clear that in the branch decomposition of such trees they will not be paired. All we have to do is prove that extended persistence does pair them.
-
-
-
-\begin{figure}[h]%
-    \centering
-    \subfloat[Original Data Set]{{\includegraphics[scale=0.4]{./images/chapter4/w3x3-grid.eps}}}%
-    \qquad
-    \subfloat[Contour Tree]{{\includegraphics[scale=0.3]{./images/w3x3.eps}}}%
-    \qquad
-    \subfloat[Branch Decomposition.]{{\includegraphics[scale=0.3]{./images/branch-decomposition-W3x3.eps}}}%
-    \caption{Branch Decomposition of the Contour tree.}%
-    \label{fig:example}%
-\end{figure}
-
-Here is the ascending filtration.
-
-\begin{figure}[h]%
-    \centering
-    \includegraphics[scale=0.08]{./images/chapter4/asc-filt.eps}%
-    \caption{Ascending filtration of the Simplical Complex}%
-    \label{fig:filt-sc}%
-\end{figure}
-
-\begin{figure}[h]%
-    \centering
-    \includegraphics[scale=0.08]{./images/chapter4/ph.eps}%
-    \caption{Extended Persistence of the Simplical Complex}%
-    \label{fig:filt-sc}%
-\end{figure}
-
-
-\subsection{Extended Persistence on Path-Connected Domains}
-
-The final step we take on this journey will be to prove the following original and more general result.
-
-\begin{prop} In the extended persistence of filtration a Morse function with a Path-Connected domain the global minimum pairs with the global maximum in the 0th homology \end{prop}
 
 \begin{proof}
-    Let $M$ be a Path-Connected domain and let $M_1 \subseteq M_2 \subseteq ... \subseteq M_n$ be a filtration of $M$. This filtration induces etended persistence 
+Let $T$ be a height tree and $s \in V(T)$ be the initial vertex we start the first search at. After running the modified BFS twice we obtain two vertices $u$ and $v$ such that:
 
-$$ 0 = H_0(M_{c_1}) \rightarrow ... \rightarrow H_0(M_{c_n}) = H_0(M) = H_0(M, M^{c_n}) \rightarrow ... \rightarrow H_0(M, M^{c_{1}}) = 0.$$
+\begin{equation}
+    \label{eq:su_all}
+    w(s, u) \ge w(s, t), \forall t \in V(T)
+\end{equation}
 
-As $M$ is Path-Connected it has one path-connected component and therefore $H_0(M) = H_0(M_0) \simeq  \mathbb{Z}_2$.  Our aim here will be to show that all of the $H_0(M, M^{c_i})$ are trivial. This will mean that the single homology class that exists in $H_0(M)$ will die at $H_0(M, M^{c_n})$ which is exactly the global maximum.
+\begin{equation}
+    \label{eq:uv_all}
+    w(u, v) \ge w(u, t), \forall t \in V(T)
+\end{equation}
+
+Furthermore let $a$ and $b$ be two leaves that are the endpoints of a path that is a w-diameter. For any such pair we know that:
+
+\begin{equation}
+    \label{eq:ab_all}
+    w(a, b) \ge w(c, d), \forall c, d \in V(T)
+\end{equation}
+
+By this equation we have that $w(a, b) \ge w(u, v)$. Our goal in this proof will be to give a formal lower bound on $w(u, v)$ in terms of $w(a, b)$. To this end let $t$ be the first vertex in the path between $a$ and $b$ that the first BFS starting at $s$ discovers. We can infer that $t$ cannot be $a$ or $b$ unless $s$ is equal to $a$ or $b$.
+
+The proof can then be split into several cases depending on the relative positions of $s$, $t$, $a$, $b$ and $u$. \linebreak
+
+{\em Case 1. When the path from $a$ to $b$ does not share any vertices with the path from $s$ to $u$.}
+
+{\em Case 1.1. When the path from $u$ to $t$ goes through $s$.}
 
 
-% @TODO Define Excision
-% @TODO  Add the thing where this holds - H_n(M / M^{c_i}, pt) = \overset{\sim}{H}_n(M / M^{c_i})
-As a corollary of the Excision Theorem we have that
 
-$$H_0(M, M^{c_i}) = H_0(M / M^{c_i}, pt) = \overset{\sim}{H}_0(M / M^{c_i})$$  
+% @TODO Explain that the dotted lines are paths.
+\begin{figure}%
+    \centering
+    \includegraphics[center, scale=0.5 ]{./images/2xbfs-case-1-1.eps}
+    \caption{Relative position of vertices in Case 1.1 }%
+    \label{fig:case1.1}%
+\end{figure}
 
-where $pt = M^{c_i} / M^{c_i}$.
+In this case $s \rightsquigarrow u$ is a subpath of $t \rightsquigarrow u$, which in turn means that $w(t, u) \ge w(s, u)$. By equation \ref{eq:uv_all} we also have that $w(s, u) \ge w(s, a)$. We can therefore conclude that $w(t, u) \ge w(a, t)$ as $s \rightsquigarrow a$ is a subpath of $t \rightsquigarrow a$.
 
-Now let us explore the reduced homology of the topological space $M / M^{c_i}$. We will show that is it path-connected and therefore the reduced homology is trivial.
+Now via path decomposition of $a \rightsquigarrow b$ and $u \rightsquigarrow b$ at $t$ have that:
+
+$$ w(a, b) = w(b, t) + w(t, a) + x  $$
+$$ w(u, b) = w(b, t) + w(t, u) + y .$$
+
+Where $x, y \in \{0, 1\}$ depending on whether there is a kink at $t$ for the path from $a$ to $b$ and from $u$ to $b$ respectively. As $w(t, u) \ge w(a, t)$ we can show that:
 
 
-% @TODO Add quote
-By definition $M$ is path connected. Consider the function $\pi: M \to M/ M^{c_i}$ that takes a point to it's equivalent class. By point set topology [] we know that $\pi$ is continuous. We can also infer that $\pi$ is surjective. Indeed there there is no equivalence class that no point maps to. Furthermore the continuous image of a path connected is connected by []. As we have that $M$ is path-connected therefore $\pi(M) = M / M^{c_i}$ is path-connected. 
+$$ w(u, b) \ge w(b, t) + w(t, a) + y $$
+$$ w(u, b) \ge w(b, t) + w(t, a) + x - x + y $$
+$$ w(u, b) \ge w(a, b) - x + y $$
+$$ w(u, b) \ge w(a, b) + (y - x) $$
 
-By [] we have that $H_0(M / M^{c_i}) = \mathbb{Z}_2$ and by [] that $H_0(M / M^{c_i}) = \overset{\sim}{H}_0(M / M^{c_i}) \bigoplus \mathbb{Z}_2$
+But as $w(u, v) \ge w(u, b)$ (by equation \ref{eq:uv_all}) we obtain that: Sha
+$$ w(u, v) \ge w(a, b) + (y - x) $$
 
-We can conclude that $H_0(M, M^{c_i}) = \overset{\sim}{H}_0(M / M^{c_i}) = 0$
+Considering all possible values that $x$ and $y$ can take, we can see that the minimum value for the right hand side of the inequality is at $y = 0$ and $x = 1$. The final conclusion we may draw is that $w(u, v) \ge w(a, b) -1$.
 
-Therefore the map induced by the inclusion of the pairs $(M, \emptyset) \to (M, M^{c_n})$ will map the essential homology class of $H_0(M_n)$ to zero. This mean that the global minimum pairs with the global maximum.
+
+
+%$a\rightsquigarrow b$
+
+{\em Case 1.2. When the path from $u$ to $t$ does not go through $s$.}
+
+\begin{figure}%
+    \centering
+    \includegraphics[center, scale=0.5 ]{./images/2xbfs-case-1-2.eps}
+    \caption{Relative position of vertices in Case 1.2 }%
+    \label{fig:case1.2}%
+\end{figure}
+
+If the path from $u$ to $t$ does not go through $s$ then the paths $s \rightsquigarrow t$ and $s \rightsquigarrow u$ have a common subpath. Let $s'$ be the last common vertex in that subpath. We will be able to produce s proof that is similar to the previous case by considering $s'$ in the place of $s$. We must only account for whether $s'$ is a kink in one of the paths $s \rightsquigarrow u$ or $s \rightsquigarrow t$. We know that $w(t, u) \ge w(s', u)$ (as a subpath) and through path decomposition of  $s \rightsquigarrow a$ and $s \rightsquigarrow u$ at $s'$ we obtain that:
+
+$$ w(s, a) = w(s, s') + w(s', a) + x $$
+$$ w(s, u) = w(s, s') + w(s', u) + y $$
+
+where $x,y \in \{0, 1\}$ indicate whether $s'$ is a kink in the corresponding path as before. By equation \ref{eq:su_all} we know that $w(s, u) \ge w(s, a)$ and therefore:
+
+$$ w(s, s') + w(s', u) + y \ge w(s, s') + w(s', a) + x  $$ 
+$$ w(s', u) + y \ge w(s', a) + x $$ 
+$$ w(s', u) \ge w(s', a) + (x - y).$$ 
+
+Since $s'$ lies on the path from $t$ to $u$ we have that $w(t, u) \ge w(s', u)$ by the subpath property. We can use this to conclude the following:
+
+$$ w(t, u) \ge w(s', a) + (x - y).$$ 
+
+From the fact that $t \rightsquigarrow a$ is a subpath of $s' \rightsquigarrow a$ it follows that $w(s', a) \ge w(t, a)$. This allows us to infer that:
+
+$$ w(t, u) \ge w(t, a) + (x - y). $$ 
+
+Now we are ready to proceed in a similar manner as the previous case. We will decompose the paths from $b$ to $a$ and from $b$ to $u$ at the vertex $t$ as follows:
+
+$$ w(b, a) = w(b, t) + w(t, a) + z  $$
+$$ w(b, u) = w(b, t) + w(t, u) + w  $$
+$$ w(b, u) \ge w(b, t) + w(t, a) + (x - y) + w $$
+$$ w(b, u) \ge w(b, t) + w(t, a) + z - z + (x - y) + w $$
+$$ w(b, u) \ge w(a, b) - z + (x - y) + w $$
+$$ w(b, u) \ge w(a, b) + (x - y) + (w - z) $$
+
+The minimum value for the right hand side of this equation is at $x, w = 0$ and $y, z = 1$. Using the fact that $w(u, v) \ge w(u, b)$ we finally obtain $ w(u, v) \ge w(a, b) - 2 $.
+
+
+{\em Case 2. When the path from $a$ to $b$ shares at least one vertex with the path from $s$ to $u$.}
+
+\begin{figure}%
+    \centering
+    \includegraphics[center, scale=0.5 ]{./images/2xbfs-case-2.eps}
+    \caption{Relative position of vertices in Case 2 ($t$ could be equal to $s'$). }%
+    \label{fig:case2}%
+\end{figure}
+
+% @TODO This is not complete!
+%As we already know $w(s, u) \ge w(s, a)$. Furthermore $w(s, u) \ge w(t, u)$ and $w(s, a) \ge w(t, a)$ as they are subpaths of $s \rightsquigarrow u$ and $s \rightsquigarrow a$ respectively. Therefore $w(t, u) \ge w(t, a)$. We can now decompose the paths from $b$ to $a$ and from $b$ to $u$ at the vertex $t$ as follows:
+
+We can do a path decomposition as follows:
+
+$$ w(s, u) = w(s, t) + w(t, u) + x $$
+$$ w(s, a) = w(s, t) + w(t, a) + y $$
+
+As $w(s, u) \ge w(s, a)$ (by equation \ref{eq:uv_all})we obtain that:
+
+$$ w(s, t) + w(t, u) + x  \ge w(s, t) + w(t, a) + y $$
+$$ w(t, u) \ge w(t, a) + (y - x) $$
+
+If we again decompose the paths from $b$ to $a$ and from $b$ to $u$ at $t$ we obtain:
+
+$$ w(b, a) = w(b, t) + w(t, a) + z  $$
+$$ w(b, u) = w(b, t) + w(t, u) + w  $$
+$$ w(b, u) \ge w(b, t) + w(t, a) + (x - y) + w $$
+$$ w(b, u) \ge (w(b, t) + w(t, a) + z) - z + (x - y) + w $$
+$$ w(b, u) \ge w(a, b) - z (x - y) + w $$
+$$ w(b, u) \ge w(a, b) + (x - y) + (w - z). $$
+
+Where similarly to the previous case the rightful conclusion is that $ w(u, v) \ge w(a, b) - 2 $.
+
+Based on these cases we can have shown that that for any input tree the algorithm will produce a w-path that is at most two kinks less than the actual maximum w-path.
+
 
 \end{proof}
 
-Following this proposition we can only conclude that in any contractable domain with a w-structure that separates the global minimum with the global maximum branch decomposition is not the same as extended persistence.
+\begin{lem} The time complexity of the algorithm is $O(|V|)$. \end{lem}
 
-\subsection{Extended Persistence and Join/Split Trees - Thoughts on future directions}
+\begin{proof}
+    The modified BFS function has the same time complexity of BFS as all we have added is an "\em if, then, else\em"~statement. The time complexity of BFS is $O(|V| + |E|)$, but in a tree $|E| = |V| - 1$, so the overall complexity is $O(2|V| - 1) = O(|V|)$. 
+    Running the modified BFS function twice remains in linear, thus the overall complexity of the algorithm is linear as well.
+\end{proof}
 
-What we have uncovered is not the complete story. There is a deeper connection between extended persistence and contour trees in general. If we look at alternative algorithms for constructing the 0th homology specifically we can see that the extended persistence of an ascending filtration is equivalent to branch decomposition of the join tree and the extended persistence is equivalent to a branch decomposition of the split tree.
+\begin{lem} The space complexity of the algorithm is $O(|V|)$. \end{lem}
 
-Going back to the claim made \cite{ct-branch-decomp} we see that there is truth to it if we adjust it to extended persistence and apply specifically to join and split trees. Here future questions that arise based on this fact.
+\begin{proof}
+    Completely analogous to the standard BFS algorithm, this algorithm uses the same amount of memory in the standard memory model.
+\end{proof}
 
-\begin{itemize}
-    \item By using the persistence pairs on other homology group we can produce split and join tree for the cycles, void, etc... We can them combine them like we combine the join and split trees for the contour. What kind of a structure does that yield?
-    \item Can we compute the contour tree directly from homology. Can we find a natural continuous function between the level sets of a filtration. Would the persistence of this sequence be equivalent to the contour tree. In higher dimensions would be equivalent to the previous point?
-    \item Who killed Laura Palmer and will the new Twin Peaks be good?
-\end{itemize}
+\subsection{Pathological Cases in 2xBFS}
 
+Here are examples of the pathological case where the w-diameter outputted by the 2xBFS algorithm is different than the actual w-diameter. Look at Fig. \ref{fig:path-cases}. There is one example corresponding to all proof cases. In all the examples the vertex outputted by the first BFS function would be $u$ after which the longest path would be outputted as $u \rightsquigarrow a$ or $u \rightsquigarrow b$. The problem is that $w(u, a) = w(u, b) = 1$, but $w(a, b) = 1$ or $2$ in the first example. Note that even if we adapt the algorithm so that it finds the vertex with largest w-length away and breaks ties with normal distance, we will still be able to apply these examples. We just need to augment them by subdividing the path to $u$ to make if further away from $a$ and $b$, but keep the same w-lenght between $s, a, b u$.
 
+\begin{figure}%
+    \centering
 
-%In this final section we will present examples for how extended persistence on the 0th homology is actually equivalent to computing join and split tree.
-
-%*Don't know if I can prove this yet, but it probably won't be too hard. But then again it may be.*
-
-%*Should I keep this or not?*
-
-
-
-
-
-
-
-% @TODO Check spelling in references.
-
-
-
-%Let us now restrict $M$ to be compact and contractable. This will ensure that the Reeb Graph of $M$ is a Contour Tree. We would like to tackle the claim made in \cite{ct-branch-decomp} that the persistent homology pairs are equivalent to branch decomposition pairs. We can immediately see that this claim is either false of ill-defined. The major reason for this is that essential homology classes do not get paired. But in the branch decomposition schemes all critical points are paired.
-
-%There is however yet more reason to pursue this. Slightly after the paper of branch decomposition was published, there emerged a way to extend the persistent homology scheme so that all critical points get paired. Using this will allows us to directly compare it to the branch decomposition of a contour tree. 
+    \subfloat[Pathological Example for Case 1. 1 (-1 of actual w-diameter).]{{\includegraphics[scale=0.4]{./images/2xbfs-path-case-1-1.eps}}}%
+    \qquad
+    \subfloat[Pathological Example for Case 1. 2 (-2 of actual w-diameter).]{{\includegraphics[scale=0.4 ]{./images/2xbfs-path-case-1-2.eps}}}%
+    \qquad
+    \subfloat[Pathological Example for Case 2 (-2 of actual 2-diameter).]{{\includegraphics[scale=0.6 ]{./images/2xbfs-path-case-2.eps}}}%
+    \caption{Branch Decomposition of a Contour tree.}%
+    \label{fig:path-cases}%
+\end{figure}
 
 
 
-
-%Lastly we will not that we cannot take into account the
-
+\subsection{Attempts at resolving the accuracy of 2xBFS}
 
 
-%Explain the claim that has been made and quote it directly.
+% @TODO Chapter 3 here may change.
 
-%Show why it is flawed in the first place.
+For the intents of purpose of this dissertation the accuracy of this algorithm is sufficient. In large enough data sets this estimate provides enough insight to correlate the observed iterations needed to collapse the split and join trees and the resulting w-diameter of the tree. This is demonstrated empirically in Chapter 3. Regardless of such practical considerations it is still of inherent theoretical interest to investigate how we may be able to obtain a more accurate modification of this algorithm.
 
-%Show why it's not equivalent to it.
-
-
-
-%* Most of this sections will be pictures this is why it is not written up properly *
-
-%Now let us examine the relation of extended persistence to branch decomposition. Here is an example branch decomposition of a contour tree of the following 3x3 grid dataset. It is not possible for the branch decomposition to pair the global maximum with the global minimum. There is no monotone path between them. To show that no branch decomposition of a contour tree is equivalent to the extended persistence of the dataset I will demonstrate that extended persistence necessarily pair the global minimum with the global maximum. 
-
-%*Show the extended persistence filtration of the W3x3*
-%*Show the branch decomposition*
+One key observation we can make is that on the second run of the BFS we get a w-path that is necessarily longer or equal to one found in the first BFS search. A natural question to ask is whether running the BFS a third, fourth or for that matter nth time would result in the actual w-diameter. On every successive iteration we get a w-path that is longer or equal to the previous one, because w-length is a symmetric path property ($w(a, b) = w(b, a)$). By doing this we can hope that we will eventually obtain a w-path closer to the w-diameter. However there is no guarantee that this will happen. In fact in some cases it is possible that each successive BFS will return the same path over and over again. Obverse how in @TODO fig[] all iterations of BFS go from the vertex $u$ to the vertex $v$ and then from $v$ to $u$ and so on. 
 
 
-% @TODO Add quote
-%As you can see these methods produce very different pairings. We will conclude that the claims made in [] are either false of not well defined. The correct way to phrase this is the following. "Our definition of persistence is quivalent to extended persistence for the join and split trees. It is not directly applicable in the case of the contour tree itself in terms of the formalism it's built on".
+A different heuristic we can apply is to run the algorithm multiple times from different starting points and keep the maximum value found. This approach is somewhat reliable, but may still fail to find the w-diameter. Consider @TODO fig[]. That artificial example shows that there can simply be too few starting points which would produce the w-diameter.
 
 
-%It so happens that a w-structure that this dissertation is devoted to causes not only computational difficulties, but also serve as counterexamples to pose theoretical difficulties as well. To further cement statement we will us show a more general general result in the following chapter which holds for all filtrations of path-connected spaces.
+% @TODO Redo Last Paragraph.
+In the search for a better solution let $s$ be a starting vertex and let the vertices $U = \{u_1, u_2, ..., u_n\}$ be the furthest away in terms of w-distance and $W = \{w_1, w_2, ..., w_n\}$ be the ones second furthest away. By the proof of the algorithm we know that not necessarily all vertices in those sets would produce a w-diameter. Thus lets us define $R \subseteq U \cup W$ as the set of vertices which are endpoints of a w-diameter. As we have shown we can construct an example where $|R| = 2$ and $|U \cup W|$ is arbitrarily large. Can we then find some property of the vertices in $R$ and pick them out in the first phase of the algorithm? *This I will leave open for the future generations to ponder. I hope in doing so all people of the world will unite unite and end all wars and prejudices in order to work towards this common good!*
+
+\subsection{Dynamic Programming Algorithm - DP}
 
 
-%The maps in the ascending filtrations are induced via the inclusion maps between the nested spaces $M_i \subseteq M_j$  where $i \le j$. The more interesting case if between the relative homology groups. First of all the isomorphism between $H_n(M) = H_n(M, M^{c_n})$ comes from that fact that $M^{c_n} = \emptyset$ and quotienting by the empty sets leaves a group unchanged. The show where the consecutive maps come from we will give the following example.
+% @TODO 
+*Idea redefine $N(u) = N(u) / u.\pi$ so you can simplify notation.*
 
-%Let $X$ be a simplical complex, $B \subset X$ be a subcomplex of $X$ and $A \subset B$ be a subcomplex of $B$. Then we can find a natural map from $H_n(X, A)$ to $H_n(X, B)$ induced by the inclusion from $A$ to $B$. Let us write out $C_n(X), C_n(A), C_n(B)$ through their generator simplicies.
+While it is encouraging that we have obtained an algorithm that bounds the w-diameter it is also quite unsatisfactory that we were not able to directly obtain it. To remedy this we will resort to modifying the second tree diameter algorithm that we outlined previously. We will use the same optimisation strategy i.e. dynamic programming by making two key changes. Instead of the function $h(u)$ that computes the height of a subtree with root $u$ we will use the function $w(u)$ that stores the longest w-path that starts at the root of the subtree. We will remane the function that stores the value of the optimal solution for subroblems from $D(u)$ to $W(u)$ accordingly. To summarise $W(u)$ returns the length of the largest w-path in the subtree $T_u$ and $w(u)$ the length of the largest w-path in $T_u$ that starts at $u$.
 
-% @TODO Fix these brackets
-%$$ C_n(X) = <a_1, a_2, ..., a_k, ..., a_l, ..., a_n> $$
-%$$ C_n(A) = <a_l, ..., a_n>$$
-%$$ C_n(B) = <a_k, ..., a_l, ..., a_n>$$
+This may seem like a simple substitution at first glance, but the devil is in the details. As in the previous modification all additional difficulties stem from the difference in combining path lengths and path w-lengths. Let us begin by examining how the w-height of a vertex is computed from the w-heights of its children. Let $s$ be a vertex in $T$ and let us assume the we have computed the w-heights of its children recursively. In the case of computing the height we can simply set $h(s) = \max\limits_{u \in N(s)}\big( h(u) \big) + 1$. We cannot do so with the w-height because w-length can remain the same if we do not extend the maximum w-path with a kink.  To demonstrate this let us assume that $u \in N(s)$ is such that $w(u) = \max\limits_{v \in N(s)}(w(v))$. Then if we wish to extend the maximum w-path that ends at $u$ to $s$ we must account for whether $u$ becomes a kink in it. If none of the children of $s$ with maximum w-height form a kink when extending to $s$ then the w-height of $s$ does not increase.
 
-
-%Then the relative chains are generated by:
-
-%$$ C_n(X, A) = <a_1, ..., a_k, ..., a_{l-1}>$$
-%$$ C_n(X, B) = <a_1, ..., a_{k-1}>$$
+To see how we can obtain the w-height of $s$ let $u$ be any of it's children and $L_u = \{u_1, u_2, ..., u_k\}$ be all children of $u$ through which a w-path with length $w(u)$ passes through. Then we can compute the w-height of $s$ as: $w(s) = \max\limits_{u \in N(s)}\{ h(u) + \max\limits_{v \in L_u}(w_{s, v}(u)) \}$. In other words there may be multiple w-paths with the same maximal w-length that end at $u$. If possible we must pick the one that would make $u$ form a kink with $s$. If not we can use any of them. There is no point in looking at paths of lesser w-length as it can only increase by one and at best match the maximum ones.
 
 
-% @TODO Show it is a chain map
+In the tree diameter scenario path combination is straightforward. For a tree with root $s$ we first find two distinct children $u, v \in N(s)$ of $s$ such that $h(u)$ and $h(v)$ is maximum amongst all children and $u \ne v$ (otherwise we get a walk and not a path). Next we will combine them to obtain the longest path that goes through $s$. This path combination yield the sum $h(u) + h(v) + 2$, where we account for the two additional edges $us, sv \in E(T_s)$. This reasoning of course extends to all subtrees in $T$. In the latter case of w-path combinations we must be vigilant of which vertices become kinks in the path combinations. Let us observe a similar scenario where $s$ is the root the tree and $u, v \in V(T_s)$ are two of the children with maximal values for $w(u)$ and $w(v)$. We would ideally like to combine $w(u)$ and $w(v)$ like so: $w(u) + w(v) + w_{u, v}(s)$. This however is not correct! There is a hidden assumption in the sum that the only vertex that can become a kink in this path combination is $s$. Contrary to this, in fact $u$ and $v$ can also become kinks. Observe that $w(u) \text{ and } w(v)$ are the w-length of two paths - one starting at $u$ and ending in a leaf of $T_u$ and one starting at $v$ and ending in a leaf of $T_v$. In the new path, both $u$ and $v$ can become inside vertices and depending on whether they become kinks or not the sum may further increase by two. To account for this we must also look at the children of $u$ and $v$ through which a maximum w-path passes. 
 
-%Where we can introduce a natural inclusion map $f : C_n(X, A) \to C_n(X, B)$ where $f(a_i) = a_i$ when $i < k$ and $f(a_i) = 0$ when $i \ge k$. The map $f$ is well defined as an inclusion map and furthermore it is a chain map. Chain maps induce linear maps on the homology. Therefore we obtain the map $f_* : H_n(X, A) \to H_n(X, B)$ where $f_*([\alpha]) = [f(\alpha)]$. Where the brackets denote the homology quotient classes in $H_n(X, A) \text{ and } H_n(X, B)$ respectively.
 
-%Now let us to back to the descending filtration of $M$. We have 
+This process is similar to the one for obtaining the w-height of a vertex and is described by the following formula: 
 
-%Let us go back extended persistence. In the descending filtration of the relative homology we have the scenario we just described. Therefore as there is an inclusion function for between every $M^{c_i}$ and every $M^{c_j}$ where $i \ge j$ and this induces a linear map between every $H_n(M, M^{c_i})$ and $H_n(M, M^{c_j})$.
+$$\max\limits_{\substack{u, v \in N(s) \\ u \ne v}}\{ h(u) + \max\limits_{t \in L_u}(w_{s, t}(u)) + h(v) + \max\limits_{t \in L_v}(w_{s, t}(v)) + w_{u, v}(s)\}$$
 
-%We have developed all this mathematical machinery
+Thus the formula that describes the optimal solution can be written as:
 
-%-- Give some intuition behind this.
 
-%-- Show how this is used on an example.
+% @TODO Finish This.
 
-%-- Give an algorithm for computing it.
+$$ W(s) = max\Bigg\{ \max\limits_{u \in N(s)}\bigg(W(u)\bigg), \max\limits_{\substack{u, v \in N(s) \\ u \ne v}} \bigg( h(u) + \max\limits_{t \in L_u}(w_{s, t}(u)) + h(v) + \max\limits_{t \in L_v}(w_{s, t}(v)) + w_{u, v}(s)\bigg) \Bigg\}. $$
 
-%-- Explain how the algorithm is connected to the computation.
+As before the optimal solution is either entirely in one of the subtrees of the children of a vertex or in the path combination of two of the children of the vertex.
 
-%\section{Persistent Homology and the Contour Tree}
+Here is the pseudocode for the algorithm.
 
-%-- Say some general things about how we are going to relate the two and what we shall accomplish in this chapter.
+\begin{algorithm}{}
+\caption{Computing the W Diameter of a Height Tree.}
+\begin{algorithmic}[1]
 
-%\subsection{Join and Split Trees}
+%\Function{W\_DFS}{T, s}
+    \State{\textbf{Function}W\_DFS}(T, s)
 
-%Show that the computation of the ascending filtration and descending filtration is equivalent to the join and split tree of a contractable domain.
+    % If we are at a leaf Base Case
+    \State // Base Case
+    \If {|T.$Adj$[s]| == 1 AND s.$\pi \ne $ s}
+        \State s.W = 0
+        \State s.w = 0
+        \State return
+    \EndIf
 
-%Show the it is equivalent to branch decomposition of the join and split tree.
+    % Forwards DFS visit
 
-%Show that extended persistence pairing are not equivalent to branch decomposition pairing. Say the paper is either wrong or had something else in mind which is not clarified well enough.
+    \State // DFS Visit
+    \ForAll {u $\in$ T.$Adj$[s]} 
+        \If {u.$\pi$ == $\emptyset$}
+            \State u.$\pi$ = s
+            \State W\_DFS(T, u)
+        \EndIf
+    \EndFor
 
-%Emerge victorious and have the plebeians chant you name in the streets. All Hail Petros all hail Petros.
+    % Backtracking
+    \\
+
+    \State // After all neighbours are visited
+
+    \State // Calculate w-height of s
+    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
+        \If {L[u] == $\emptyset$}
+            \State H[s] = max(H[s], H[u]);
+        \Else
+            \ForAll {v $\in$ L[u]$/u$} 
+                \State H[s] = max(H[s], H[u] + $w_{v, s}(u)$);
+            \EndFor
+        \EndIf
+    \EndFor
+
+    \State // Find all children that contribute to the a w-height path
+    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
+        \If {L[u] == $\emptyset$ AND H[s] == H[u]}
+            \State L[s] = L[s] $\cup$ u
+        \Else
+            \ForAll {v $\in$ L[u]$/u$} 
+                \If {H[s] = max(H[s], H[u] + $w_{v, s}(u)$)}
+                    \State L[s] = L[s] $\cup$ u
+                \EndIf
+            \EndFor
+        \EndIf
+    \EndFor
+
+    \State // Find the maximum path combination
+    \State maxCombine = 0
+    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
+
+        \ForAll {v $\in$ T.$Adj$[s]$/s.\pi$} 
+
+            \If {v == u}
+                \State continue
+            \EndIf
+
+            \State temp = H[u] + H[v]
+
+            \If {L[u] $\ne$ $\emptyset$}
+                \ForAll {t $\in$ L[u]$/u$} 
+                    \If {$w_{t, s}(u) == 1$}
+                        \State temp = temp + 1
+                        \State break
+                    \EndIf
+                \EndFor
+            \EndIf
+
+            \If {L[v] $\ne$ $\emptyset$}
+                \ForAll {t $\in$ L[v]$/u$} 
+                    \If {$w_{t, s}(v) == 1$}
+                        \State temp = temp + 1
+                        \State break
+                    \EndIf
+                \EndFor
+            \EndIf
+            \If {$w_{u, v}(s) == 1$}
+                \State temp = temp + 1
+            \EndIf
+            \State maxCombine = max(maxCombine, temp)
+        \EndFor
+
+    \EndFor
+
+\end{algorithmic}
+\end{algorithm}
+    
+\begin{algorithm}{}
+\caption{Computing the W Diameter of a Height Tree. Part 2}
+\begin{algorithmic}[1]
+
+    \State // Find maximum subproblem solution
+    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
+        \State O[s] = max(O[s], O[u])
+    \EndFor
+
+    \State // Take the bigger of the two
+    \State O[s] = max(O[s], maxCombine)
+
+%\EndFunction
+
+\Function{Calculate\_W\_Diameter}{T}
+    \State s = <any vertex>
+    \State s.$\pi$ = s
+    \State W\_DFS(T, s)
+    \State return s.W
+\EndFunction
+
+\end{algorithmic}
+\end{algorithm}
+
+
+%\begin{algorithmic}[1]
+
+%\Function{W\_DFS}{T, s}
+
+    %% If we are at a leaf
+    %\If {|T.$Adj$[s]| == 1 AND s.$\pi \ne $ s}
+        %\State s.W = 0
+        %\State s.w = 0
+        %\State return
+    %\EndIf
+
+    %% Forwards DFS visit
+    %\ForAll {u $\in$ T.$Adj$[s]} 
+        %\If {u.$\pi$ == $\emptyset$}
+            %\State u.$\pi$ = s
+            %\State W\_DFS(T, u)
+        %\EndIf
+    %\EndFor
+
+    %% Backtracking
+    %\\
+    %\State $Array$ p
+    %\ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
+        %\State p[u] = 0
+        %\ForAll {v $\in$ T.$Adj$[u]$/u$} 
+            %\State p[u] = max(p[u], v.h + $w_{v, s}(u)$) 
+        %\EndFor
+    %\EndFor
+
+    %\State maxCombine = 0
+    %\ForAll {u $\in$ T.$Adj$[s]$/s.\pi$} 
+        %\ForAll {v $\in$ T.$Adj$[s]$/s.\pi$} 
+        %\State maxCombine = max(maxCombine, p[u] + p[v] + $w_{u, v}(s)$)
+        %\EndFor
+    %\EndFor
+
+    %\\
+    %\State maxSubsolution = 0
+    %\ForAll {u $\in$ T.$Adj$[s]} 
+        %\State maxSubsolution = max(maxSubsolution, u.W)
+    %\EndFor
+    %\\
+    %\State s.W = max(s.maxCombine, s.maxSubsolution)
+
+%\EndFunction
+
+%\Function{Calculate\_W\_Diameter}{T}
+    %\State s = <any vertex>
+    %\State s.$\pi$ = s
+    %\State W\_DFS(T, s)
+    %\State return s.W
+%\EndFunction
+
+%\end{algorithmic}
+%\end{algorithm}
+
+* Not sure if this is enough *
+
+Let us not prove that the algorithm is correct. 
+
+\begin{lem} The computation for the longest w-path that goes through the root of a subtree is correct. \end{lem}
+\begin{proof}
+    Let $s$ be the root of the current subtree $T_s$ in the computation of the algorithm. Suppose that our algorithm has identified that the longest path through $s$ has $t$ kinks. Suppose for the sake of contradiction that there is another w-path with at least $t+1$ kinks that goes through $s$.
+
+    That path must go through two of the children of $s$. Let those children be $u$ and $v$. We must have that the value of $h(u) + \max\limits_{t \in L_u}(w_{s, t}(u))$ is maximum amongst all children of $s$. Otherwise we could pick a bigger one to create a longer w-path with $v$. But if $u$ is such a vertex then either it or one with the same value would have been picked by our algorithm. This argument also holds for $v$ by symmetry.
+
+    We have found that our algorithm either must have computed either $u \text{ and } v$ or children $s$ equivalent to them. By the way we combine paths we always take the maximum children which if possible form a kink with $s$. Therefore the maximum w-path that passes through $s$ has exactly $t$ kinks.
+
+    Contradiction!
+
+    * Alternative I can proof this without contradiction just by showing directly any w-path is smaller than the one produced by my algorihtm*
+
+\end{proof}
+
+
+\begin{lem} The Algorithm produces the w-diameter of a height tree. \end{lem}
+
+\begin{proof}
+
+    We just showed the longest w-path through a root vertex is computed correctly. As the value of the optimal solution is taken in the same way as in the dynamic programming tree algorithm then the correctness of our algorithm follows directly from it.
+
+\end{proof}
+
+
+%\begin{prop} Given a rooted tree $T$ the w-diameter of $T$ either passes through the root or is entirely contained in one of the subtrees of the children of the root. \end{prop}
+
+%\begin{proof}
+    %This is trivially true there is simply nowhere else it can be.
+%\end{proof}
+
+%Therefore the optimal solution is obtain either through one of the optimal solutions of the children or through path combination. All we have to do is show that path combination produces the longest w-path that goes through the root of a subtree. The rest will follow from the prop[]. It is the same as the tree diameter algorithm.
+
+%\begin{prop} The combine path subroutine compute the correct answer. \end{prop}
+
+%\begin{proof}
+    %This is pretty obvious. We are using maximum path and maximising the oportunities for kinks. If there are two maximum paths all with kinks we will detect them. There cannot be a kinkier path there is simply nowhere it could be as it has to pass through the root and two of it's children.
+%\end{proof}
+
+%As path combination is correct then the optimal sumproblem function is correct. Then the whole algorithm must be correct.
+
+We will now take a look at the time complexity of the proposed solution. We can summarise it in the following formula is:
+
+$$ O\bigg( |V| + |E| + \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} + \sum_{u \in V}{d(u)^2}  \bigg) $$
+
+Where $\sum_{u \in V}{\sum_{v \in N(u)}{d(v)}}$ is the loop over all children of children and $\sum_{u \in V}{d(u)^2}$ is the double loop over all children in the final path combination.
+
+Firstly we can show that:
+
+$$ O\bigg( \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} \bigg) = O(|V|) $$
+
+This is because as we are in tree, every vertex will be visited exactly once as a child of a child. If it were visited twice then there would be two distinct paths to that vertex which would mean a cycle. 
+
+The other argument is more difficult to bound. One thing that is clear is that 
+
+$$ \sum_{u \in V}{d(u)^2} \ge \sum_{u \in V}{d(u)} = 2|E|$$
+
+This is true because the degree of a vertex is a positive integer and for any $x \in Z^+, x^2 \ge x$. This lower bound shows that it may be possible to obtain linear time complexity. I will demonstrate how we can bound it from above. 
+
+A triangle is the complete graph on three vertices. As trees have no cycles they cannot have induced triangles. Therefore for any edge in a tree $uv \in E(T)$ we have that $d(u) + d(v) \le |V|$. Indeed, if we do not have an induced triangle there are no vertices that $d(u)$ and $d(v)$ count twice. Summing over all edges we get that:
+
+$$ \sum_{uv \in E(T)}{d(u) + d(v)} \le |E|.|V| $$
+
+The key to solving this is to notice is that if we expand the summation every term $d(u)$ will be present exactly $d(u)$ times (one for each of it's edges). This allows us to obtain that:
+
+$$ 2|E| \le \sum_{u \in V(T)}{d(u)^2} \le |E|.|V| $$
+
+Overall for the two sums we have shown that:
+
+$$ O\bigg( \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} \bigg) = O(|V|)  , ~~ O\bigg( \sum_{u \in V(T)}{d(u)^2} \bigg) = O(|V|.|E|).$$
+
+Therefore the time complexity of the dynamic programming solution is:
+
+$$ O\big( |V| + |E| + |V| + |V|.|E|  \big) = O\big(|V|.|E|\big).$$
+
+
+% @TODO Add a reference for the lemma
+The running time is quadratic. Theoretically this is no better than a brute force exhaustive search. Despite this we have reasons to believe that it has the potential for better practical performance. The main reason that leads us to this conclusion is that the quadratic behaviour comes from the double loop on the children of all vertices. We know from the \textbf{lemma in previous chapter}  that in any tree for any vertex of degree $d$ there are at least $d$ distinct leaves. Therefore for any vertex of high degree there will be as many vertices which are base cases for the recursion and will take constant processing time. This behaviour is/is not demonstrated in the next chapter where implementations of both w-diameter algorithms are compared empirically.
+
+
+\cite{parikh1980adaptive}
