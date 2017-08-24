@@ -2,12 +2,11 @@
 \chapter{Background}
 \label{chapter2}
 
-The two key concepts we will introduce in this dissertation are the Contour Tree and Persistent Homology. In order to be able to do this we have to first take a step back and walk the reader through a range of other mathematical disciplines. The preliminaries include Set Theory, Point Set Topology, Differential Topology and Algebraic Topology. We will opt for introducing these fields in the computational aspect and give the reader the necessary intuition behind the main definitions and results we will use in the following chapters.
-
+The two key concepts we will introduce in this dissertation are the Contour Tree and Persistent Homology. In order to be able to do this we have to first take a step back and walk the reader through a range of other mathematical disciplines. The preliminaries include Point Set Topology, Differential Topology and Algebraic Topology. We will opt for introducing these fields with a more practical and computational flavour and provide the reader with both the necessary formalism and intuition behind the main definitions and results we will use in the following chapters.
 
 \section{Point Set Topology}
 
-Point Set Topology is the backbone of topology. It forms the underlying framework on top of which mathematicians build the concepts of continuous spaces and functions. As with many other mathematical disciplines topology is the study of sets that posses mathematical structure \cite{intro-topo}. Through point set topology we can define the mathematical structure known as the topology of a set. The topology of a set aims to introduce structure and make rigorous the notion of whether two elements of a set are close or not. Elements of a set which are close or near to one another are said to be a part of an open set. Furthermore if we have two open sets we can combine them to obtain more open sets. Let us now introduce the formal rules of the process.
+The first branch of Topology we shall encounter is Point Set Topology. It forms the underlying framework on top of which mathematicians build the concepts of continuous spaces and functions. As with many other mathematical disciplines topology is the study of sets that posses mathematical structure \cite{intro-topo}. Through point set topology we can define the mathematical structure known as the topology of a set. The topology of a set aims make rigorous the notion of whether two elements of a set are "close" or "near" each other. Elements of a set which are close or near to one another are said to be a part of an open set. We can use the topology of a set to manipulate open sets by combining them to obtain new open sets. Let us now introduce the formal rules of the process.
 
 \begin{defn} Let $X$ be a set and $\tau$ be a set of subsets of $X$. The set $\tau$ is a topology on $X$ when the following holds:  \end{defn}
 
@@ -18,9 +17,9 @@ Point Set Topology is the backbone of topology. It forms the underlying framewor
         $\bigcup_{\lambda \in \Lambda}{U_\lambda} \in \tau$.
 \end{itemize}
 
-We will call the elements of $X$ points and the elements of $\tau$ open sets or simply open. An open set is an open neighbourhood of a point when the point is in the open set. We must stress that the topology we endow on a set is by no means unique. For example if $X$ is any set then on topology may be $\tau = \{\emptyset, X\}$ and another may consist of all subsets of $X$. 
+We will call the elements of $X$ points and the elements of $\tau$ open sets or simply open. An open set is an open neighbourhood of a point when the point is in the open set. We must stress that the topology we endow on a set is by no means unique. For example if $X$ is any set then one topology may be $\tau = \{\emptyset, X\}$ and another may consist of all subsets of $X$. 
 
-Let us now introduce the topology we are going to use on $\mathbb{R}^n$. It is called the standard topology and it is based on the standard definition of distance between points in Euclidean space. Let $x = (x_1, x_2, ..., x_n)$ be a point in $\mathbb{R}^n$. The we can define the open ball around $x$ or radius $\epsilon$ as $B_\epsilon(x) = \{y \in \mathbb{R}^n: d(x, y) < \epsilon\}$ where we define the distance function as $d(x, y) = \sqrt{\sum_{i=1}^n{(x_i - y_i)^2}}$. The standard topology on $\mathbb{R}^n$ consists of the open balls around all points of all possible radii and their finite intersections and arbitrary unions.
+Let us now introduce the topology we are going to use on $\mathbb{R}^n$. It is called the standard topology and it is based on the standard definition of distance between points in Euclidean space. Let $x = (x_1, x_2, ..., x_n)$ be a point in $\mathbb{R}^n$. Then we can define the open ball around $x$ or radius $\epsilon$ as $B_\epsilon(x) = \{y \in \mathbb{R}^n: d(x, y) < \epsilon\}$ where we define the distance function as $d(x, y) = \sqrt{\sum_{i=1}^n{(x_i - y_i)^2}}$. The standard topology on $\mathbb{R}^n$ consists of the open balls around all points of all possible radii and their finite intersections and arbitrary unions.
 
 The next thing we would like to do is to define a special class of functions that preserve the properties of a topological space. Those are the continuous functions.
 
@@ -30,9 +29,11 @@ In formal notation if $U \in Y$ is open in $Y$ then $f^{-1}(U)$ is open in $X$. 
     
 
 % @TODO Add quote
-If $f$ is a bijection and $f^{-1}$ is also continuous we will call $f$ a homeomorphism. Homeomorphisms play a special role in topology. Two topological spaces are homeomorphic when there exists a homeomorphism between then. As continuous functions preserve open sets it follows that the two spaces are topologically identical. *See for example [].* Homeomorphism is the appropriate equivalence relation for topological spaces []. Indeed one of the thing topologists are most interested in is classifying spaces up to homeomorphism. We will call a property of a space that is preserved under homeomorphisms a topological invariant.
+If $f$ is a bijection and $f^{-1}$ is also continuous we will call $f$ a homeomorphism. Homeomorphisms play a special role in topology. Two topological spaces are homeomorphic when there exists a homeomorphism between then. As continuous functions preserve open sets it follows that the two spaces are topologically identical. *See for example [].*  This is the reason why topologists are most interested in is classifying and analysing spaces up to homeomorphism. We will call a property of a space that is preserved under homeomorphisms a topological invariant.
 
-Now let us to introduce our first topological invariant - path connectedness. It captures the idea that there is a path between any points in a space. But how do we define a path rigorously?
+%Homeomorphism is the appropriate equivalence relation for topological spaces [].
+
+Now let us introduce our first topological invariant - path connectedness. It captures the idea that there is a path between any points in a space. But how do we define a path rigorously?
 
 \begin{defn} Let $X$ be a topological space and let $x, y \in X$ be any two points. A path between $x$ and $y$ in $X$ is a continuous function $f: [0, 1] \to X$ such that $f(0) = x$ and $f(1) = y$.  \end{defn}
 
@@ -42,18 +43,17 @@ Paths in a topological space have a very natural geometric interpretation. * Wha
 
 \begin{defn} A topological space $X$ is said to be path-connected if there exists a path between any two points $x, y \in X$  \end{defn}
 
-This deceptively simple looking definition actually holds the overarching methodology for reasoning about algebraic invariants of topological spaces. In this case we have employed a two parameter family of utility functions to "measure" a global property of the topological space. The two parameter family is the collection of all paths between all pairs of points.
+This deceptively simple looking definition actually describes one of the methodologies for analysing topological spaces. Through defining auxiliary some auxiliary structure. In the case of path-connectedness we have employed a two parameter family of utility functions to "measure" a global property of the topological space - how well connected it is. The two parameter family is the collection of all paths between all pairs of points.
 
-A very important property of path-connectednes is that the continuous image of a path-connected is path-connected. Properties like this are crucial in the task of differentiating between topological spaces. If for example one space is path-connected and another one is not there there cannot exists a homeomorphism between them. Consequently they are not homeomorphic and therefore different in the eyes of a topologist.
+A very important property of path-connectedness is that the continuous image of a path-connected is path-connected. Properties like this are crucial in the task of differentiating between topological spaces. If for example one space is path-connected and another one is not there there cannot exists a homeomorphism between them. Consequently they are not homeomorphic and therefore topologically different.
 
-Now we will present our last definition. That of a topological manifold. A spaces that is locally resembles Euclidean space.
-
+Now we will present our final definition. That of a topological manifold - a spaces that locally resembles Euclidean space.
 
 \begin{defn} A $d-manifold$ is topological space where every point has an open neighbourhood that is homeomorphic to $\mathbb{R}^d$.  \end{defn}
 
-Examples or 0-dimensional manifolds are points. Examples of one dimensional manifolds are lines, circles and graphs. Examples for 2-dimensional manifolds are the surfaces we are familiar with from geometry such as the sphere, the torus and so on. *Manifolds are the playground where topology meets geometry.* 
+Examples or 0-dimensional manifolds are points. Examples of one dimensional manifolds are lines, circles and graphs. Examples for 2-dimensional manifolds are the surfaces we are familiar with from geometry such as the sphere, the torus and so on. *Manifolds are the playground where topology meets geometry.* In this dissertation we will exclusively be using manifold of dimension up to two. This is because we are most interested in the visualisation aspect of computational topology and hence would like to limit ourselves to modelling spacial phenomena of up to three dimensions.
 
-It is often hard to analyse a space just using it's topology. This is why in the following two chapter we will employ additional tools from other fields of mathematics to investigate the topology of a space. Two such tools are differentiable function and combinatorial decomposition of a space into simplex pieces.
+It is often hard to analyse the topology of a space by just considering it's open sets. In practice it is even computationally infeasible due to the shear number of ways we can combine open sets. This is why in the following two chapter we will employ additional tools from other fields of mathematics to aid in our analysis of the topology of a space. Two such tools are differentiable function and combinatorial approximation of spaces by decomposition into simple pieces called simplices.
 
 
 %Contractable Space.
@@ -79,14 +79,13 @@ It is often hard to analyse a space just using it's topology. This is why in the
 
 \section{Differential Topology}
 
-Differential topology is the study of differentiable functions defined on smooth manifolds. One of the leading fields of differential topology is that of Morse Theory. Morse theory is the study of the deep relation between spaces and function defined on them. One of the main goals is to determine the shape of a shape by analysing a functions that can be defined on it. For example using methods from differential topology we can show that the real line and the circle have different global topological properties. See Appendix.
+Differential topology is the study of differentiable functions defined on smooth manifolds. One of the leading fields of differential topology is that of Morse Theory. Morse theory is the study of the deep relation between spaces and functions defined on them. One of the main goals is to determine the shape of a shape by analysing the class of functions that can be defined on it. For example using methods from differential topology we can show that the real line and the circle are different topologically. * See Appendix for example.*
 
 One way we can study smooth manifolds via differentiable functions is by analysing the critical points of the functions. This however is an enormous task in it's own right. This is why we will restrict ourself to a special class of differentiable functions called Morse functions.
 
-
 \begin{defn} A function $f: M \to \mathbb{R}^n$ is a Morse Function if $f$ is smooth and at critical points the Hessian (matrix of second partial derivatives) is full rank.   \end{defn}
 
-In this dissertation we will restrict out attention even further and consider Morse functions whose codomain is $\mathbb{R}$. By defining a Morse function on a manifold we are able to decompose it into many subsets and analyse those to obtain some global information. The concepts is made clear with the definition of level sets, sublevel sets and super level sets.
+For practical considerations we will restrict our attention even further and consider Morse functions whose codomain is $\mathbb{R}$. One way we can use Morse functions defined on a manifold it to decompose it a family of nested subsets and analyse those to obtain some global topological information. We can make this concept more clear with the definition of level sets, sublevel sets and super level sets.
 
 \begin{defn} A level set at a value $h$ of a Morse function $f: M \to \mathbb{R}$ is the set $f^{-1}(\{h\}) = \{x \in M: f(x) = h \}$   \end{defn}
 
@@ -97,46 +96,35 @@ Morse functions ensures the following properties which we will make use of in th
 \begin{itemize}
     \item None of the critical points are degenerate.
     \item Changes in the topology of sub(super)level sets only happen at critical values. 
-    \item A Morse function defined on a close surface has a finite number of critical points.
+    \item A Morse function defined on a closed surface has a finite number of critical points.
 \end{itemize}
+
+With Morse functions we are able to decompose a manifold into it's level sets. What we lack is a way to collectively analyse them and relate them to one another. This is where the concept of Reeb Graphs comes in.
 
 \subsection{Reeb Graph}
 
 % @TODO Define the quotient topology.
 
-The Reeb Graph is a tool that encapsulates the evolution of the level sets of a continuous function. It does so by tracking how the connected connected components in the level sets appear, disappear and split or join together. When the function is Morse, an edge in the Reeb Graph corresponds to a sequence of contours in the level sets whose topology does not change. The vertices correspond to critical points where the topology of those components does changes (when they appear, dissapear, split or join). Morse theory ensures that critical points occur at distinct values of the parameter and are isolated. This removes any ambiguities that may arise in the construction of the graph. Furthermore that fact that their number is finite on a close surface and the fact that they only happen at critical values make this computation tractable.
-
+The Reeb Graph is a tool that encapsulates the evolution of the connectivity of level sets of a continuous function. It does so by tracking how the connected connected components in the level sets appear, disappear and split or join together. When the function is Morse, an edge in the Reeb Graph corresponds to a sequence of contours in the level sets whose topology does not change. The vertices correspond to critical points where the topology of those components does changes (when they appear, dissapear, split or join). Morse theory ensures that critical points occur at distinct values of the parameter and are isolated. This removes any ambiguities that may arise in the construction of the graph. Furthermore that fact that their number is finite on a close surface and the fact that they only happen at critical values make this computation tractable.
 
 \begin{defn}
 Given a topological space $X$ and a continuous function $f: X \to \mathbb{R}$ we can define an equivalence relation $\sim$ such that two points $x, y$ in $X$ are equivalent when there exists a path between them in a level set $f^{-1}(\{h\})$ for some $h \in \mathbb{R}$. The Reeb Graph is the quotient space $X \big/ \sim$ together with the quotient topology.
 \end{defn}
 
-Intuitively we can think of the Reeb Graph of a space where connected components of $X$ are contracted to a single point. We can turn the resulting topological graph into a combinatorial structures by recording all the vertices and edges between them.
+Intuitively we can think of the Reeb Graph of the space where connected components of $X$ are contracted to a single point. We can turn the resulting topological graph into a combinatorial structures by recording all the vertices and edges between them.
 
 *SHOW LOTS OF PICTURES*
 
-
-
-
-% @TODO Define a topological graph.
-%The Reeb Graph is indeed homeomorphic to a topological graph. *Explain Why*
-
-%There are two important equations that \cite{comp-topo} relate the Betti Numbers of the topological space $X$ and the quotient space $X \big/ _\sim$
-
-%$$ \beta_0(X \big/ _\sim) = \beta_0(X) $$
-%$$ \beta_1(X \big/ _\sim) \le \beta_1(X) $$.
-
-%We remind the reader that a contractable domain is on that is homotopic to single point. In the homology of such a space there is only one connected component and all other homology groups are trivial. Therefore $\beta_0 = 1 \text{ and } \beta_n = 0, n \in {1, 2, ...}$. A direct consequence of this is that the Reeb Graph of a contractable space is a tree regardless of the function defined on it.
+We will see in the next chapter that the Contour Tree is a special case of the Reeb Graph. Before we move on we must take a look at certain tools from Algebraic Topology that allows us to translate the continuous mathematical results we have obtained so far into the realm of finite combinatorial structures that would allow us to perform actual computation.
 
 \section{Algebraic Topology}
 
-
 % @TODO Incorrect English in last sentece
-Algebraic Topology is a branch of topology that uses tools from the field of abstract algebra to study topological spaces. The primary goal is to derive algebraic structures such as groups, rings are vector spaces from topological spaces that remain invariant under continuous mappings. Modern Algebraic Topology has it's roots in combinatorially defined topological space \cite{comb-alg-topo}. Unlike Point Set Topology and Differential Topology this allows us to obtain exact algorithm for computing the algebraic invariant we are interested in. To make matters clearer firstly we will introduce one of the most basic combinatorial topological space - Simplicial Comlexes and then we will introduce one of the earliest discovered algebraic invariants - the Euler Characteristic.
+Algebraic Topology is a branch of topology that uses tools from the field of abstract algebra to study topological spaces. The primary goal is to derive algebraic structures such as groups, rings and vector spaces from topological spaces that remain invariant under continuous mappings. Modern Algebraic Topology has it's roots in combinatorially defined topological spaces \cite{comb-alg-topo}. Unlike Point Set Topology and Differential Topology this allows us to obtain exact algorithm for computing the algebraic invariant we are interested in. To make matters clearer firstly we will introduce one of the most basic combinatorial topological space - Simplicial Comlexes and then we will introduce one of the earliest discovered algebraic invariants - the Euler Characteristic. We will continue our discussion on Algebraic Topology in Chapter Five where we will see how the concept of the Euler Characteristic can be generalised to the one of the most vibrant fields of Algebraic Topology - Homology.
 
 \subsection{Simplicial Complexes}
 
-Simplicial Complexes are a way of representing a topological space as a decomposition into smaller pieces. In order to understand simplicial complexes we must first understand what their basic building blocks are. The definitions here are taken from \cite{comp-topo}.
+Simplical Complexes are the one of the first combinatorially flavoured topological spaces one encounters in Algebraic Topology. They are a set that consists of points, line segments, triangles and their higher dimensional analogues all "glued together" in a single structure. In order to understand simplicial complexes we must first understand what their basic building blocks are. The definitions here are taken from \cite{comp-topo}.
 
 \begin{defn} Let $\{v_0, ..., v_k\}$ be points in $\mathbb{R}^d$. The convex convex combination of the points is the sum $\sum_{i=0}^k{\lambda_ix_i}$ where $\lambda_i \ge 0$ and $\sum_{i=0}^n{\lambda_i} = 1$.  \end{defn}
 
@@ -144,17 +132,21 @@ If we decide to take the subset of $\mathbb{R}^d$ covered by all possible convex
 
 \begin{defn} Let $\{v_0, ..., v_k\}$ be points in $\mathbb{R}^{k+1}$. We will call the convex combination of those points the $k-simplex$ defined by the points.  \end{defn}
 
-In the definition above $k$ is called the simplex. We will only be considering simplices of dimension up to three as we will be modeling actual spacial phenomena with them. We will call the simplices of dimension $0, 1, 2, 3$ vertices, edges, triangles and tetrahedron respectively. See example []. A face of a simplex is the convex hull of a non-empty subsets of it's points. Thus the points that define the simplex are it's vertices.
+* Show Examples *
 
-To obtain a simplical complex all we have to do is take the union of a number of simplices in the same dimension and glue them along common faces without allowing self-intersection. More formally:
+In the definition above the number $k$ is also called the dimension of the simplex. Analogous to how we mentioned that we will only make use of low dimensional manifolds, here we will only be considering simplices of dimension up to three. We will call the simplices of dimension $0, 1, 2 \text{ and } 3$ vertices, edges, triangles and tetrahedron respectively. See example []. 
+
+A face of a simplex is the convex hull of a non-empty subsets of it's points. Thus the points that define the simplex are it's vertices. To obtain a simplical complex all we have to do is take the union of a number of simplices in the same dimension and glue them along common faces without allowing self-intersection. More formally:
 
 \begin{defn} A simplical complex $K$ is a finite collection of simplices such that if $\tau$ is a simplex $K$ then all faces of $\tau$ must be simplicies in $K$. Furthermore the intersection of two simplicies in $K$ is either empty or a common face of both.  \end{defn}
 
 Show example [].
 
+We shall obtain the topology of a simplex through embedding it in three-dimensional Euclidean space and consider the subspace topology as a subset. Now that we have formalised the concept of a simplical complex let us see what kind of algebraic invariants we can compute from it.
+
 \subsection{Euler Characteristic}
 
-The first topological invariant of algebraic nature we shall encounter is the Euler Characteristic. It is denoted as $\chi$ and it assigns an integer to suitably nice spaces through a generalisation of counting \cite{elementary-applied-topology}. The concept was originally defined for polyhedra as a alternating sum of the form $|V| - |E| + |F|$, where $V$ is the set of vertices, $E$ the set of edges and $F$ the set of faces. This allowed for the classification of the Platonic solids [fig].
+The first topological invariant of algebraic nature we shall encounter is the Euler Characteristic. It is denoted as $\chi$ and it assigns an integer to simplical complexes through a generalisation of counting \cite{elementary-applied-topology}. The concept was originally defined for polyhedra as a alternating sum of the form $|V| - |E| + |F|$, where $V$ is the set of vertices, $E$ the set of edges and $F$ the set of faces. This allowed for the classification of the Platonic solids [fig].
 
 % @TODO Define CW complexes, simplical complexes may not generalise polyhedra
 The Euler Characteristic can be generalized to all spaces that can be decomposed into a finite number of cells. Let us first consider simplical complexes because they generalise polyhedra. The natural generalisation of the alternating sum is to continue it indefinitely with the number of 3-cells, then 4-cells, etc., as follows
@@ -167,6 +159,8 @@ where all $k_i$ is the number of $i$ dimensional simplicies and $k_i = 0$ for $i
 
 \begin{lem}   The Euler Characteristic is homotopy invariant. \end{lem}
 
-This results allows to compute in practice $\chi$ of manifolds by considering any of their finite triangulations. As long as there is a homeomorphism between a manifold and triangulation $\chi$ will not change. We will be well advised to pick the triangulations with the least number of simplices to improve computational efficiency. For example the octahedron is a triangulation of a sphere and therefore the Euler Characteristic of the sphere is zero. For further information on this subject we refer the reader to [].
+This result allows us to compute the Euler Characteristic of topological spaces which are not simplicial complexes. Let us take for example one of the simplest surfaces - the sphere. We will call any simplicial complex that is homeomorphic to the sphere it's triangulation. The most basic triangulation of the sphere is the tetrahedron. Therefore if we wish to compute the Euler Characteristic of the sphere all we need to do is compute the Euler Characteristic of the tetrahedron. This process is what will allows us to compute the contour tree in the next chapter. We will start with an assumption that we have a bounded volume in $\mathbb{R}^2$ and we will triangulate it to enable computation.
+
+%This results allows to compute in practice $\chi$ of manifolds by considering any of their finite triangulations. As long as there is a homeomorphism between a manifold and triangulation $\chi$ will not change. We will be well advised to pick the triangulations with the least number of simplices to improve computational efficiency. For example the octahedron is a triangulation of a sphere and therefore the Euler Characteristic of the sphere is zero. For further information on this subject we refer the reader to [].
 
 
