@@ -4,6 +4,7 @@
 - Finish Contour Tree Simplification.
 
 - Restart numbering in DP algorithm pseudocode.
+- Do New basis homoogy example with edges, not vertices
 
 # Practical
 - Run on random datasets.
