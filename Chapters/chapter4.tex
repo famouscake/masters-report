@@ -367,9 +367,9 @@ The second ingredient in the dynamic programming approach of the tree diameter a
 
 In the case of w-path combinations we must be vigilant of which vertices become kinks in the path combinations. Let us observe a similar scenario where $s$ is the root a rooted tree $T$ and $u, v \in V(T_s)$ are two of the children with maximal values for $w(u)$ and $w(v)$. We would ideally like to combine $w(u)$ and $w(v)$ like so: $w(u) + w(v) + w_{u, v}(s)$. This however is not correct! There is a hidden assumption in the sum that the only vertex that can become a kink in this path combination is $s$. Contrary to this, in fact $u$ and $v$ can also become kinks. Observe that $w(u) \text{ and } w(v)$ are the w-lengths of two paths. One path starting at $u$ and ending in a leaf of $T_u$ and one starting at $v$ and ending in a leaf of $T_v$. In the new path both $u$ and $v$ become inside vertices and depending on whether they become kinks or not the sum may further increase by two. To account for this we must also look at the children of $u$ and $v$ through which a maximum w-path passes. We have already introduced those as $L_u$ and $L_v$. This process is similar to the one for obtaining the w-height of a vertex and is described by the following formula:
 
-$$ w(u) = \max\limits_{\substack{u, v \in N(s) \\ u \ne v}}\{ h(u) + \max\limits_{t \in L_u}\Big(w_{s \rightsquigarrow t}(u)\Big) + h(v) + \max\limits_{t \in L_v}\Big(w_{s \rightsquigarrow t}(v)\Big) + w_{u \rightsquigarrow v}(s)\}. $$
+$$ \max\limits_{\substack{u, v \in N(s) \\ u \ne v}}\bigg( h(u) + \max\limits_{t \in L_u}\Big(w_{s \rightsquigarrow t}(u)\Big) + h(v) + \max\limits_{t \in L_v}\Big(w_{s \rightsquigarrow t}(v)\Big) + w_{u \rightsquigarrow v}(s)\bigg). $$
 
-%Thus the formula that describes the optimal solution can be written as:
+We must pay attention to one special case. This is when the root of a rooted height tree has exacly one child. We cannot make a path combination in that case so we will assume that the formula will compute the w-height of the tree instead.
 
 We now claim that the longest w-path in a rooted height tree is either entirely contained in one of the subtrees of the root or is a combination of two maximum w-height paths that end at two distinct children of the root. Combining what we have shows so far we obtain the following expression for the optimal solution:
 
@@ -409,34 +409,35 @@ Here is the pseudocode for a recursive implementation of this algorithm.
     \State // After all neighbours are visited
 
     \State // Calculate w-height of s
-    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$}
+    \ForAll {u $\in$ T.$Adj$[s]}
         \If {L[u] == $\emptyset$}
             \State H[s] = max(H[s], H[u]);
         \Else
-            \ForAll {v $\in$ L[u]$/u$}
+            \ForAll {v $\in$ L[u]}
                 \State H[s] = max(H[s], H[u] + $w_{v, s}(u)$);
             \EndFor
         \EndIf
     \EndFor
 
     \State // Find all children that contribute to the a w-height path
-    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$}
+    \ForAll {u $\in$ T.$Adj$[s]}
         \If {L[u] == $\emptyset$ AND H[s] == H[u]}
             \State L[s] = L[s] $\cup$ u
         \Else
-            \ForAll {v $\in$ L[u]$/u$}
-                \If {H[s] = max(H[s], H[u] + $w_{v, s}(u)$)}
+            \ForAll {v $\in$ L[u]}
+                \If {H[s] = H[u] + $w_{v, s}(u)$}
                     \State L[s] = L[s] $\cup$ u
                 \EndIf
             \EndFor
         \EndIf
+
     \EndFor
 
     \State // Find the maximum path combination
     \State maxCombine = 0
-    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$}
+    \ForAll {u $\in$ T.$Adj$[s]}
 
-        \ForAll {v $\in$ T.$Adj$[s]$/s.\pi$}
+        \ForAll {v $\in$ T.$Adj$[s]}
 
             \If {v == u}
                 \State continue
@@ -445,7 +446,7 @@ Here is the pseudocode for a recursive implementation of this algorithm.
             \State temp = H[u] + H[v]
 
             \If {L[u] $\ne$ $\emptyset$}
-                \ForAll {t $\in$ L[u]$/u$}
+                \ForAll {t $\in$ L[u]}
                     \If {$w_{t, s}(u) == 1$}
                         \State temp = temp + 1
                         \State break
@@ -454,7 +455,7 @@ Here is the pseudocode for a recursive implementation of this algorithm.
             \EndIf
 
             \If {L[v] $\ne$ $\emptyset$}
-                \ForAll {t $\in$ L[v]$/u$}
+                \ForAll {t $\in$ L[v]}
                     \If {$w_{t, s}(v) == 1$}
                         \State temp = temp + 1
                         \State break
@@ -467,6 +468,9 @@ Here is the pseudocode for a recursive implementation of this algorithm.
             \State maxCombine = max(maxCombine, temp)
         \EndFor
 
+    // If there is exacly one child maxCombine will not have been
+    \State maxCombine = max(H[s], maxCombine);
+
     \EndFor
 
 \end{algorithmic}
@@ -477,7 +481,7 @@ Here is the pseudocode for a recursive implementation of this algorithm.
 \begin{algorithmic}[1]
 
     \State // Find maximum subproblem solution
-    \ForAll {u $\in$ T.$Adj$[s]$/s.\pi$}
+    \ForAll {u $\in$ T.$Adj$[s]}
         \State O[s] = max(O[s], O[u])
     \EndFor
 
@@ -501,15 +505,39 @@ Let us now prove the correctness of the algorithm with the following Lemma.
 
 \begin{lem} The computation for the longest w-path that goes through the root of a subtree is correct. \end{lem}
 \begin{proof}
-    Let $s$ be the root of the current subtree $T_s$ in the computation of the algorithm. Suppose that our algorithm has identified that the longest path through $s$ has $t$ kinks. Suppose for the sake of contradiction that there is another w-path with at least $t+1$ kinks that goes through $s$.
 
-    That path must go through two of the children of $s$. Let those children be $u$ and $v$. We must have that the value of $h(u) + \max\limits_{t \in L_u}(w_{s, t}(u))$ is maximum amongst all children of $s$. Otherwise we could pick a bigger one to create a longer w-path with $v$. But if $u$ is such a vertex then either it or one with the same value would have been picked by our algorithm. This argument also holds for $v$ by symmetry.
+    Let $T$ be a rooted height tree and $s$ be its root. 
 
-    We have found that our algorithm either must have computed either $u \text{ and } v$ or children $s$ equivalent to them. By the way we combine paths we always take the maximum children which if possible form a kink with $s$. Therefore the maximum w-path that passes through $s$ has exactly $t$ kinks.
+    \em Case 1. $s$ has one child. \em
+    
+    When $s$ has exactly one child then the w-length of the longest path that goes through $s$ is equal to the w-height of $s$ by the definition of w-height.
 
-    Contradiction!
+    \em Case 2. $s$ has more than one child. \em
 
-    * Alternative I can proof this without contradiction just by showing directly any w-path is smaller than the one produced by my algorihtm*
+    Let $u', v' \ne s$ be two distinct leaves of $T$ such that the path $u' \rightsquigarrow v'$ is the longest w-path that goes through $s$.  
+    We can decompose the path $u' \rightsquigarrow v'$ at $s$ as: $w(u', v') = w(u', s) + w(v', s) + w_{u' \rightsquigarrow v'}(s)$.
+
+    Let $u$ and $v$ be the two children of $s$ through which the path goes through.
+    The paths $w(u', s)$ and $w(v', s)$ can be further decomposed at $u$ and $v$ respectively. We obtain that 
+    $w(u', s) = w(u', u) + w(u, s) + w_{u' \rightsquigarrow s}(u)$ and 
+    $w(v', s) = w(v', v) + w(v, s) + w_{v' \rightsquigarrow s}(v)$. 
+    In both cases $w(v, s) = 0$ and $w(u, s) = 0$ because $u$ and $v$ are adjacent to $s$. This means that the paths $u \rightsquigarrow s$ and $v \rightsquigarrow s$ have no inside vertices. 
+    Lasty we have that $w_{u' \rightsquigarrow v'}(s) = w_{u \rightsquigarrow v}(s)$ because $u \rightsquigarrow v$ is a subpath of $u' \rightsquigarrow v'$.
+    By substituting these into the first equation we obtain that:
+
+    $$w(u', v') = w(u', u) + w_{u' \rightsquigarrow s}(u) + w(v', v) + w_{v' \rightsquigarrow s}(v) + w_{u \rightsquigarrow v}(s). $$
+
+    This equation is similar to Equation []. By observing the two carefully we can infer that
+
+    $$w(u', u) + w_{u' \rightsquigarrow s}(u) = h(u) + \max\limits_{t \in L_u}\Big(w_{s \rightsquigarrow t}(u)\Big)$$
+    and
+    $$w(v', v) + w_{v' \rightsquigarrow s}(v) = h(v) + \max\limits_{t \in L_v}\Big(w_{s \rightsquigarrow t}(v)\Big).$$
+
+    for otherwise we would be able to assemble a longer w-path that goes through $s$. This is not possible because we supposed that $u' \rightsquigarrow v'$ is the longest such w-path. Therefore we can conclude that:
+
+    $$ w(u', v') \le \max\limits_{\substack{u, v \in N(s) \\ u \ne v}}\{ h(u) + \max\limits_{t \in L_u}\Big(w_{s \rightsquigarrow t}(u)\Big) + h(v) + \max\limits_{t \in L_v}\Big(w_{s \rightsquigarrow t}(v)\Big) + w_{u \rightsquigarrow v}(s)\}. $$
+
+    The w-path combination we have presented produces a valid path in the tree. It follows that it cannot be strictly bigger than $w(u', v')$. Therefore they are equal and the computation produces the longest w-path that goes through the root of the tree.
 
 \end{proof}
 
@@ -518,7 +546,7 @@ Let us now prove the correctness of the algorithm with the following Lemma.
 
 \begin{proof}
 
-    We just showed the longest w-path through a root vertex is computed correctly. As the value of the optimal solution is taken in the same way as in the dynamic programming tree algorithm then the correctness of our algorithm follows directly from it.
+    We just showed the longest w-path through the root of subtree is computed correctly. As the value of the optimal solution is taken in the same way as in the dynamic programming tree diameter algorithm [] then the correctness of our algorithm follows directly from it.
 
 \end{proof}
 
@@ -572,14 +600,10 @@ The worst case running time we obtained for the DP algorithm is quadratic. The b
 
 \section{Algorithm Implementations}
 
-For the purpose of conducting the empirical study later on we implemented all three w-diameter algorithms we developed in the this chapter. Those are the brute force algorithm, the 2xBFS and DP algorithms. In order to produce the contour trees of real life data sets we also implemented the serial version of the contour tree algorithm that is based directly on \cite{carr-masters}. To test our implementations for correctness we required the generations of more data sets than we had. This is why we have also written three small utility programs. One generates randomly populated data grids of size $n \times m$, the second generates random trees on $n$ vertices and lastly one that generates all $n \times m$ permutations of data grids populated with the numbers from $1$ to $n \times m$.  All algorithms were implemented in C++ and all algorithms are serial.
+For the purpose of conducting the empirical study later on we implemented all three w-diameter algorithms we developed in the this chapter. Those are the brute force algorithm, the 2xBFS and DP algorithms.  For the brute force algorithm and the 2xBFS algorithms we based our implementation entirely on the pseudocode provided in the previous chapter. The source code for those can be found in the appendix. For the DP algorithm we had to implemented a bottom up approach because the recursive one we suggested in the previous chapter was not efficient enough for large data sets. 
 
-The first algorithm that we implemented was the algorithm for computing the contour tree. To keep the implementation of this algorithm straightforward we have opted for working with two dimensional data sets only. To ensure the correctness of the implementation we have ran the code against code provided by Dr. Hamish Carr that implements the same algorithm. We have found that the two implementations produce the same output for all data sets we have tested - both from real data and random data.
+The convert the DP algorithm to a bottom up approach we first have to solve all base case subproblems and then iteratively work our way to other subproblems that depend on ones that have already been solved. In order to do this we can run a BFS from the root of the tree and label all vertices with the distance they are at from the root. We can then iterrate over all vertices in reverse order of their distance form the root. This ensures that we will solve for the leaves first and conecutively all the children of a vertex will have been solved for when we reach it. When at a vertex we can use the exact same code we provided in the backtracking part of the DFS in the pseudocode on page []. 
 
-For the brute force algorithm and the 2xBFS algorithms we based our implementation entirely on the pseudocode provided in the previous chapter. The source code for those can be found in the appendix. For the DP algorithm we had to implemented a bottom up approach because the recursive one we suggested in the previous chapter was not efficient enough for large data sets. To adapt the algorithm to a bottom approach we firstly ran a standard Breadth First Search from a node in the tree. With it we computed the leaves, 1st order leaves, 2nd order leaves and so on. After this we extracted all of the code that was used in the backtracking phase of the Depth First Search and applied it first to all leaves, than 1st order leaves and so on. This ensured that all children of a vertex were computed before the node it self and allowed us to avoid using recursion at the expense of some additional preprocessing and higher memory footprint for storing the order of a vertex.
-
-In order to test the w-diameter algorithms we compared their output to one another because there is no other way to establish the ground truth. We considered the brute force algorithm to be the most reliable because it's correctness if most obviously seen and because it is the easiest to implement and hence reduced the chance of programming error. In all of out tests including real and random data the brute force and DP algorithms produced identical results and the 2xBFS algorithm produces results of no more than two less. This is consistent with the proofs we presented in the previous section.
+%To adapt the DP algorithm to a bottom up approach we firstly ran a standard Breadth First Search from a node in the tree. With it we computed the leaves, 1st order leaves, 2nd order leaves and so on. After this we extracted all of the code that was used in the backtracking phase of the Depth First Search and applied it first to all leaves, than 1st order leaves and so on. This ensured that all children of a vertex were computed before the node it self and allowed us to avoid using recursion at the expense of some additional preprocessing and higher memory footprint for storing the order of a vertex.
 
 
-% @TODO Add a reference for the lemma
-% This running time is quadratic. Theoretically this is no better than a brute force exhaustive search. Despite this we have reasons to believe that it has the potential for better practical performance. The main reason that leads us to this conclusion is that the quadratic behaviour comes from the double loop on the children of all vertices. We know from the \textbf{lemma in previous chapter}  that in any tree for any vertex of degree $d$ there are at least $d$ distinct leaves. Therefore for any vertex of high degree there will be as many vertices which are base cases for the recursion and will take constant processing time. This behaviour is/is not demonstrated in the next chapter where implementations of both w-diameter algorithms are compared empirically.

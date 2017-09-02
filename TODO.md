@@ -3,6 +3,8 @@
 - Finish Algorithms Overview.
 - Finish Contour Tree Simplification.
 
+- Restart numbering in DP algorithm pseudocode.
+
 # Practical
 - Run on random datasets.
 - Run DP and 2xBFS performance again.
