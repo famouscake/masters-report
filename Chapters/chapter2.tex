@@ -21,6 +21,8 @@ We will call the elements of $X$ points and the elements of $\tau$ open sets or 
 
 Let us now introduce the topology we are going to use on $\mathbb{R}^n$. It is called the standard topology and it is based on the standard definition of distance between points in Euclidean space. Let $x = (x_1, x_2, ..., x_n)$ be a point in $\mathbb{R}^n$. Then we can define the open ball around $x$ or radius $\epsilon$ as $B_\epsilon(x) = \{y \in \mathbb{R}^n: d(x, y) < \epsilon\}$ where we define the distance function as $d(x, y) = \sqrt{\sum_{i=1}^n{(x_i - y_i)^2}}$. The standard topology on $\mathbb{R}^n$ consists of the open balls around all points of all possible radii and their finite intersections and arbitrary unions.
 
+But how is it possible to update this? How fast is it?
+
 The next thing we would like to do is to define a special class of functions that preserve the properties of a topological space. Those are the continuous functions.
 
 \begin{defn} A function $f : X \to Y$ is said to be continuous when the preimage of an open set in $Y$ is an open set in $X$. \end{defn}
@@ -47,7 +49,7 @@ This deceptively simple looking definition actually describes one of the methodo
 
 A very important property of path-connectedness is that the continuous image of a path-connected is path-connected. Properties like this are crucial in the task of differentiating between topological spaces. If for example one space is path-connected and another one is not there there cannot exists a homeomorphism between them. Consequently they are not homeomorphic and therefore topologically different.
 
-Now we will present our final definition. That of a topological manifold - a spaces that locally resembles Euclidean space.
+Now we will present our final definition. That of a topological manifold - a mathematical generalisation of a surface.
 
 \begin{defn} A $d-manifold$ is topological space where every point has an open neighbourhood that is homeomorphic to $\mathbb{R}^d$.  \end{defn}
 

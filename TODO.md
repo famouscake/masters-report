@@ -1,5 +1,8 @@
 # This is an epic todo list
 
+- Finish Algorithms Overview.
+- Finish Contour Tree Simplification.
+
 # Practical
 - Run on random datasets.
 - Run DP and 2xBFS performance again.
@@ -11,7 +14,7 @@
 # Writing
 
 - Write the Introduction
-- Write the Logarithmmic Collapse for Parallel
+- Write the Logarithmic Collapse for Parallel
 
 # Refactoring
 
