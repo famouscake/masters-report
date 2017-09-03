@@ -6,6 +6,17 @@
 - Restart numbering in DP algorithm pseudocode.
 - Do New basis homoogy example with edges, not vertices
 
+- Add morse theory cirtical points at vertices to join, split trees.
+
+
+- Add this  The most recent
+extensions of this work introduce high quality topological simplification [4] where the contour tree is pruned incrementally to reduce
+its complexity and highlight the fundamental structures present in
+the data. The scheme involves exact and approx (FROM ORLY)
+
+- Write the reflective thingy
+
+
 # Practical
 - Run on random datasets.
 - Run DP and 2xBFS performance again.
