@@ -1,3 +1,50 @@
+# THINGS TO Finish
+
+    <!-- - Quotient Space. -->
+    <!-- - Complexity of Parallel Algorithm. -->
+    <!-- - Add Reflective Bullshit thingy. -->
+    <!-- - Move Things around -->
+
+    Thursday
+        <!-- - Add the method for contour tree Simplification. -->
+        <!-- - Explain Barcode Diagrams. -->
+        - CH4. Find references for 2xBFS and DP algorithms.
+        - CH4. Find references for Hamiltonia path reduction 4.@.
+
+        <!-- - Fix Branch Decomposition. -->
+        - Run Algorithms Correctness
+
+    Friday
+        - CH7. Make table for NxBFS Testing
+        - Fix EP (Extended Persistence) vs BD (Branch Decomposition)
+
+    Weekend
+        - Refactor Name and Summary.
+        - Refactor Future Work.
+        - Refactor Personal Reflection
+
+        - Add Ethical Issues Addressed
+        - Justify Things
+
+
+
+    - CH2. Definitions about Reeb Graph should be taken directly from somewhere. Do not experiment.
+
+    - CH3. Contour Tree Join/Split Tree Definition. Add superarcs and supernodes
+    <!-- - CH3. Talk about time and work complexity of the parallel algorithm and the merge phase in particular. -->
+
+    - CH4. Find references for 2xBFS and DP algorithms.
+    - CH4. Find references for Hamiltonia path reduction 4.@.
+    - CH4. Check if you notation about time complexity see if it's called that.
+
+    - CH7. Find Reference for GTOPO
+    - CH7. Make table for NxBFS Testing
+
+    - REF. Improve references.
+
+
+
+
 # This is an epic todo list
 
 - Finish Algorithms Overview.
@@ -75,40 +122,3 @@ the data. The scheme involves exact and approx (FROM ORLY)
     <!-- - CH6. Filtration of a Simplicial Complex before final section -->
 
     - CH7. Improve Images for generating arbitrarily large w-structures.
-
-
-
-
-# THINGS TO Finish
-
-    <!-- - Quotient Space. -->
-    <!-- - Complexity of Parallel Algorithm. -->
-    <!-- - Add Reflective Bullshit thingy. -->
-
-    - Move Things around
-    - Explain Barcode Diagrams.
-    - Fix EP (Extended Persistence) vs BD (Branch Decomposition)
-    - Fix Branch Decomposition.
-
-    - Fix Name and Summary.
-    - Fix Future Work.
-    - Add Ethical Issues Addressed
-    - Justify Things
-
-
-
-
-
-    - CH2. Definitions about Reeb Graph should be taken directly from somewhere. Do not experiment.
-
-    - CH3. Contour Tree Join/Split Tree Definition. Add superarcs and supernodes
-    - CH3. Talk about time and work complexity of the parallel algorithm and the merge phase in particular.
-
-    - CH4. Find references for 2xBFS and DP algorithms.
-    - CH4. Find references for Hamiltonia path reduction 4.@.
-    - CH4. Check if you notation about time complexity see if it's called that.
-
-    - CH7. Find Reference for GTOPO
-    - CH7. Make table for NxBFS Testing
-
-    - REF. Improve references.

@@ -201,4 +201,42 @@ where all $k_i$ is the number of $i$ dimensional simplicies and $k_i = 0$ for $i
 
 This result allows us to compute the Euler Characteristic of topological spaces which are not simplicial complexes. Let us take for example one of the simplest surfaces - the sphere. We will call any simplicial complex that is homeomorphic to the sphere it's triangulation. The most basic triangulation of the sphere is the tetrahedron. Therefore if we wish to compute the Euler Characteristic of the sphere all we need to do is compute the Euler Characteristic of the tetrahedron. We will use a similar process to compute the contour tree in the next chapter. We will start with an assumption that we have a bounded volume in $\mathbb{R}^2$ and we will triangulate it to enable computation of a topolthe conture tree.
 
+\section{Graph Theory}
+
+The longest path in a graph is an \em NP-hard \em problem. This can be demonstrate via a reduction to the Hamiltonian path problem []. Fortunately in the special case where the graph is a tree it has a linear time solution. In this special case it is known as the tree diameter problem. In this section we will take a look at how two of the linear time tree diameter problems work.
+
+
+\subsection{Tree Diameter Algorithms}
+
+The first algorithm we will discuss is based on the following theoretical result [].
+
+\begin{lem} Let $s$ be any vertex in a tree. Then the most distant vertex from $s$ is an endpoint of a tree diameter. \end{lem}
+
+    To implement this algorithm we require of way of finding the most distant vertex from a given vertex. This can be done using Breadth First Search (BFS). Let $T$ be a tree and $s \in V(T)$ be any vertex. We can run BFS with $s$ as its root to find a vertex $u$ such that $d(s, u) \ge d(s, t)$ for all $t \in V(T)$. We can then run a second BFS with root $u$ to obtain a vertex $v$ such that $d(u, v) \ge d(u, t)$ for all $t \in V(T)$. As $u$ is the farthest vertex from $s$ it must be the endpoint of a diameter. As the diameter of $T$ is the longest path in $T$ therefore the second BSF must produce a path of length as much as the diameter. Therefore $d(u, v) \ge d(a, b)$ for all $a,b \in V(T)$.
+
+The space and time complexity of BSF are linear \cite{intro-to-algo} and therefore the space and time complexity of this algorithm are linear as well. This follows from that fact that the algorithm consists of running BFS just two consecutive times.
+
+% \subsection{Dynamic Programming}
+
+The second approach is based on the Dynamic Programming paradigm. Dynamic Programming is a method that is used to solve optimisation problems that exhibit recursive substructures of the same type as the original problem. The key ingredients in developing a dynamic-programming algorithm are \cite{intro-to-algo}:
+
+
+\begin{enumerate}
+    \item Characterise the structure of the optimal solution.
+    \item Recursively define the value of an optimal solution.
+    \item Compute the value of the optimal solution.
+\end{enumerate}
+
+% @TODO Redefine N(u)
+
+Trees exhibit optimal substructure through their subtrees. For our intents and purposes we shall define a subtree as a connected subgraph of a tree. We will only consider rooted trees in the context of this algorithm and we must define the accordingly. Let $T$ be a rooted tree and let $v, u \in V(T)$ be two vertices such that $v$ is the parent of $u$. We shall define the subtree rooted at $u$ as the maximal (vertex-wise) subgraph of $T$ that contains $u$ but does not contain $v$.  We will denote it as $T_u$. In this notation $T = T_s$ where $s$ is the root of $T$. The rooted subtree at $u$ is smaller than $T$ as it does not contain at least one of the vertices of the $T$ namely - $v$. The structure of the optimal solution is characterised through all possible rooted subtrees $\{T_u\}_{u \in V(G)}$.
+
+We can recursively define the value of the optimal solution with the following observation. Starting at the root of the tree the longest path in tree either goes through two children of the root and the root or is entirely contained in one of the subtrees rooted at one the children. In order to define this formally we will make use of two additional functions. Let $h(u)$ be the height of the subtree rooted at $u$. The height is defined as the longest path in $T_u$ from $u$ to one of the leaves of $T_u$. We will also define $D(u)$ as longest path contained entirely in $T_u$. The function we will maximize is $D(s)$ where $s$ is the root of $T$. We will do so with the following formula.
+
+$$ D(v) = max\bigg\{ \max\limits_{u \in N(v)}\bigg(D(u)\bigg), \max\limits_{u, w \in N(v)}\bigg(h(u) + h(w) + 2\bigg) \bigg\}. $$
+
+The base case for this recursive formula is at the leaves of $T$. If $u$ is a leaf of $T$ then $V(T_u) = \{u\}$. This allows us to set $h(u) = 0$ and $D(u) = 0$ and consider all leaves as base cases for the recursive formula. We are guaranteed to reach the base cases as each subtree is strictly smaller we must inevitably reach all leaves. This algorithm can be implemented in linear time using Depth First Search (DFS) by using two auxiliary arrays that hold the values for $h(u)$ and $D(u)$ for every $u \in V(T)$ []. We will elaborate more on the imeplementational details in the final section of this chapter.
+
+%@TODO Fix sentece before
+
 %This results allows to compute in practice $\chi$ of manifolds by considering any of their finite triangulations. As long as there is a homeomorphism between a manifold and triangulation $\chi$ will not change. We will be well advised to pick the triangulations with the least number of simplices to improve computational efficiency. For example the octahedron is a triangulation of a sphere and therefore the Euler Characteristic of the sphere is zero. For further information on this subject we refer the reader to [].

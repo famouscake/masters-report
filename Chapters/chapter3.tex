@@ -7,7 +7,7 @@
 The Reeb Graph of a contractable topological space is connected and acyclic \cite{comp-topo}. This allows us to define a special case of the Reeb Graph called the Contour Tree.  In this chapter we will assemble the theory we have presented thus far and use it to introduce the state of the art serial and parallel algorithms for contour tree computation. We will begin with a short discussion on how we treat input data and what theoretical simplifying assumptions we are making. Afterwards we will present some graph theoretical properties of contour trees and then demonstrate how those are used in the construction of the algorithms. We will conclude with a discussion of a particular pathological case that causes poor performance in the parallel contour tree algorithm. In addition to this we will include the extra topic of contour tree simplification. Simplification is the process of identifying and removing parts of the contour tree that are not topologically significant.
 
 
-\section{Input Data}
+\section{Typical Data}
 
 % @TODO Add this back if you have the time.
 
@@ -65,14 +65,14 @@ The contour tree contains information for two types of events - joining and spli
 
 \begin{figure}[h]%
     \centering
-    \subfloat[Simplicial Mesh]{{\includegraphics[scale=0.4]{./images/w3x3-grid.eps}}}%
+    \subfloat[Simplicial Mesh]{{\includegraphics[scale=0.06]{./images/filtration/asc/x9.eps}}}%
     \qquad \qquad \qquad
-    \subfloat[Contour Tree]{{\includegraphics[scale=0.4]{./images/w3x3-contour-tree.eps}}}%
+    \subfloat[Contour Tree]{{\includegraphics[scale=0.10]{./images/w3x3-contour-tree-new.eps}}}%
     \qquad \qquad \qquad
 
-    \subfloat[Join Tree]{{\includegraphics[scale=0.4]{./images/w3x3-join-tree.eps}}}%
+    \subfloat[Join Tree]{{\includegraphics[scale=0.10]{./images/w3x3-join-tree-new.eps}}}%
     \qquad \qquad \qquad
-    \subfloat[Split Tree]{{\includegraphics[scale=0.4]{./images/w3x3-split-tree.eps}}}%
+    \subfloat[Split Tree]{{\includegraphics[scale=0.10]{./images/w3x3-split-tree-new.eps}}}%
     \caption{The Simplicial Mesh, Join and Split Trees and Contour Tree.}%
     \label{fig:mesh-join-split-contour}%
 \end{figure}
@@ -147,16 +147,29 @@ Finally we will introduce the topic of contour tree simplification. A central pr
 
 % @TODO Add hamish phd thesis as generalisation?
 
-One such technique is branch decomposition \cite{ct-branch-decomp}. Branch decomposition involves decomposing the contour tree into a set of edge-wise disjoint monotone paths which cover all edges of the tree. A trivial branch decomposition of any tree is obtained by taking every edge to be a separate branch. Furthermore a branch decomposition is hierarchical when there is exactly one branch that connects two leaves and every other branch connects a leaf to an interior node. An example of a hierarchical branch decomposition is shown in Figure \ref{fig:branch-decomp}.
+One such technique is branch decomposition \cite{ct-branch-decomp}. Branch decomposition involves decomposing the contour tree into a set of edge-wise disjoint monotone paths (branches) which cover all edges of the tree. A trivial branch decomposition of any tree is obtained by taking every edge to be a separate branch. Furthermore a branch decomposition is hierarchical when there is exactly one branch that connects two leaves and every other branch connects a leaf to an interior node. An example of a hierarchical branch decomposition is shown in Figure \ref{fig:branch-decomp}.
 
-The branches in this scheme represent pairs of critical points. This pairing of critical points forms the basis for a topological simplification. The topological simplification consists of removing branches that do not disconnect the tree. This produces a hierarchy of cancellations like in Example []. We define the persistence of a branch to be the bigger of the difference between it's end points and the persistence of it's children. Branches of high persistence reflect more prominent features in the tree. We apply the simplification by removing branches with low persistence that do not disconnect the tree.
+The branches in this scheme represent pairs of critical points. This pairing of critical points forms the basis for a topological simplification. The topological simplification consists of removing branches that do not disconnect the tree. This produces a hierarchy of cancellations like in Figure \ref{fig:branch-decomp}. We define the persistence of a branch to be the bigger of the difference between it's end points and the persistence of it's children. Branches of high persistence reflect more prominent features in the tree. We apply the simplification by removing branches with low persistence that do not disconnect the tree.
+
+The algorithm for producing the heirarchical branch decomposition of a contour tree is the following:
+
+\begin{itemize}
+    \item Identify all upper leafs that connect via branches to upwards saddles.
+    \item Identify all lower leafs that connect via branches to downwards saddles.
+    \item Those are candidate branches. Pick the one with the lowest persistence (difference of height between the leaf and the saddle).
+    \item Remove that branch without removing the saddle.
+    \item Continue this process untill a single branch that connect two leaves is all that remains. That is the master branch.
+\end{itemize}
+
+Let us for example construct the heirarchical branch decomposition of the contour tree from Figure \ref{fig:mesh-join-split-contour}. The first two candidate branches we identify are $5 - 2$ and with persistence $3$ and $3 - 8$ with persistence $5$. We take the branch with lower persistence $5 - 2$. In the next step the candiate branches are $0 - 4$ and with persistence $4$ and $3 - 8$ with persistence $5$. We will take $0 - 4$.
+Afterwards the remaining candiate branches are $3 - 7$ with persistence $4$ and $3 - 8$ with persistence $5$. After removing $3 - 7$ in the final stage the only remaining branch is $1 - 8$. It is the master branch because it connects two leaves.
+The produced pairs of critical points are $(2, 5), (0, 4), (3, 7)$ and $(1,8)$.
 
 \begin{figure}%
     \centering
-    \subfloat[Contour Tree.]{{\includegraphics[scale=0.4]{./images/w3x3.eps}}}%
-    \qquad
-    \subfloat[Branch Decomposition.]{{\includegraphics[scale=0.4 ]{./images/branch-decomposition-W3x3.eps}}}%
-    \caption{Branch Decomposition of a Contour tree.}%
+    \subfloat[Branch Decomposition.]{{\includegraphics[scale=0.11]{./images/w3x3-ct-decomp.eps}}}%
+    \subfloat[Heirarchical view of the branches.]{{\includegraphics[scale=0.11]{./images/w3x3-ct-h-decomp.eps}}}%
+    \caption{Branch Decomposition of the Contour tree from Figure \ref{fig:mesh-join-split-contour} [which subfigure?].}%
     \label{fig:branch-decomp}%
 \end{figure}
 

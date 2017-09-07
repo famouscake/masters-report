@@ -186,6 +186,124 @@ The last thing we will do it to expand the definitions we've made for far to rel
 
 This will call this inclusion of pairs. The pairs are $(X, A)$ and $(X, B)$. To see why this holds we refer the reader to \cite{algebraic-topology}. One just has to keep in mind that the identity map is a well defined continous map between topological pairs such as $(X, A)$ and $(X, B)$.
 
+We will now turn our attention to one of the tools that has made topological data analysis so viable in recent years. This tool is called Persistent Homology (PH) and it is primarily used for measuring the signicance of topological features. The primary motivation for introducing persistent homology in the first place was the practical need to cope with noise in data \cite{comp-topo}. The general idea is that once we extract the topological features from data we can attribute a metric to them. We can then use that metric to extract the important topological features by ignoring all features we deem of low significance (they are considered noise). We can already see from this premise that the idea behind persistent homology is akin to that of contour tree simplification. In this chapter we will introduce persistent homology, apply it to contour trees and explore its relation to contour tree splification.
+
+\section{Persistent Homology}
+
+% @TODO Define filtrations.
+% @TODO Introduce filtrations and VR complexes.
+
+Persistent homology emerged in the early 2000s in the works of \cite{persistence-original} as a tool for automated topological simplification. The building blocks of persistent homoogy are sequences of nested simplicial complexes called filtrations. A filtration of a simplicial complex $X$ is a one parameter family of simplicial complexes $\{X_t\}_{t \in \{0, ..., n\}}$ where $X_i \subseteq X_j$ whenever $i \le j$ and $X = X_n$. If we arange the consequtive $X_i$ in a linear sequence we obtain the following:
+
+% The original motivation for introducing it was to better model point cloud data through filtrations of Vietoris Ribs complexes. Persistent Homology has since grown into a general methodology that can be applied any filtration of a topological space. To best illustrate what persistent homology is let us consider a filtration of a simplical complex $X$.
+
+$$ X_0 \subseteq X_1 \subseteq ... \subseteq X_{n-1} \subseteq X_n = X$$
+
+\begin{figure}[h]%
+    \centering
+    \subfloat[$X_1$]{{\includegraphics[scale=0.05]{./images/filtration/small/x1.eps}}}%
+    \qquad
+    \subfloat[$X_2$]{{\includegraphics[scale=0.05]{./images/filtration/small/x2.eps}}}%
+    \qquad
+    \subfloat[$X_3$]{{\includegraphics[scale=0.05]{./images/filtration/small/x3.eps}}}%
+    \qquad
+    \subfloat[$X_4$]{{\includegraphics[scale=0.05]{./images/filtration/small/x4.eps}}}%
+    \qquad
+    \subfloat[$X_5 = X$]{{\includegraphics[scale=0.05]{./images/filtration/small/x5.eps}}}%
+    \caption{Example of an filtration of a simplicial complex.}%
+    \label{fig:example-filtration}%
+\end{figure}
+
+% A concrete example of a filtration can be found on Figure \ref{fig:filt-sc}.
+%
+% \begin{figure}%
+%     \centering
+%     \includegraphics[scale=0.085]{./images/chapter4/example-filtration.eps}%
+%     \caption{Filtration of a Simplical Complex}%
+%     \label{fig:filt-sc}%
+% \end{figure}
+
+Another way to think about a filtration is that we start with simplicial complex and iteratively add new simplicies to it. It is customary to call the index of this filtration time to make it more indicative of a process that evolves over time. The key insight in persistent homology comes from realising that we can track individual homology classes in the homology groups of the $X_k$ as we go from one simplical complex to the next. This is made possible by the subset relation between subsequent complexes in the filtration. Since $X_k$ is a subcomplex of $X_{k+1}$ we have inclusion maps $i: X_{k} \to X_{k+1}$ for $k \in \{0, 1, ..., n - 1\}$. Using those inclusion maps we can build the following chain of simplicial complexes.
+
+$$ X_0 \overset{i}{\longrightarrow} X_1 \overset{i}{\longrightarrow} ... \overset{i}{\longrightarrow} X_{n-1} \overset{i}{\longrightarrow} X_n .$$
+
+We have already shown in the previous chapter that inclusion maps induce linear maps between homology groups. By invoking this property we obtain the following sequence of homology groups:
+
+$$ H_p(X_0) \overset{i_*}{\longrightarrow} H_p(X_1) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_p(X_{n-1}) \overset{i_*}{\longrightarrow} H_p(X_n) $$
+
+for all $p \in \{0, 1, 2, ...\}$. The induced linear maps encode the information about the topological changes in the homology of consecutive complexes in the filtration. We will introduce the following terminology to help us interpret this information \cite{elementary-applied-topology}:
+
+% @TODO You may not be right about death here
+\begin{itemize}
+    \item A homology class is \textbf{born} if it is not in the image of the homology group of the previous complex in the filtration under $i_*$.
+    \item A homology class \textbf{dies} if its image under $i_*$ is the zero element or it merges with an older class.
+    \item A homology class \textbf{persists} if its image under $i_*$ is not the zero element.
+\end{itemize}
+
+Let us now expand on the case when two classes merge in a filtration. Suppose that $[\alpha] \ne [\beta]$ are two homology classes of some $H_p(X_i)$ such that $i_*([\alpha]) = i_*([\beta])$ in $H_p(X_{i+1})$ because of the introduction of a new boundary. In such a situation we must make a choice on which one of the classes dies and which of the persists. It does not matter what we choose as long as we remember the choise in the future. In order to be consistent in choosing we will apply the Elder Rule \cite{comp-topo}. According to the elder rule the class whose birth time is smaller will persisnt and the other one will die. In the case of multiple classes we merging all will die except the oldest.
+
+Using the language of birth and death we can define the persistence of a homology class. Let $\alpha$ be a homology class that is born in $X_i$ and dies in $X_j$. We call the difference $j - i$ the persistence of $\alpha$. Some classes however do not have a defined death time. These are the classes of the final complex in the filtration. We will call those classes essential and set their persistence to $\infty$. Classes that have persisted for a large number of timesteps are deemed significant. Ephemeral classes on the other hand are not. Such classes are often considered to correspond to statistical noise or sampling error.
+
+% @TODO Should you add X_i here istead of just t_i?
+
+One way to visualise persistent homology is by producing the so called persistence pairs and plotting them. A persistence pair $(t_1, t_2)$ of a homology class $\alpha$ is a pairing of two timestamps - the birth and death time of $\alpha$. The essential classes are the exception to this rule. A persistence pair of an essential class formed as $(t, \infty)$ where their birth time is $t$ and we set their death time to $\infty$ due ot the lack of one. We visualise the persistence pairs by plotting as points in the plane. This is called a persistence diagram.
+
+Another way to visualy persistent homology is via a barcode diagram \cite{barcodes}. A barcode diagram is a graphical representation of the persistent homology as a collection of horizontal line segments in the plane. The horizontal axis corresponds to the current homology we are in and the vertical axis coresponds to an arbitrarily chosen basis for the current homology group. A line is drawn between two basis elements $[\alpha] \in H_k(X_t)$ and $[\beta] \in H_k(X_{t+1})$ whenever $i_*[\alpha] = [\beta]$. A line is cut short when a basis element in $H_k(X_t)$ dies upon entering $H_k(X_{t+1})$. The persistent pairs correspond uniquely to lines in the barcode diagram. If there is a persistence pair $(t_1, t_2)$ then we draw a line from $t_1$ and cut it off at $t_2$. For example the barcode diagram for our working example of a filtration is on Figure \ref{fig:example-barcode}.
+
+
+\begin{figure}[h]%
+    \centering
+    \subfloat[Barcode Diagram]{{\includegraphics[scale=0.12]{./images/filtration/small/barcode.eps}}}%
+    \qquad \qquad\qquad\qquad
+    \subfloat[Pairs in $H_0$]{{\includegraphics[scale=0.1]{./images/filtration/small/diagram-h0.eps}}}%
+    \qquad
+    \subfloat[Pairs in $H_1$]{{\includegraphics[scale=0.1]{./images/filtration/small/diagram-h1.eps}}}%
+    \caption{Examples of visualising persistent homology of the filtration on Figure \ref{fig:example-barcode}.}%
+    \label{fig:example-filtration}%
+\end{figure}
+
+
+You can see in the digram that one 0th homology class is born at time $1$ and another one at time $2$. In time $3$ the class born at time $1$ merges with the class that is born at time $1$ because it is the younger class. In time $4$ on the other hand two cycles or 1st homology classes are born. One of them dies at time $5$ and the other one pesists. These events corresponds to the persistent homology pairs $(2, 3), (4, 5), (1, \infty)$ and $(4, \infty)$.
+
+
+% @TODO What kind does the manifold have to be?
+Now let us apply the general theory of persistent homology to a more familiar domain. Let $M$ be a traingulation of a bounded area in $\mathbb{R}^2$ and let $f: M \to \mathbb{R}$ be our familiar linear interpolat. We would like to obtain a filtration of $M$ that we can analyse with persistent homology. The filtration that is proposed in the literature \cite{comp-topo} is of the sublevel sets $M$. As we have already shown in Chapter 2 Morse functions have finitely many critical points, changes in the topology of the sublevel sets happen only are critical points and critical points are at the vertices of $M$. Therefore we need only consider the sublevel sets at the critical values. Let $c_1 < c_2 < ... < c_n$ be all critical values and let $M_{c_i} = f^{-1}((-\infty, c_i])$ be the sublevel sets at the critical values where we do not include all simplices which are not intirely in $M_{c_i}$ in order to obtain a simplicial complex. This lets us obtain a filtration of the sublevel sets:
+
+$$ M_{c_1} \subseteq M_{c_2} \subseteq ... \subseteq M_{c_{n-1}} \subseteq M_{c_n} = M.$$
+
+From this filtration we can produce the following chain of homology groups:
+
+$$ H_n(M_{c_1}) \overset{i_*}{\longrightarrow} H_n(M_{c_2}) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(M_{c_{n-1}}) \overset{i_*}{\longrightarrow} H_n(M_{c_n}) = H_n(M).$$
+
+If we had taken the superlevel sets of $M$ we would have obtained a different filtration. We will call that the descending filtration of $M$.
+
+$$ H_n(M^{c_1}) \overset{i_*}{\longrightarrow} H_n(M^{c _2}) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(M^{c_{n-1}}) \overset{i_*}{\longrightarrow} H_n(M^{c_n}) = H_n(M).$$
+
+We are now able to compute both the contour tree and its branch decomposition and persistent homology. Our motivation behind doing so has been sparked by a quote from the original paper that introduced branch decomposition of contour trees \cite{ct-branch-decomp}. Branch decomposition results in a set of branches or equivalently pairings of critiral points of the contour tree. In the branch decomposition paper the importance of branches is based on their persistence as defined in the original paper that introduced persistent homology \cite{persistence-original}.
+
+This idea of the similarity between the two however has not been explained in detal nor explored further in the paper or in subsequent publications. We would like to explore it further. We would like to test whether the pairings produced from branch decomposition are the same as the pairings produced by persistent homology. We will do so by computing both on the same data sets and comparing the results to see how and why they differ. Before doing so however we must address an inconsistency between the two. The branch decomposition of the contour tree pair all critical points. Some critical points in persistent homology however are not "properly" paired. These are the ones that corespond to essential homology classes which have infinite persistence. To address this issue we will introduce an extension to persistent homology that "properly" pairs essential homology classes by assinging them with finite persistence.
+
+
+\section{Extended Persistence}
+
+We have seen from the definition and computations of persistent homology that not all critical points are paired. Those that give birth to the essential classes will not be paired because they are never destroyed pass the final simplex in the filtration. This leads to incompleteness in the persistence pairings which we would to remedy. Our goal in extending persistence it to devise a way to pair the essential homology classes with the remaining unpaired critical points.
+
+% @TODO Add reference
+
+Let $M$ be a traingulation of a bounded area in $\mathbb{R}^2$ and let $f: M \to \mathbb{R}$ be a linear interpolat. The main idea behind extended persistence is to follow the ascending filtration of persistent homology with a descending pass where once we reach a class that is homologous to a essential class in the ascending filtration we consider it to be destroyed and thus paired. Extended persistence consists of two consecutive sequences. The first sequence is the made up of absolute homology groups going up:
+
+$$ 0 = H_n(M_{c_1}) \rightarrow H_n(M_{c_2}) \rightarrow ... \rightarrow H_n(M_{c_{n-1}}) \rightarrow H_n(M_{c_n}) =  H_n(M) $$
+
+Just like in orginary persistence the linear maps between consecutive absolute homology gruops are induced by the inclusion maps between $M_{c_i} \subseteq M_{c_{i+1}}$. The second sequence is made up of relative homology groups that come back down:
+
+$$ H_n(M) = H_n(M, M^{c_n}) \rightarrow H_n(M, M^{c_{n-1}}) \rightarrow... \rightarrow H_n(M, M^{c_{2}}) \rightarrow H_n(M, M^{c_{1}}) = 0.$$
+
+The linear maps between the relative homology groups in the relative sequence are induced by inclusion of pairs. The pairs $(M, M^{c_i})$ and $(M, M^{c_{i-1}})$ are such that $M^{c_i} \subseteq M^{c_{i-1}}$ and by Definition [] induce linear maps between $H_n(M, M^{c_i})$ and $H_n(M, M^{c_{i-1}})$. When we combine the two sequences at $H_n(M_{c_n}) =  H_n(M) = H_n(M, M^{c_n})$ we obtain the following single sequence:
+
+$$ 0 = H_n(M_{c_1}) \rightarrow ... \rightarrow H_n(M_{c_n}) = H_n(M, M^{c_n}) \rightarrow ... \rightarrow H_n(M, M^{c_{1}}) = 0.$$
+
+The extended persistence sequence of homology groups start from the trivial group and ends at the trivial group. This means that all classes that are born will eventually die in a finite amount of time steps. A good way of picturing extendex persistence if through excision. Take a look at \cite{folded-molecules} for more details examples of this.
+
 % To see why this is true first observe that $i$ induces an identity map between $C(X)$ and $C(X)$. This idetity map takes $C_n(A)$ to $C_n(B)$ and so we can create a well defined map $i_\#: C(X, A) \to C(X, B)$ such that $i_\#([\sigma]_A) = [\sigma]_B$. This map clearly commuted with the relative boundary map, therefore it induces a linear map on the relative homology groups.
 
 % is an identity map then $i_\#(A) \subseteq$
