@@ -86,7 +86,7 @@ The linear maps between the relative homology groups in the relative sequence ar
 
 $$ 0 = H_n(M_{c_1}) \rightarrow ... \rightarrow H_n(M_{c_n}) = H_n(M, M^{c_n}) \rightarrow ... \rightarrow H_n(M, M^{c_{1}}) = 0.$$
 
-The extended persistence sequence of homology groups start from the trivial group and ends at the trivial group. This means that all classes that are born will eventually die in a finite amount of time steps. A good way of picturing extendex persistence if through excision. Take a look at [] for more details on this.
+The extended persistence sequence of homology groups start from the trivial group and ends at the trivial group. This means that all classes that are born will eventually die in a finite amount of time steps. A good way of picturing extendex persistence if through excision. Take a look at \cite{folded-molecules} for more details examples of this.
 
 
 \subsection{Extended Persistence and Branch Decomposition}
@@ -128,11 +128,11 @@ This counter examples demonstrates that branch decomposition does not yield pair
 
 \begin{figure}[h]%
     \centering
-    \subfloat[Original Data Set]{{\includegraphics[scale=0.4]{./images/chapter4/w3x3-grid.eps}}}%
+    \subfloat[Original Data Set]{{\includegraphics[scale=0.3]{./images/chapter4/w3x3-grid.eps}}} \\%
     \qquad
-    \subfloat[Contour Tree]{{\includegraphics[scale=0.3]{./images/w3x3.eps}}}%
+    \subfloat[Contour Tree]{{\includegraphics[scale=0.35]{./images/w3x3.eps}}}%
     \qquad
-    \subfloat[Branch Decomposition.]{{\includegraphics[scale=0.3]{./images/branch-decomposition-W3x3.eps}}}%
+    \subfloat[Branch Decomposition.]{{\includegraphics[scale=0.35]{./images/branch-decomposition-W3x3.eps}}}%
     \caption{Branch Decomposition of the Contour tree.}%
     \label{fig:example}%
 \end{figure}
@@ -140,31 +140,63 @@ This counter examples demonstrates that branch decomposition does not yield pair
 
 \begin{figure}[h]%
     \centering
-    \includegraphics[scale=0.08]{./images/chapter4/asc-filt.eps}%
-    \caption{Ascending filtration of the Simplical Complex}%
-    \label{fig:filt-sc}%
+    \subfloat[$X_1$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x1.eps}}}%
+    \qquad \qquad
+    \subfloat[$X_2$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x2.eps}}}%
+    \qquad \qquad
+    \subfloat[$X_3$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x3.eps}}}%
+
+    \subfloat[$X_4$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x4.eps}}}%
+    \qquad \qquad
+    \subfloat[$X_5$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x5.eps}}}%
+    \qquad \qquad
+    \subfloat[$X_6$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x6.eps}}}%
+
+    \subfloat[$X_7$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x7.eps}}}%
+    \qquad \qquad
+    \subfloat[$X_8$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x8.eps}}}%
+    \qquad \qquad
+    \subfloat[$X_9$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x9.eps}}}%
+
+    \caption{Ascending Filtration of the Dataset.}%
+    \label{fig:example}%
 \end{figure}
+
 
 \begin{figure}[h]%
     \centering
-    \includegraphics[scale=0.08]{./images/chapter4/ph.eps}%
-    \caption{Extended Persistence of the Simplical Complex}%
-    \label{fig:filt-sc}%
+    \subfloat[$X^9$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x1.eps}}}%
+    \qquad \qquad
+    \subfloat[$X^8$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x2.eps}}}%
+    \qquad \qquad
+    \subfloat[$X^7$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x3.eps}}}%
+
+    \subfloat[$X^6$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x4.eps}}}%
+    \qquad \qquad
+    \subfloat[$X^5$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x5.eps}}}%
+    \qquad \qquad
+    \subfloat[$X^4$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x6.eps}}}%
+
+    \subfloat[$X^3$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x7.eps}}}%
+    \qquad \qquad
+    \subfloat[$X^2$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x8.eps}}}%
+    \qquad \qquad
+    \subfloat[$X^1$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x9.eps}}}%
+
+    \caption{Descending Filtration of the Dataset.}%
+    \label{fig:example}%
 \end{figure}
 
 
+\begin{figure}[h]%
+    \centering
+    \subfloat[Ascending Filtration]{{\includegraphics[scale=0.08]{./images/filtration/asc-filtration.eps}}}%
+    \qquad \qquad
+    \subfloat[Descending Filtration]{{\includegraphics[scale=0.08]{./images/filtration/desc-filtration.eps}}}%
 
-\subsection{Thoughts on future directions}
-
-There are many more unansweared question on the relations of contour tree simplification and persistent homology. For example notice that the way the 0th persistence of an ascending filtration is computed is similar to how a join tree is computer. The similarity is in that joining components correspond to connected components in sublevel sets which in turn correspond to homology classes in the 0th homology. The joining of components coresponds to merging of homology classes. Consequently the persistent pairs correspond to branches in the join tree. If we instead take a descending filtration we obtain a similarity between the split tree and the persistent homology of the descending filtration. Further work can be done in showing whether the computations are equivalent formally and in translating idea from each of the frameworks to the other.
-
-Another question is whether contour tree simplification can be expressed through through some filtration similar to persistent homology. Consider for example a simplicial mesh $M$ and its level sets $M_i$. Homology gives us to tools of identifying the connected components of the the $M_i$ by computing the 0th homology. It is possible however to somehow relate the homology classes of different level sets. This would require a sequence of the form
-
-$$ ... \rightarrow H_0(M_i) \rightarrow H_0(M_{i+1}) \rightarrow ... \rightarrow H_0(M_{j}) \rightarrow H_0(M_{j+1}) \rightarrow ...$$
-
-But what would the function between the homology groups be? Can me somehow induce them through function between the sublevel sets themselvs? We certainly cannot use inclusion maps because level sets are not neseted. It is worth contemplating whether this is feasble. Another question is whether it would be practical at all. Even if we do so all we will obtain is a mathematical reformulation of a problem we already have. Will that lead to more efficient algorithms or to better understanding of the subject?
-
-We are not able to expand more on questions like these and leave them as subject for further study.
+    \caption{Barcode Diagrams of the Persistent Homology of the ascending and descending filtration.}%
+    \label{fig:example}%
+\end{figure}
 
 % What we have uncovered is not the complete story. There is a deeper connection between extended persistence and contour trees in general. If we look at alternative algorithms for constructing the 0th homology specifically we can see that the extended persistence of an ascending filtration is equivalent to branch decomposition of the join tree and the extended persistence is equivalent to a branch decomposition of the split tree.
 

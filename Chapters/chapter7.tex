@@ -1,100 +1,224 @@
 \chapter{Empirical Study}
 \label{chapter7}
 
-In our final chapter we will suplement our ivestigation of the w-structures with an Empirical Study. This goal of this study if two-fold. Firstly to verify our theoretical claims on the correctness and running of the w-diameter algorithm we developed. This will be done by implementing and testing them. The second goal and most important goal of the empirical study is to analyse w-structes in contour trees of real life data sets using the algorithms we've implemented. We will then conclude the chapter with a discussion on the future directions this study can take.
+In the final chapter we will suplement our theoretical ivestigation of the w-structures with an empirical study. The goal of this study if twofold. Firstly it is to verify the theoretical claims we have made on the correctness and running time of the w-diameter algorithms we developed. This will be done by implementing and testing them on a range of diverse datasets. The second goal and most important goal of the empirical study is to analyse the w-structes that are present in contour trees of real life data sets using the w-diameter algorithms we've implemented. We will conclude the chapter with a discussion on the future directions this empirical study can take.
 
-\section{Datasets Overview}
+\section{Data sets Overview}
 
-Talk about the data sets we used. Mountain ranges taken from Canada.
+Before proceeding to describe our testing methodology we will first elaborate on the types of data sets we will be using throughout our tests. The first type of data sets we will use are randomly generated height trees. In testing the correctness and running time of the w-diameter algorithms we would ideally like to run them on as many different data sets as possible in order to confirm our theoretical claims for all of them. Generating height trees randomly will allows us to produce "new" data sets for testing on demand. We will now describe what algorithm we use for doing so.
+
+Starting with a disconnected graph $G$ with $n$ vertices we continually generate pairs of vertices $u, v$ in with labels in the range $\{1, 2, ..., n\}$. If adding the edge $uv$ to the graph does not create a cycle we keep the edge. If it does create a cycle we discard it. We continue generating edges randomly untill the $G$ is fully connected. Upon reaching this point $G$ will be a connected graph with no cycles. This is exactly the definition of a tree. In order to produce valid height trees we assign a random height to each of the vertices of the tree. In order to detect of whether adding an edge produces a cycle we use the union-find data structure to keep track of which connected components vertices belong to. We add an edge between two vertices only when they belong to a different connected component and then merge the two components together.
+
+The second type of data sets we will use is real life data taken from the GTOPO30 data set. GTOPO30 [] is a digital elevation model of the world. The dataset is a two dimensional data grid containing the elevation of points on Earth with a resolution of approximately one kilometer. The primary use of this data set will be for the generation of a contour tree of the data and analysing the pesent w-structures. GTOPO30 however is far to large for us to handle without specialised hardware. This is why we have taken several smaller subsets of GTOPO30 provided to us by Dr. Hamish Carr.
+
+We have chosen for our data sets to be mountaneous regious due to their more complex topographic structures. The data sets we will use are named vanc (18x21) ,vancouverSWSW (25x49) ,vancouverSWNE (25x50), vancouverSWNW (25x50), vancouverSWSE (25x51), vancouverNE (49x99), vancouverNW (49x100) , vancouverSE (50x99), vancouverSW (50x100), icefield (240x240), pukaskwa (551x1600), gtopo30w020n40 (6000x4800). The vanc and all vancouver data sets are taken from the North Shore Mountains that overlook Vancouver in British Columbia, Canada. The data set pukaskwa is taken from the Pukaskwa National Park located south of the town of Marathon, Ontario, Canada. The data set icefields is taken from []. Finally gtopo30w020n40 is the data set that contains all other data sets.
 
 \section{W-detector Algorithms}
 
-We outlined how the algorithms are imeplemented in chapter 3. Here we will talk about testing correctness and running time.
+We have already provided details on the implementations of the three w-diameter algorithms we devoloped in Chapter 3. These are the NxBFS algorithm (brute force approach), 2xBFS (running modified Breadth First Search twice) and DP (dynamic programming based approach). In this section we will use their implementations to empirically test whether our claims on their correctness and running time are correct.
 
-To run tests we had to generate random height trees.
+The first test we will present is on the correctness of all three algorithm. The major issue we encountered in this test is that all three algorithm solve a problem that to our knowledge has not been been considered extensively in the past. The only way to establish ground truth on their output is to manually inspect the w-diameter of a height tree. This is neither reliable nor scalable to height trees with more than a few dosen vertices.
 
-Tests correctness by using the 2xBSF algorihtm for groups truth. Easiest and most reliable. Generate a bunch of trees and check results. We test this many trees and DP had the same results, 2xBSF was always within two of the actual w-diameter. This is completely in line with what we expected.
+To overcome this issue we opted for using the output of the NxBFS algorithm as ground truth. The reasoning behind this is that it is the most straighforward to implement and that its correctness is a trivial consequence of its formulation. What this leads us to believe is that it is the most reliable of the three. Even so, a further complication arises in that the NxBFS algorithm's running time is quadratic and not linear like 2xBSF and possibly DP. This leaves us unable to use this methodology for large enough trees where the NxBFS algorithm's computation simply scales to unreasonable time. This is why we have limited ourselves to only testing correctness for trees of up to 10,000 vertices. For this test we have used the following testing methodology:
 
-Testing running by running on random trees in the range 5K-200K. Five different trees per mark averaged out.
+\begin{itemize}
+    \item Generate a random tree.
+    \item Run all three algorithms on the tree.
+    \item Check whether the output of DP and NxBFS are the same and if the output of 2xBFS is within two of their output.
+\end{itemize}
 
-\begin{figure}%
+We then used this methodology to run tests on one thousand trees of sizes $50, 100, 250, 500, 750, 1000, 2500, 5000, 7500, 10000$ resulting in $10000$ individual tests alltogether. The output of all tests was in line with what we predicted in Chapter 3. The algorithms DP and NxBSF had identical output and the output of the 2xBSF algorithm was no less than two of their output. These results strengthen our belief in the correctness of all three algorithms.
+
+The second test we will perform is on the running time of the algorithms. In this test we will separate the algorithms in two groups. The first group will consist of NxBFS and the second group of 2xBFS and DP. We have separated them because we expect the running time of NxBFS to be quadratic, 2xBFS to be linear, DP to be close to linear and we want to results from each group to be comparable. The results from testing the NxBSF algorithm were completely as expected. You can see the running time on Figure []. *I willl add them if I have space otherwise not*
+
+The tests of the 2xBFS and DP algorithm suprised. The test consisted of generating five tree on vertices in the range $\{5000, 10000, ..., 200000\}$, running both algorithm on all five trees and plotting the average running time on Figure [].
+
+\begin{figure}[h]%
     \centering
     \includegraphics[center, scale=0.6 ]{./images/running-time-new.eps}
     \caption{Running time of 2xBFS (blue) and DP (red) on randomly generated trees. }%
     \label{fig:case1.1}%
 \end{figure}
 
-Bot algorithm appear to be linear on this scale and these trees. These begins to confirm the suspisions we had the DP is not quadratic in practice.
+Both algorithms appear to fit a line almost perfectly. This is reason enough to believe that the peformance of both scale linearly with randomly generated data. This comes as no suprise as regards to the 2xBSF algorithm. What is interesting to see is that the DP algorithm's performance scales linearly as well. We must note however that these tests use randomly generated trees and are a very limited sample so this trend may not hold for all possible inputs and especially for larger trees. Despite these reservations this test gives credibility to the claim we made in the Chapter 3 that the DP algorithm has potential for good practical performance.
 
-Here is the performance on the data sets we have.
+% Our next test was again on the running time of the algorithm but on the real data sets. The tests were run on the augmented contour tree of the datasets.
+
+The next test we made was on the running time of the algorithms on the GTOPO30 data sets. We ran the tests for both the augmented and unaugmented contour trees and recorded how many time times faster 2xBFS is than DP in the Factor column of the tables.
+
+% 25.60 Товарителница 800044202201
 
 \begin{center}
 \begin{tabular}{l*{6}{c}r}
-Dataset             & Vertices          & 2xBFS          & DP            & Factor \\
+
+Dataset            & Vertices        & 2xBFS              & DP                   & Factor \\
 \hline
-vanc                & 378               & 0.000254	& 0.000477      & 1.88 \\
-vancouverNE         & 4851              & 0.003125	& 0.006393      & 2.05 \\
-vancouverNW         & 4900              & 0.003165	& 0.006536      & 2.07 \\
-vancouverSE         & 4950              & 0.002927	& 0.008382      & 2.86 \\
-vancouverSW         & 5000              & 0.003119	& 0.006285      & 2.02 \\
-vancouverSWNE       & 1250              & 0.000784	& 0.001408      & 1.80 \\
-vancouverSWNW       & 1250              & 0.000862	& 0.001490      & 1.73 \\
-vancouverSWSE       & 1275              & 0.000815	& 0.001651      & 2.03 \\
-vancouverSWSW       & 1225              & 0.000814	& 0.001412      & 1.73 \\
-icefield            & 57600             & 0.040002  & 0.070194      & 1.75 \\
-pukaskwa            & 881600            & 0.551351  & 0.973880      & 1.76 \\
-gtopo30w020n40      & 28800000          & -1        & -1            & -1 \\
+vanc	           & 378	         &0.000413	          & 0.000497	         &1.20    \\
+vancouverSWSW	   & 1225	         &0.000918	          & 0.002317	         &2.52    \\
+vancouverSWNE	   & 1250	         &0.000937	          & 0.001858	         &1.98    \\
+vancouverSWNW	   & 1250	         &0.000798	          & 0.002454	         &3.08    \\
+vancouverSWSE	   & 1275	         &0.001009	          & 0.00204	             &2.02    \\
+vancouverNE	       & 4851	         &0.003637	          & 0.005493	         &1.51    \\
+vancouverNW	       & 4900	         &0.002893	          & 0.005612	         &1.94    \\
+vancouverSE	       & 4950	         &0.002958	          & 0.005863	         &1.98    \\
+vancouverSW	       & 5000	         &0.002795	          & 0.005658	         &2.02    \\
+icefield	       & 57600	         &0.036430	          & 0.066978	         &1.84    \\
+pukaskwa	       & 881600	         &0.520608	          & 0.962897	         &1.85    \\
+gtopo30w020n40	   & 28800000	     &19.103233	          & 34.427916	         &1.80    \\
 
 \end{tabular}
 \end{center}
 
-As we can see the results are again consistent with what we had with the random data sets.
+The results from this test are completely in line with what we obtained from the previous test. As you can see the linear relationship between the two still holds. DP is within the range of 1.2 - 3 times slower than the 2xBSF algorithm. In our next test we tested the same data sets, but we computed their unaugmented contour tree.
+
+\begin{center}
+\begin{tabular}{l*{6}{c}r}
+Dataset                & Vertices                    & 2xBFS                             & DP                    & Factor \\
+\hline
+vanc	               & 29    	                     & 0.000136	                         & 0.000057	              & 0.42  \\
+vancouverSWSW	       & 58   	                     & 0.000372	                         & 0.000127	              & 0.34  \\
+vancouverSWNE	       & 148  	                     & 0.000355	                         & 0.000237	              & 0.67  \\
+vancouverSWNW	       & 88   	                     & 0.000412	                         & 0.000163	              & 0.40  \\
+vancouverSWSE	       & 109  	                     & 0.000351	                         & 0.000193	              & 0.55  \\
+vancouverNE	           & 946    	                 & 0.001888	                         & 0.001730	              & 0.92  \\
+vancouverNW	           & 911    	                 & 0.001505	                         & 0.001292	              & 0.86  \\
+vancouverSE	           & 782    	                 & 0.001466	                         & 0.001107	              & 0.76  \\
+vancouverSW	           & 380    	                 & 0.001756	                         & 0.000802	              & 0.46  \\
+icefield	           & 7655  	                     & 0.013704	                         & 0.010280	              & 0.75  \\
+pukaskwa	           & 65826 	                     & 0.183262	                         & 0.100899	              & 0.55  \\
+gtopo30w020n40	       & 2436622 	                 & 6.609592	                         & 3.742080	              & 0.57  \\
+
+\end{tabular}
+\end{center}
+
+
+The results here are quite suprising and they requried us to double check the test multiple time. On the outlook it seems that the two algorithm had exchanged their positions. For all these unaugmented contour trees DP is 1.2 - 3 times faster than the 2xBFS algorith. We are curious to know why this is the case. The difference between the augmented and the unaugmented datasets is that in the unaugmented datasets all vertices of degree two are removed. It would appear to be the case that such vertices are processed faster by the 2xBFS algorithm and the DP algorithm has some overhead associted with them.
+
+
+*I'll leave this paragarph and expand it if I have extra space*. Finally we would like to present a special case where the DP algorithm perform poorly. This case is for trees with vertices of high degree. Take for example a type of tree called a start Figure []. The doubly nested loop of the algorithm causes quadratic performance. To test this we generated a number of star like trees and compared the performance of NxBFS and DP.
+
+% As we can see the results are again consistent with what we had with the random data sets.
+%
+% Except for gtopo30w020n40 where for some reason it's the other way around!!!
+%
+% Maybe it's the number of leaves? But it doesn't seem that way.
 
 
 \section {Dataset w-diameter analysis}
 
-Here is the epic table for the analysis of the datasets. Fix it it's wrong!
+In this section we will examine w-structures present in real data sets. Our goal is to demonstrate that they not only pose a theoretical difficulty, but also appear in real data and hinder performace. In this study we will run our w-diameters algorithm on the mountain range data taken from GTOPO30. We will compare the w-diameters of the contour trees of the data sets with the diameters of the unaugmented and the augmented contour trees. We will demonstrate that w-diameter of a contour tree is a better theoretical upper bound on the time complexity of the parallel contour tree algorithm than either of the diameters. Secondly we will compare the w-diameter of a contour tree with the number of iterations that are need to collapse the join and split trees. We hope to find a correlation between the two and shed light on whether it is the largest w-structure in a contour tree that prevents logarithmic in the merge phase. We have taken the number of iterations by running an implementation of the parallel contour tree algorithm based on [] provided to us by Dr. Hamish Carr [].
 
 \begin{center}
 \begin{tabular}{l*{6}{c}r}
-Dataset             & Vectices  & 2BFS  & DP    & NBFS  & Diameter  & Iterations\\
+Dataset             & 2BFS  & DP    & NBFS    & Aug Diameter  & Diameter  & Iterations\\
 \hline
-vanc                & 378       & 2     & 2     & 2     & 311       & 2  \\
-vancouverNE         & 4851      & 4     & 5     & 5     & 1338      & 5  \\
-vancouverNW         & 4900      & 5     & 5     & 5     & 1456      & 5  \\
-vancouverSE         & 4950      & 6     & 6     & 6     & 1306      & 5  \\
-vancouverSW         & 5000      & 4     & 4     & 4     & 1977      & 4  \\
-vancouverSWNE       & 1250      & 5     & 5     & 5     & 423       & 4  \\
-vancouverSWNW       & 1250      & 3     & 3     & 3     & 712       & 3  \\
-vancouverSWSE       & 1275      & 3     & 3     & 3     & 759       & 3  \\
-vancouverSWSW       & 1225      & 2     & 2     & 2     & 845       & 3  \\
-icefield            & 57600     & 7     & 7     & 7     & 12280     & 6  \\
-pukaskwa            & 881600    & 180   & 182   & N/A   & 374866    & 94 \\
-gtopo30w020n40      & 28800000  & 8     & 10    & N/A   & 15766966  & 8  \\
+vanc                & 2     & 2     & 2       & 311           & 11        & 2  \\
+vancouverSWSW       & 2     & 2     & 2       & 845           & 17        & 3  \\
+vancouverSWNE       & 5     & 5     & 5       & 423           & 34        & 4  \\
+vancouverSWNW       & 3     & 3     & 3       & 712           & 23        & 3  \\
+vancouverSWSE       & 3     & 3     & 3       & 759           & 30        & 3  \\
+vancouverNE         & 4     & 5     & 5       & 1338          & 128       & 5  \\
+vancouverNW         & 5     & 5     & 5       & 1456          & 98        & 5  \\
+vancouverSE         & 6     & 6     & 6       & 1306          & 118       & 5  \\
+vancouverSW         & 4     & 4     & 4       & 1977          & 48        & 4  \\
+icefield            & 7     & 7     & 7       & 12280         & 886       & 6  \\
+pukaskwa            & 180   & 180   & N/A     & 374866        & 1046      & 94 \\
+gtopo30w020n40      & 8     & 8     & N/A     & 15766966      & 305290    & 8  \\
 
 \end{tabular}
 \end{center}
 
-We can observe the following things:
+%@TODO Remove the equiv
+The first infrence we can make is about the pukaskwa data a set. Both the w-diameter and number of iterations are drastically bigger than all of the other data sets. If logarithmic collapse was taking place in the merge phase of the construction of the contour tree of pukaskwa than we would expect that to take $log_2(881600) \equiv 19$ iterations. Instead it takes $94$ iterations. This is consistent with the w-diameter of the data sets. Indeed $94$ is almost twice as less as the w-diameter. If we consider that the algorithm can process two branches on oposite sides of the w-diameter at a time it makes sence that it should take twice as less iterations for the collapse if it were w-diameter that is causing it.
 
-\begin{itemize}
-  \item Things and stuff1
-      \item The w-diameter of a tree is a much better upper bound on the algorithm.
-    \item The w-diameter can severely prevent logarithmic collapse.
-    \item The w-diameter becomes prevalent in random samples of randomly generated tree. Therefore the law of large number will affect it.
-\end{itemize}
+Secondly we can confirm that the w-diameter in almost all of the data sets (except for vancouverSWSW) is bigger than or equal to the number of iterations. This leads us to believe that there may be some correlation between the two. In the case of pukaskwa we have already given an interpretation of this corelation. By that reasoning we would expect that in other data sets the w-diameter to be twice as much as the number of iterations. This is not the case and this may very well be due to how different w-structures interact in the merge phase. This is something we have not investigated as we only record the largest w-structure.
 
+% Another interesting thing to note is that pukaskwa is a subset of the gtopo30w020n40 dataset and yet it's w-diameter is far smaller. This proves that the contour trees of subsets of data need not have a smaller w-diamete. Strangely enough as a consequence of this subsets of data may not be faster to compute. This has
+
+Fillay we turn our attention to the diameter of the augmented and unaugmented contour trees. The parallel contour tree algorithm currently uses those as an uppen bound on the time complexity of the merge phase []. We have already shown theoretically that the w-diameter of a height tree is necessarily smaller than its diameter. This empirical study demonstrates the practical relevance of this findind. In the most extreme example, that of gtopo30w020n40, the w-diameter of the augmented contour tree is 1,970,870 times smaller than its diameter. For all practical intents and purposes this is a staggering difference. If the w-diameter of that data sets were equal to the actual diameter, than we would expect the merge phase to take a far larger number of iterations and severly limit the available parallelism in it.
 
 \section{Generating W-Structures Manually}
 
-We can generate them via ridges and valleys.
+% We can generate them via ridges and valleys.
+The next step we shall take in improving our understanding of the w-structures empirically will be to devise a way of creating data sets whose contour trees have an arbitrarily large w-diameter. In order to do so we took an approach of exhaustive enumeration. We limited ourselves to two dimensional data sets of dimension 3x3. Enumerating larger two dimensional data sets or almost any three dimensional data sets would not be feasible due to the number of permutations required. We created a program that generated all permutations of the numbers $1, 2, 3, 4, 5, 6, 7, 8, 9$ and arraged them in a 3x3 grid. After genrating all permutation we computed their contour tree and inspected the ones with maximum w-diameter. In our findings we discovered that there is a particular pattern in two dimensional data grids that can exploited to generate arbitrarily large w-structures. As an example consider our familiar simplicial mesh and contour tree on Figure [].
+
+% Here is an example data set and it's contour tree.
+
+% The data set consists of ridge and valleys.
+
+% This led us to find a pattern. Consider the data set.
+
+% \[
+%  \begin{matrix}
+%   1 & 0 & 1 \\
+%   0 & 1 & 0 \\
+%   1 & 0 & 1
+%  \end{matrix}
+% \]
 
 
-\section{Future Work}
+\begin{figure}[h]%
+    \centering
+    \subfloat[Simplicial Mesh]{{\includegraphics[scale=0.4]{./images/chapter4/w3x3-grid.eps}}}%
+    \qquad
+    \subfloat[Contour Tree]{{\includegraphics[scale=0.3]{./images/w3x3.eps}}}%
+    \caption{Simplicial Mesh of a Contour Tree}%
+    \label{fig:example}%
+\end{figure}
 
-Can be obtain the w-diameter from raw data?
+The pattern in this simplicial mesh that is responsible for the w-diameter of three is a series of diagonal ridges and valleys. We can describe it like so:
 
-Can we generate them in other ways?
+
+\[
+ \begin{matrix}
+  1 & 0 & 1 \\
+  0 & 1 & 0 \\
+  1 & 0 & 1
+ \end{matrix}
+\],
+
+where the ones represent vertices with heights bigger than the vertices labeled as zero and the relative height between of vertices with label one (or zero) does not matter. In order to expand the w-diameter by one we must extend the data set with an additional column.
+
+\[
+ \begin{matrix}
+  1 & 0 & 1 & 0 \\
+  0 & 1 & 0 & 1 \\
+  1 & 0 & 1 & 0
+ \end{matrix}
+\]
+
+The resulting contour tree of this data set would be.
+
+\begin{figure}[h]%
+    \centering
+    \includegraphics[center, scale=0.6 ]{./images/tree.eps}
+    \caption{Contour Tree of Dataset [] }%
+    \label{fig:case1.1}%
+\end{figure}
+
+After extending the data set for example to a 3x10 data set we obtain the following:
+
+\[
+ \begin{matrix}
+  1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 \\
+  0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 \\
+  1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0
+ \end{matrix}
+\]
+
+This 3x10 data set results in a contour tree with a w-diameter of ten on Figure [].
+
+\begin{figure}[h]%
+    \centering
+    \includegraphics[center, scale=0.6 ]{./images/tree10.eps}
+    \caption{Contour Tree of Dataset [] }%
+    \label{fig:case1.1}%
+\end{figure}
+
+
+% Can be obtain the w-diameter from raw data?
+
+% Can we generate them in other ways?
 
 
 

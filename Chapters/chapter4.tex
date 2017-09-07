@@ -1,5 +1,5 @@
 % @TODO Change this
-\chapter{Something "W" This Way Comes!}
+\chapter{Theory of the w-structures}
 \label{chapter4}
 
 We will now continue our discussion on W-Structures in a more formal setting. In this chapter we will develop theory that captures their informal description we outlined previously. We will use it to construct three general algorithms for the detection of the largest w-structure in a height tree. We will describe the algorithms with pseudocode and provide the reader with proofs of correctness. Finally we will also demonstrate formal bounds on the time and space complexity of the proposed algorithms.
@@ -10,15 +10,35 @@ We will now continue our discussion on W-Structures in a more formal setting. In
 
 We are interested in describing paths in height trees which form the characteristic zigzag pattern we described in Chapter 3. Let us first establish some of the basic notation we shall make use of. We will consider paths to be a sequence of distinct and adjacent vertices. When dealing with paths in height trees will often refer to them through their first and last vertex, because there is a unique path between any two vertices in a tree. For example when dealing with the path $v_1, v_2, v_3, v_4$ we will denote it with the shorthand $v_1 \rightsquigarrow v_4$. Lastly, a subpath of a path $P$ is a path whose vertices are also vertices of $P$.
 
-The first important property of paths in height trees we will define is their monotone path decomposition. The monotone path decompositino of a path $P$ as a sequence of vertexwise maximal monotone subpaths of $P$ where consecutive subpaths share exactly one vertex and have alternating direction.  As shown in Figure [] $P$ can be decomposed into the sequence of paths $P_1, P_2, ..., P_k$ such that $P_i \subseteq P$, $|P_i \cap P_{i+1}| = 1$ and $P_i \cup P_{i+1}$ is not a monotone path for $i \in \{1, 2, ..., k-1\}$ and $k \ge 1$. We can use the number of paths in the monotone path decomposition to characterise paths in height trees. To simplify this characterisation note that the number of subpaths in the monotone decomposition is exactly the number of vertices in which we change direction as we traverse the path. We shall name those special vertices kinks.
+The first important property of paths in height trees is their monotone path decomposition. The monotone path decompositino of a path is a sequence of vertexwise maximal monotone subpaths which share exactly one vertex and have alternating direction. An example of the path decomposition of a path is shown in Figure \ref{fig:monotone-decomposition}.
+If $P$ is a path in a height tree, we can decompose it into the sequence of paths $P_1, P_2, ..., P_k$ such that $P_i \subseteq P$, $|P_i \cap P_{i+1}| = 1$ and $P_i \cup P_{i+1}$ is not a monotone path for $i \in \{1, 2, ..., k-1\}$ and $k \ge 1$. We can use the number of paths in the monotone path decomposition to characterise paths in height trees. To simplify this characterisation note that the number of subpaths in the monotone decomposition is exactly the number of vertices in which we change direction as we traverse the path. We shall name those special vertices kinks.
+
+\begin{figure}%
+    \centering
+    \subfloat[The path $P = 1, 2, 3, 4, 5, 6, 7$]{{\includegraphics[scale=0.5]{./images/w-path.eps}}}%
+    \qquad
+    \subfloat[Monotone decomposition $P_1 = 1, 2, 3$, $P_2 = 3, 4, 5, 6$ and $P_3 = 6, 7$.]{{\includegraphics[scale=0.5]{./images/w-path-decomposed.eps}}}%
+    \caption{A path and its monotone decomposition.}
+    \label{fig:monotone-decomposition}%
+\end{figure}
+
 
 %The maximum path with respect to this property is precisely the lower bound on the parallel algorithm introduced in []. As a special case we must note that paths that can be decomposed into less than four monotone paths do not pose an algorithmic problem.
 
 
-A kink in a path is a vertex whose two neighbours are either both higher or both lower (Figure []). Given the path $(u_1, u_2, ... , u_k)$ an inside vertex $u_i \ne u_1, u_k$ is a kink when $h(u_i) \notin \big( min(h(u_{i-1}),~h(u_{i+1}),~max(h(u_{i-1}),~h(u_{i+1}) \big)$. To avoid this cumbersome expression we shall adopt a slight abuse of notation and in the future write it as $h(u_i) \notin $ or $ \in $ $\big(h(u_{i-1}),~h(u_{i+1}) \big)$ where it will be understood that the lower bound of the interval is the smaller of the two and the upper bound the larger.
-
+A kink in a path is a vertex whose two neighbours are either both higher or both lower (Figure \ref{fig:a-tale-of-two-kinks}). Given the path $(u_1, u_2, ... , u_k)$ an inside vertex $u_i \ne u_1, u_k$ is a kink when $h(u_i) \notin \big( min(h(u_{i-1}),~h(u_{i+1}),~max(h(u_{i-1}),~h(u_{i+1}) \big)$. To avoid this cumbersome expression we shall adopt a slight abuse of notation and in the future write it as $h(u_i) \notin $ or $ \in $ $\big(h(u_{i-1}),~h(u_{i+1}) \big)$ where it will be understood that the lower bound of the interval is the smaller of the two and the upper bound the larger.
 
 We can use the number of kinks in a path to define a metric on it. We will call this metric the w-length of a path and use it to measure the number of inside vertices of a path which are kinks. This is similar to how the length of a path is a metric that measures the number of edges between its vertices. The notation we will adopt for the w-length and length of a path $u \rightsquigarrow u$ is $w(u, v)$ and $d(u, v)$ respectively. There is no ambiguity here because as we have already said there is a unique path between any two vertices in a tree. One thing we can already claim is that $w(u, v) \le d(u, v)$ for any two vertices in a tree. The length of a path with $n$ vertices is $n-1$, but at most $n-2$ vertices can be kinks in it.
+
+\begin{figure}[h]%
+    \centering
+    \subfloat[Upwards kink]{{\includegraphics[scale=0.4]{./images/kinky-smile.eps}}}%
+    \qquad \qquad \qquad
+    \subfloat[Downwards kink]{{\includegraphics[scale=0.4]{./images/kinky-frown.eps}}}%
+    \caption{Two possible types of kinks (vertices are labeled with their height).}%
+    \label{fig:a-tale-of-two-kinks}%
+\end{figure}
+
 
 In Chapter 3 we foreshadowed our intention of obtaining the largest W-Structure in a given contour tree. We can now put his in more precise terms as the path in a height tree that has the maximum w-length (or the longest w-path). We can immediately obtain a brute force approach for this problem by considering all paths in the height tree and computing their w-length to find the maximum one. This can be expressed with the following optimization term
 
@@ -43,11 +63,11 @@ The first algorithm we will discuss is based on the following theoretical result
 
     To implement this algorithm we require of way of finding the most distant vertex from a given vertex. This can be done using Breadth First Search (BFS). Let $T$ be a tree and $s \in V(T)$ be any vertex. We can run BFS with $s$ as its root to find a vertex $u$ such that $d(s, u) \ge d(s, t)$ for all $t \in V(T)$. We can then run a second BFS with root $u$ to obtain a vertex $v$ such that $d(u, v) \ge d(u, t)$ for all $t \in V(T)$. As $u$ is the farthest vertex from $s$ it must be the endpoint of a diameter. As the diameter of $T$ is the longest path in $T$ therefore the second BSF must produce a path of length as much as the diameter. Therefore $d(u, v) \ge d(a, b)$ for all $a,b \in V(T)$.
 
-The space and time complexity of BSF are linear [] and therefore the space and time complexity of this algorithm are linear as well. This follows from that fact that the algorithm consists of running BFS just two consecutive times.
+The space and time complexity of BSF are linear \cite{intro-to-algo} and therefore the space and time complexity of this algorithm are linear as well. This follows from that fact that the algorithm consists of running BFS just two consecutive times.
 
 \subsection{Dynamic Programming}
 
-The second approach is based on the Dynamic Programming paradigm. Dynamic Programming is a method that is used to solve optimisation problems that exhibit recursive substructures of the same type as the original problem. The key ingredients in developing a dynamic-programming algorithm are [Into to Algorithms]:
+The second approach is based on the Dynamic Programming paradigm. Dynamic Programming is a method that is used to solve optimisation problems that exhibit recursive substructures of the same type as the original problem. The key ingredients in developing a dynamic-programming algorithm are \cite{intro-to-algo}:
 
 
 \begin{enumerate}
@@ -506,22 +526,22 @@ Let us now prove the correctness of the algorithm with the following Lemma.
 \begin{lem} The computation for the longest w-path that goes through the root of a subtree is correct. \end{lem}
 \begin{proof}
 
-    Let $T$ be a rooted height tree and $s$ be its root. 
+    Let $T$ be a rooted height tree and $s$ be its root.
 
     \em Case 1. $s$ has one child. \em
-    
+
     When $s$ has exactly one child then the w-length of the longest path that goes through $s$ is equal to the w-height of $s$ by the definition of w-height.
 
     \em Case 2. $s$ has more than one child. \em
 
-    Let $u', v' \ne s$ be two distinct leaves of $T$ such that the path $u' \rightsquigarrow v'$ is the longest w-path that goes through $s$.  
+    Let $u', v' \ne s$ be two distinct leaves of $T$ such that the path $u' \rightsquigarrow v'$ is the longest w-path that goes through $s$.
     We can decompose the path $u' \rightsquigarrow v'$ at $s$ as: $w(u', v') = w(u', s) + w(v', s) + w_{u' \rightsquigarrow v'}(s)$.
 
     Let $u$ and $v$ be the two children of $s$ through which the path goes through.
-    The paths $w(u', s)$ and $w(v', s)$ can be further decomposed at $u$ and $v$ respectively. We obtain that 
-    $w(u', s) = w(u', u) + w(u, s) + w_{u' \rightsquigarrow s}(u)$ and 
-    $w(v', s) = w(v', v) + w(v, s) + w_{v' \rightsquigarrow s}(v)$. 
-    In both cases $w(v, s) = 0$ and $w(u, s) = 0$ because $u$ and $v$ are adjacent to $s$. This means that the paths $u \rightsquigarrow s$ and $v \rightsquigarrow s$ have no inside vertices. 
+    The paths $w(u', s)$ and $w(v', s)$ can be further decomposed at $u$ and $v$ respectively. We obtain that
+    $w(u', s) = w(u', u) + w(u, s) + w_{u' \rightsquigarrow s}(u)$ and
+    $w(v', s) = w(v', v) + w(v, s) + w_{v' \rightsquigarrow s}(v)$.
+    In both cases $w(v, s) = 0$ and $w(u, s) = 0$ because $u$ and $v$ are adjacent to $s$. This means that the paths $u \rightsquigarrow s$ and $v \rightsquigarrow s$ have no inside vertices.
     Lasty we have that $w_{u' \rightsquigarrow v'}(s) = w_{u \rightsquigarrow v}(s)$ because $u \rightsquigarrow v$ is a subpath of $u' \rightsquigarrow v'$.
     By substituting these into the first equation we obtain that:
 
@@ -600,10 +620,8 @@ The worst case running time we obtained for the DP algorithm is quadratic. The b
 
 \section{Algorithm Implementations}
 
-For the purpose of conducting the empirical study later on we implemented all three w-diameter algorithms we developed in the this chapter. Those are the brute force algorithm, the 2xBFS and DP algorithms.  For the brute force algorithm and the 2xBFS algorithms we based our implementation entirely on the pseudocode provided in the previous chapter. The source code for those can be found in the appendix. For the DP algorithm we had to implemented a bottom up approach because the recursive one we suggested in the previous chapter was not efficient enough for large data sets. 
+For the purpose of conducting the empirical study later on we implemented all three w-diameter algorithms we developed in the this chapter. Those are the brute force algorithm, the 2xBFS and DP algorithms.  For the brute force algorithm and the 2xBFS algorithms we based our implementation entirely on the pseudocode provided in the previous chapter. The source code for those can be found in the appendix. For the DP algorithm we had to implemented a bottom up approach because the recursive one we suggested in the previous chapter was not efficient enough for large data sets.
 
-The convert the DP algorithm to a bottom up approach we first have to solve all base case subproblems and then iteratively work our way to other subproblems that depend on ones that have already been solved. In order to do this we can run a BFS from the root of the tree and label all vertices with the distance they are at from the root. We can then iterrate over all vertices in reverse order of their distance form the root. This ensures that we will solve for the leaves first and conecutively all the children of a vertex will have been solved for when we reach it. When at a vertex we can use the exact same code we provided in the backtracking part of the DFS in the pseudocode on page []. 
+The convert the DP algorithm to a bottom up approach we first have to solve all base case subproblems and then iteratively work our way to other subproblems that depend on ones that have already been solved. In order to do this we can run a BFS from the root of the tree and label all vertices with the distance they are at from the root. We can then iterrate over all vertices in reverse order of their distance form the root. This ensures that we will solve for the leaves first and conecutively all the children of a vertex will have been solved for when we reach it. When at a vertex we can use the exact same code we provided in the backtracking part of the DFS in the pseudocode on page [].
 
 %To adapt the DP algorithm to a bottom up approach we firstly ran a standard Breadth First Search from a node in the tree. With it we computed the leaves, 1st order leaves, 2nd order leaves and so on. After this we extracted all of the code that was used in the backtracking phase of the Depth First Search and applied it first to all leaves, than 1st order leaves and so on. This ensured that all children of a vertex were computed before the node it self and allowed us to avoid using recursion at the expense of some additional preprocessing and higher memory footprint for storing the order of a vertex.
-
-
