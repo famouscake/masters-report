@@ -18,11 +18,11 @@ Many scientific and medical applications require the sampling of points from a b
 
 \begin{figure}[h]%
     \centering
-    \subfloat[Input Data]{{\includegraphics[scale=0.4]{./images/w3x3-vertices.eps}}}%
+    \subfloat[Input Data]{{\includegraphics[scale=0.06]{./images/w3x3/w3x3-vertices.pdf}}}%
     \qquad \qquad \qquad
-    \subfloat[Simplicial Mesh]{{\includegraphics[scale=0.4]{./images/w3x3-mesh.eps}}}%
+    \subfloat[Simplicial Mesh]{{\includegraphics[scale=0.06]{./images/w3x3/w3x3-mesh.pdf}}}%
     \caption{Triangulation of input data to obtain a simplicial mesh.}%
-    \label{fig:example}%
+    \label{fig:simplicial-mesh}%
 \end{figure}
 
 The values of the approximation function at the simplicies are obtained via linear interpolation between the verticies of each simplex. As long as the original values we have sampled are unique it can be shown that the resulting linear interpolation function is a Morse function and that the critical values are critical points are the vertices of the mesh \cite{curvature-embeded-polyhedra}.We will demonstrate in the following section how this crucial property enables efficient computation.
@@ -65,7 +65,7 @@ The contour tree contains information for two types of events - joining and spli
 
 \begin{figure}[h]%
     \centering
-    \subfloat[Simplicial Mesh]{{\includegraphics[scale=0.06]{./images/filtration/asc/x9.eps}}}%
+    \subfloat[Simplicial Mesh]{{\includegraphics[scale=0.06]{./images/filtration/asc/x9.pdf}}}%
     \qquad \qquad \qquad
     \subfloat[Contour Tree]{{\includegraphics[scale=0.10]{./images/w3x3-contour-tree-new.eps}}}%
     \qquad \qquad \qquad

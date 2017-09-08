@@ -203,7 +203,17 @@ This result allows us to compute the Euler Characteristic of topological spaces 
 
 \section{Graph Theory}
 
-The longest path in a graph is an \em NP-hard \em problem. This can be demonstrate via a reduction to the Hamiltonian path problem []. Fortunately in the special case where the graph is a tree it has a linear time solution. In this special case it is known as the tree diameter problem. In this section we will take a look at how two of the linear time tree diameter problems work.
+The last piece of background theory we will cover is from Graph Theory. In this disertation we will make use of certain notation and algorithms that we will define here.
+
+\subsection{General Graph Theory}
+
+We will assume that the reader has some familiarity with the basic concepts of graph theory. We will however define precisely the notation we will be using. For a graph $G = (V, E)$ we will use $V(G)$ for the vertices of $G$ and $E(G)$ for the edges of $G$. We will use the notation $N(u)$ for he neighbouhood of $u$ or all the vertices $u$ is adjacent to.
+
+Throughout this dissertation most of the graphs we will be using will be trees. A tree is a connected graph that has no cycles. We will typically refer to trees as $T = (V, E)$. For our intents and purposes we shall define a subtree of a tree as a connected subgraph of a tree. We will refer to subtrees of rooted trees by their root. If $T$ is a rooted tree and $u$ is a node in $T$ then $T_u$ is the subtree of $T$ whoose root is $u$. In this notation if $s$ is the root of $T$ then $T_s = T$. If $u$ is any vertex that is not the root of $T$ than $T_u$ as the maximal (vertex-wise) subgraph of $T$ that contains $u$ but does not contain the parent of $u$.
+
+% The height of a rooted tree $T$ is defined as the longest path that starts at the root of the tree. The height of a rooted subtree $T_u$ of $T$ is simply the height of $T_u$ as a rooted tree.
+
+In Chapter [] we will be interested in finding the longest path in a tree. This is known as the diameter of a tree. We will now describe two of the most popular linear time tree diameter algorithms.
 
 
 \subsection{Tree Diameter Algorithms}
@@ -216,8 +226,6 @@ The first algorithm we will discuss is based on the following theoretical result
 
 The space and time complexity of BSF are linear \cite{intro-to-algo} and therefore the space and time complexity of this algorithm are linear as well. This follows from that fact that the algorithm consists of running BFS just two consecutive times.
 
-% \subsection{Dynamic Programming}
-
 The second approach is based on the Dynamic Programming paradigm. Dynamic Programming is a method that is used to solve optimisation problems that exhibit recursive substructures of the same type as the original problem. The key ingredients in developing a dynamic-programming algorithm are \cite{intro-to-algo}:
 
 
@@ -229,13 +237,21 @@ The second approach is based on the Dynamic Programming paradigm. Dynamic Progra
 
 % @TODO Redefine N(u)
 
-Trees exhibit optimal substructure through their subtrees. For our intents and purposes we shall define a subtree as a connected subgraph of a tree. We will only consider rooted trees in the context of this algorithm and we must define the accordingly. Let $T$ be a rooted tree and let $v, u \in V(T)$ be two vertices such that $v$ is the parent of $u$. We shall define the subtree rooted at $u$ as the maximal (vertex-wise) subgraph of $T$ that contains $u$ but does not contain $v$.  We will denote it as $T_u$. In this notation $T = T_s$ where $s$ is the root of $T$. The rooted subtree at $u$ is smaller than $T$ as it does not contain at least one of the vertices of the $T$ namely - $v$. The structure of the optimal solution is characterised through all possible rooted subtrees $\{T_u\}_{u \in V(G)}$.
+Trees naturally exhibit optimal substructure through their subtrees. If we take any tree $T$ and root it any any of its vertices then the optimal structures of the solution is defined via all the rooted subtrees of $T$ or $\{T_u\}_{u \in V(G)}$. We can recursively define the value of the optimal solution with the following observation. Starting at the root of the tree the longest path in tree either goes through the root or is entirely contained in one of the subtrees rooted at the children of the root.
 
-We can recursively define the value of the optimal solution with the following observation. Starting at the root of the tree the longest path in tree either goes through two children of the root and the root or is entirely contained in one of the subtrees rooted at one the children. In order to define this formally we will make use of two additional functions. Let $h(u)$ be the height of the subtree rooted at $u$. The height is defined as the longest path in $T_u$ from $u$ to one of the leaves of $T_u$. We will also define $D(u)$ as longest path contained entirely in $T_u$. The function we will maximize is $D(s)$ where $s$ is the root of $T$. We will do so with the following formula.
+In defining this via the subtrees ot $T$. The optimal solution is either entirely contained in $T_u$ where $u$ is a child of the root of $T$ or is a combination of
 
-$$ D(v) = max\bigg\{ \max\limits_{u \in N(v)}\bigg(D(u)\bigg), \max\limits_{u, w \in N(v)}\bigg(h(u) + h(w) + 2\bigg) \bigg\}. $$
+In order to formalise this idea we will make use of two functions. Let $h(u)$ be the height of the subtree rooted at $u$. The height is defined as the longest path in $T_u$ from $u$ to one of the leaves of $T_u$. We will also call sight a path a height path. We will also define $D(u)$ as longest path contained entirely in $T_u$. Let the root of $T$ be $s$. The optimal solution is either entirely contained in $T_u$ where $u$ is a child of $s$ or is in combining two the height paths of two of the children of $u$. This is sumamrised by he following formula.
 
-The base case for this recursive formula is at the leaves of $T$. If $u$ is a leaf of $T$ then $V(T_u) = \{u\}$. This allows us to set $h(u) = 0$ and $D(u) = 0$ and consider all leaves as base cases for the recursive formula. We are guaranteed to reach the base cases as each subtree is strictly smaller we must inevitably reach all leaves. This algorithm can be implemented in linear time using Depth First Search (DFS) by using two auxiliary arrays that hold the values for $h(u)$ and $D(u)$ for every $u \in V(T)$ []. We will elaborate more on the imeplementational details in the final section of this chapter.
+$$ D(s) = max\bigg\{ \max\limits_{u \in N(s)}\bigg(D(u)\bigg), \max\limits_{\substack{u, w \in N(s) \\ u \ne w}} \bigg(h(u) + h(w) + 2\bigg) , \max\limits_{u \in N(s)}\bigg(h(u)\bigg)  \bigg\} $$
+
+where the last term is given in the case where $v$ has exactly on child. The base case for this recursive formula is at the leaves of $T$. If $u$ is a leaf of $T$ then $V(T_u) = \{u\}$. This allows us to set $h(u) = 0$ and $D(u) = 0$ and consider all leaves as base cases for the recursive formula. This algorithm can be implemented in linear time using Depth First Search (DFS) by using two auxiliary arrays that hold the values for $h(u)$ and $D(u)$ for every $u \in V(T)$ [].
+
+% We will elaborate more on the imeplementational details in the final section of this chapter.
+
+% We are guaranteed to reach the base cases because all subtrees in the formula are strictly smaller.
+%
+% as each subtree is strictly smaller we must inevitably reach all leaves.
 
 %@TODO Fix sentece before
 

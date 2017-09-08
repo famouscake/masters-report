@@ -15,13 +15,18 @@
         - Run Algorithms Correctness
 
     Friday
+        <!-- - Fix EP (Extended Persistence) vs BD (Branch Decomposition) -->
+        <!-- - Fix Tree diameter algorithms. -->
         - CH7. Make table for NxBFS Testing
-        - Fix EP (Extended Persistence) vs BD (Branch Decomposition)
+        - Add Murmuration
+        - Say where you've done original research
+
 
     Weekend
         - Refactor Name and Summary.
         - Refactor Future Work.
         - Refactor Personal Reflection
+        - Check if figures are right
 
         - Add Ethical Issues Addressed
         - Justify Things

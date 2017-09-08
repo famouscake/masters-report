@@ -1,6 +1,7 @@
 %\documentclass[12pt,a4paper,twoside]{book}
-% @PETER
-\documentclass[12pt,a4paper,twoside,parskip=full]{book}
+% @PETER oneside to remove space between chapters
+
+\documentclass[11pt,a4paper,twoside,parskip=full]{book}
 
 %include the configuration file for layout
 %Have a look in this file it has some useful commands defined
@@ -13,6 +14,8 @@
 
 %The prelude is everything upto the start of chapter 1
 \include{prelude}
+
+\justify
 
 %include as many chapters as you have.
 %the chapters are in a directory called Chapters
@@ -61,7 +64,3 @@
 
 % Fix why it's hard to improve 2xBFS
 % Proove Correctness of DP.
-
-
-
-

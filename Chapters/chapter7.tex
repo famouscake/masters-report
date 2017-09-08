@@ -5,11 +5,11 @@ In the final chapter we will suplement our theoretical ivestigation of the w-str
 
 \section{Algorithm Implementations}
 
-For the purpose of conducting the empirical study later on we implemented all three w-diameter algorithms we developed in the this chapter. Those are the brute force algorithm, the 2xBFS and DP algorithms.  For the brute force algorithm and the 2xBFS algorithms we based our implementation entirely on the pseudocode provided in the previous chapter. The source code for those can be found in the appendix. For the DP algorithm we had to implemented a bottom up approach because the recursive one we suggested in the previous chapter was not efficient enough for large data sets.
+For the purpose of conducting the empirical study we implemented all three w-diameter algorithms we developed in Chapter []. Those are the brute force algorithm (NxBFS), the 2xBFS and DP algorithms.  We implemented the brute force algorithm by running the modified version of 2xBFS from every vertex in the tree and outputting the largest w-path we found. The implementation of the 2xBFS algorithm was based entirely on the pseudocode we provided in Chapter []. Initially we made an recursive implementation of the DP algorithm based on the pseudocode we provided in Chapter []. This approach was not efficient enough because the recursion added a substantial amount of overhead in large data sets. We resorted to converting our recursive version to an iterative one.
 
-The convert the DP algorithm to a bottom up approach we first have to solve all base case subproblems and then iteratively work our way to other subproblems that depend on ones that have already been solved. In order to do this we can run a BFS from the root of the tree and label all vertices with the distance they are at from the root. We can then iterrate over all vertices in reverse order of their distance form the root. This ensures that we will solve for the leaves first and conecutively all the children of a vertex will have been solved for when we reach it. When at a vertex we can use the exact same code we provided in the backtracking part of the DFS in the pseudocode on page [].
+When converting a dynamic programming algorithm from a recursive to an iterative solution one first identifies all base case subproblems and solves them. Afterwards one works their way up to subproblems that depend only on the base case solutions and solve those. This process is repeated until all subproblems are solved. In our particular example the base cases are the leaves of the tree. The subproblems that depend on those are for all vertices whose distance from a leaf is one. Once those are solved we move on to vertices whose distance from a leaf is two and so on. In order to make sure that we have solved the subproblems for all children of vertex we first root the tree using standard BFS. The root of the tree can be any vertex. Using the BFS we not only assing parrents to all vertices, but we also rank them based on their distance from the root. By processing vertices from furthest to the root we ensure that the subproblems of any vertex are solved for because its children have a bigger distance. In order to solve a subproblem at a vertex we can use the code we have provided in the backgracking part of the DFS in the pseudocode in Chapter [].
 
-I also implemented the CT serial algorithm according to []
+Finally we also implemented the serial contour tree algorithm as it is described in []. The reason for doing so is that we needed to modify its output so that we can format the input an appropriate way for our tree diameter algorithms. All four algorithms we devloped were written in C++ and their source code can be found in their github repository [].
 
 \section{Data sets Overview}
 
@@ -35,7 +35,7 @@ To overcome this issue we opted for using the output of the NxBFS algorithm as g
     \item Check whether the output of DP and NxBFS are the same and if the output of 2xBFS is within two of their output.
 \end{itemize}
 
-We then used this methodology to run tests on one thousand trees of sizes $50, 100, 250, 500, 750, 1000, 2500, 5000, 7500, 10000$ resulting in $10000$ individual tests alltogether. The output of all tests was in line with what we predicted in Chapter 3. The algorithms DP and NxBSF had identical output and the output of the 2xBSF algorithm was no less than two of their output. These results strengthen our belief in the correctness of all three algorithms.
+We then used this methodology to run tests on one thousand trees of sizes $50$, $100$, $250$, $500$, $750$, $1000$, $2500$, $5000$, $7500$, $10000$ resulting in $10000$ individual tests alltogether. The output of all tests was in line with what we predicted in Chapter 3. The algorithms DP and NxBSF had identical output and the output of the 2xBSF algorithm was no less than two of their output. These results strengthen our belief in the correctness of all three algorithms.
 
 The second test we will perform is on the running time of the algorithms. In this test we will separate the algorithms in two groups. The first group will consist of NxBFS and the second group of 2xBFS and DP. We have separated them because we expect the running time of NxBFS to be quadratic, 2xBFS to be linear, DP to be close to linear and we want to results from each group to be comparable. The results from testing the NxBSF algorithm were completely as expected. You can see the running time on Figure []. *I willl add them if I have space otherwise not*
 
@@ -145,83 +145,83 @@ Secondly we can confirm that the w-diameter in almost all of the data sets (exce
 
 Fillay we turn our attention to the diameter of the augmented and unaugmented contour trees. The parallel contour tree algorithm currently uses those as an uppen bound on the time complexity of the merge phase []. We have already shown theoretically that the w-diameter of a height tree is necessarily smaller than its diameter. This empirical study demonstrates the practical relevance of this findind. In the most extreme example, that of gtopo30w020n40, the w-diameter of the augmented contour tree is 1,970,870 times smaller than its diameter. For all practical intents and purposes this is a staggering difference. If the w-diameter of that data sets were equal to the actual diameter, than we would expect the merge phase to take a far larger number of iterations and severly limit the available parallelism in it.
 
-\section{Generating W-Structures Manually}
-
-% We can generate them via ridges and valleys.
-The next step we shall take in improving our understanding of the w-structures empirically will be to devise a way of creating data sets whose contour trees have an arbitrarily large w-diameter. In order to do so we took an approach of exhaustive enumeration. We limited ourselves to two dimensional data sets of dimension 3x3. Enumerating larger two dimensional data sets or almost any three dimensional data sets would not be feasible due to the number of permutations required. We created a program that generated all permutations of the numbers $1, 2, 3, 4, 5, 6, 7, 8, 9$ and arraged them in a 3x3 grid. After genrating all permutation we computed their contour tree and inspected the ones with maximum w-diameter. In our findings we discovered that there is a particular pattern in two dimensional data grids that can exploited to generate arbitrarily large w-structures. As an example consider our familiar simplicial mesh and contour tree on Figure [].
-
-% Here is an example data set and it's contour tree.
-
-% The data set consists of ridge and valleys.
-
-% This led us to find a pattern. Consider the data set.
-
+% \section{Generating W-Structures Manually}
+%
+% % We can generate them via ridges and valleys.
+% The next step we shall take in improving our understanding of the w-structures empirically will be to devise a way of creating data sets whose contour trees have an arbitrarily large w-diameter. In order to do so we took an approach of exhaustive enumeration. We limited ourselves to two dimensional data sets of dimension 3x3. Enumerating larger two dimensional data sets or almost any three dimensional data sets would not be feasible due to the number of permutations required. We created a program that generated all permutations of the numbers $1, 2, 3, 4, 5, 6, 7, 8, 9$ and arraged them in a 3x3 grid. After genrating all permutation we computed their contour tree and inspected the ones with maximum w-diameter. In our findings we discovered that there is a particular pattern in two dimensional data grids that can exploited to generate arbitrarily large w-structures. As an example consider our familiar simplicial mesh and contour tree on Figure [].
+%
+% % Here is an example data set and it's contour tree.
+%
+% % The data set consists of ridge and valleys.
+%
+% % This led us to find a pattern. Consider the data set.
+%
+% % \[
+% %  \begin{matrix}
+% %   1 & 0 & 1 \\
+% %   0 & 1 & 0 \\
+% %   1 & 0 & 1
+% %  \end{matrix}
+% % \]
+%
+%
+% \begin{figure}[h]%
+%     \centering
+%     \subfloat[Simplicial Mesh]{{\includegraphics[scale=0.4]{./images/chapter4/w3x3-grid.eps}}}%
+%     \qquad
+%     \subfloat[Contour Tree]{{\includegraphics[scale=0.3]{./images/w3x3.eps}}}%
+%     \caption{Simplicial Mesh of a Contour Tree}%
+%     \label{fig:example}%
+% \end{figure}
+%
+% The pattern in this simplicial mesh that is responsible for the w-diameter of three is a series of diagonal ridges and valleys. We can describe it like so:
+%
+%
 % \[
 %  \begin{matrix}
 %   1 & 0 & 1 \\
 %   0 & 1 & 0 \\
 %   1 & 0 & 1
 %  \end{matrix}
+% \],
+%
+% where the ones represent vertices with heights bigger than the vertices labeled as zero and the relative height between of vertices with label one (or zero) does not matter. In order to expand the w-diameter by one we must extend the data set with an additional column.
+%
+% \[
+%  \begin{matrix}
+%   1 & 0 & 1 & 0 \\
+%   0 & 1 & 0 & 1 \\
+%   1 & 0 & 1 & 0
+%  \end{matrix}
 % \]
-
-
-\begin{figure}[h]%
-    \centering
-    \subfloat[Simplicial Mesh]{{\includegraphics[scale=0.4]{./images/chapter4/w3x3-grid.eps}}}%
-    \qquad
-    \subfloat[Contour Tree]{{\includegraphics[scale=0.3]{./images/w3x3.eps}}}%
-    \caption{Simplicial Mesh of a Contour Tree}%
-    \label{fig:example}%
-\end{figure}
-
-The pattern in this simplicial mesh that is responsible for the w-diameter of three is a series of diagonal ridges and valleys. We can describe it like so:
-
-
-\[
- \begin{matrix}
-  1 & 0 & 1 \\
-  0 & 1 & 0 \\
-  1 & 0 & 1
- \end{matrix}
-\],
-
-where the ones represent vertices with heights bigger than the vertices labeled as zero and the relative height between of vertices with label one (or zero) does not matter. In order to expand the w-diameter by one we must extend the data set with an additional column.
-
-\[
- \begin{matrix}
-  1 & 0 & 1 & 0 \\
-  0 & 1 & 0 & 1 \\
-  1 & 0 & 1 & 0
- \end{matrix}
-\]
-
-The resulting contour tree of this data set would be.
-
-\begin{figure}[h]%
-    \centering
-    \includegraphics[center, scale=0.6 ]{./images/tree.eps}
-    \caption{Contour Tree of Dataset [] }%
-    \label{fig:case1.1}%
-\end{figure}
-
-After extending the data set for example to a 3x10 data set we obtain the following:
-
-\[
- \begin{matrix}
-  1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 \\
-  0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 \\
-  1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0
- \end{matrix}
-\]
-
-This 3x10 data set results in a contour tree with a w-diameter of ten on Figure [].
-
-\begin{figure}[h]%
-    \centering
-    \includegraphics[center, scale=0.6 ]{./images/tree10.eps}
-    \caption{Contour Tree of Dataset [] }%
-    \label{fig:case1.1}%
-\end{figure}
+%
+% The resulting contour tree of this data set would be.
+%
+% \begin{figure}[h]%
+%     \centering
+%     \includegraphics[center, scale=0.6 ]{./images/tree.eps}
+%     \caption{Contour Tree of Dataset [] }%
+%     \label{fig:case1.1}%
+% \end{figure}
+%
+% After extending the data set for example to a 3x10 data set we obtain the following:
+%
+% \[
+%  \begin{matrix}
+%   1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 \\
+%   0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 \\
+%   1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0
+%  \end{matrix}
+% \]
+%
+% This 3x10 data set results in a contour tree with a w-diameter of ten on Figure [].
+%
+% \begin{figure}[h]%
+%     \centering
+%     \includegraphics[center, scale=0.6 ]{./images/tree10.eps}
+%     \caption{Contour Tree of Dataset [] }%
+%     \label{fig:case1.1}%
+% \end{figure}
 
 
 % Can be obtain the w-diameter from raw data?
