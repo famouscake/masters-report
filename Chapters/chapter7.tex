@@ -9,7 +9,7 @@ For the purpose of conducting the empirical study we implemented all three w-dia
 
 When converting a dynamic programming algorithm from a recursive to an iterative solution one first identifies all base case subproblems and solves them. Afterwards one works their way up to subproblems that depend only on the base case solutions and solve those. This process is repeated until all subproblems are solved. In our particular example the base cases are the leaves of the tree. The subproblems that depend on those are for all vertices whose distance from a leaf is one. Once those are solved we move on to vertices whose distance from a leaf is two and so on. In order to make sure that we have solved the subproblems for all children of vertex we first root the tree using standard BFS. The root of the tree can be any vertex. Using the BFS we not only assing parrents to all vertices, but we also rank them based on their distance from the root. By processing vertices from furthest to the root we ensure that the subproblems of any vertex are solved for because its children have a bigger distance. In order to solve a subproblem at a vertex we can use the code we have provided in the backgracking part of the DFS in the pseudocode in Chapter [].
 
-Finally we also implemented the serial contour tree algorithm as it is described in []. The reason for doing so is that we needed to modify its output so that we can format the input an appropriate way for our tree diameter algorithms. All four algorithms we devloped were written in C++ and their source code can be found in their github repository [].
+Finally we also implemented the serial contour tree algorithm as it is described in []. The reason for doing so is that we needed to use it compute the contour tree of test data and then execute the w-diameter algorithms of those contour trees. This required us to make some modifications in the output of the contour tree algorithm to better suit the w-diameter algorithms. All four algorithms we devloped were written in C++ and their source code can be found in their github repository [].
 
 \section{Data sets Overview}
 
@@ -38,6 +38,14 @@ To overcome this issue we opted for using the output of the NxBFS algorithm as g
 We then used this methodology to run tests on one thousand trees of sizes $50$, $100$, $250$, $500$, $750$, $1000$, $2500$, $5000$, $7500$, $10000$ resulting in $10000$ individual tests alltogether. The output of all tests was in line with what we predicted in Chapter 3. The algorithms DP and NxBSF had identical output and the output of the 2xBSF algorithm was no less than two of their output. These results strengthen our belief in the correctness of all three algorithms.
 
 The second test we will perform is on the running time of the algorithms. In this test we will separate the algorithms in two groups. The first group will consist of NxBFS and the second group of 2xBFS and DP. We have separated them because we expect the running time of NxBFS to be quadratic, 2xBFS to be linear, DP to be close to linear and we want to results from each group to be comparable. The results from testing the NxBSF algorithm were completely as expected. You can see the running time on Figure []. *I willl add them if I have space otherwise not*
+
+\begin{figure}[h]%
+    \centering
+    \includegraphics[center, scale=0.6 ]{./images/empirical/chart-nbfs.eps}
+    \caption{Running time of 2xBFS (blue) and DP (red) on randomly generated trees. }%
+    \label{fig:case1.1}%
+\end{figure}
+
 
 The tests of the 2xBFS and DP algorithm suprised. The test consisted of generating five tree on vertices in the range $\{5000, 10000, ..., 200000\}$, running both algorithm on all five trees and plotting the average running time on Figure [].
 

@@ -20,6 +20,7 @@
         - CH7. Make table for NxBFS Testing
         - Add Murmuration
         - Say where you've done original research
+        - Add index of tables
 
 
     Weekend
@@ -30,11 +31,11 @@
 
         - Add Ethical Issues Addressed
         - Justify Things
+        - Add column meanings in charts runing times.
 
 
 
     - CH2. Definitions about Reeb Graph should be taken directly from somewhere. Do not experiment.
-
     - CH3. Contour Tree Join/Split Tree Definition. Add superarcs and supernodes
     <!-- - CH3. Talk about time and work complexity of the parallel algorithm and the merge phase in particular. -->
 

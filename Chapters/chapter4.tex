@@ -355,14 +355,109 @@ We must pay attention to one special case. This is when the root of a rooted hei
 
 We now claim that the longest w-path in a rooted height tree is either entirely contained in one of the subtrees of the root or is a combination of two maximum w-height paths that end at two distinct children of the root. Combining what we have shows so far we obtain the following expression for the optimal solution:
 
-$$ W(s) = max\Bigg\{ \max\limits_{u \in N(s)}\bigg(W(u)\bigg), \max\limits_{\substack{u, v \in N(s) \\ u \ne v}} \bigg( h(u) + \max\limits_{t \in L_u}\Big(w_{s \rightsquigarrow t}(u)\Big) + h(v) + \max\limits_{t \in L_v}\Big(w_{s \rightsquigarrow t}(v)\Big) + w_{u \rightsquigarrow v}(s) \bigg) \Bigg\}. $$
+% $$ W(s) = \max\Bigg\{ \max\limits_{u \in N(s)}\bigg(W(u)\bigg), \max\limits_{\substack{u, v \in N(s) \\ u \ne v}} \bigg( h(u) + \max\limits_{t \in L_u}\Big(w_{s \rightsquigarrow t}(u)\Big) + h(v) + \max\limits_{t \in L_v}\Big(w_{s \rightsquigarrow t}(v)\Big) + w_{u \rightsquigarrow v}(s) \bigg), \max\limits_{u \in N(s)} \bigg( h(u) + \max\limits_{t \in L_u}\Big(w_{s \rightsquigarrow t}(u)\Big) \bigg) \Bigg\}. $$
+%
 
-Here is the pseudocode for a recursive implementation of this algorithm.
+
+$$
+W(s) = \max\left\{
+   \begin{array}{@{}l@{\thinspace}l}
+       \max\limits_{u \in N(s)}\bigg(W(u)\bigg), \\
+       \max\limits_{\substack{u, v \in N(s) \\ u \ne v}} \bigg( h(u) + \max\limits_{t \in L_u}\Big(w_{s \rightsquigarrow t}(u)\Big) + h(v) + \max\limits_{t \in L_v}\Big(w_{s \rightsquigarrow t}(v)\Big) + w_{u \rightsquigarrow v}(s) \bigg), \\
+       \max\limits_{u \in N(s)} \bigg( h(u) + \max\limits_{t \in L_u}\Big(w_{s \rightsquigarrow t}(u)\Big) \bigg). \\
+   \end{array}
+\right.
+$$
 
 
-\begin{algorithm}{}
+Let us now prove the correctness of the algorithm with the following Lemma.
+
+\begin{lem} The computation for the longest w-path that goes through the root of a subtree is correct. \end{lem}
+\begin{proof}
+
+   Let $T$ be a rooted height tree and $s$ be its root.
+
+   \em Case 1. $s$ has one child. \em
+
+   When $s$ has exactly one child then the w-length of the longest path that goes through $s$ is equal to the w-height of $s$ by the definition of w-height.
+
+   \em Case 2. $s$ has more than one child. \em
+
+   Let $u', v' \ne s$ be two distinct leaves of $T$ such that the path $u' \rightsquigarrow v'$ is the longest w-path that goes through $s$.
+   We can decompose the path $u' \rightsquigarrow v'$ at $s$ as: $w(u', v') = w(u', s) + w(v', s) + w_{u' \rightsquigarrow v'}(s)$.
+
+   Let $u$ and $v$ be the two children of $s$ through which the path goes through.
+   The paths $w(u', s)$ and $w(v', s)$ can be further decomposed at $u$ and $v$ respectively. We obtain that
+   $w(u', s) = w(u', u) + w(u, s) + w_{u' \rightsquigarrow s}(u)$ and
+   $w(v', s) = w(v', v) + w(v, s) + w_{v' \rightsquigarrow s}(v)$.
+   In both cases $w(v, s) = 0$ and $w(u, s) = 0$ because $u$ and $v$ are adjacent to $s$. This means that the paths $u \rightsquigarrow s$ and $v \rightsquigarrow s$ have no inside vertices.
+   Lasty we have that $w_{u' \rightsquigarrow v'}(s) = w_{u \rightsquigarrow v}(s)$ because $u \rightsquigarrow v$ is a subpath of $u' \rightsquigarrow v'$.
+   By substituting these into the first equation we obtain that:
+
+   $$w(u', v') = w(u', u) + w_{u' \rightsquigarrow s}(u) + w(v', v) + w_{v' \rightsquigarrow s}(v) + w_{u \rightsquigarrow v}(s). $$
+
+   This equation is similar to Equation []. By observing the two carefully we can infer that
+
+   $$w(u', u) + w_{u' \rightsquigarrow s}(u) = h(u) + \max\limits_{t \in L_u}\Big(w_{s \rightsquigarrow t}(u)\Big)$$
+   and
+   $$w(v', v) + w_{v' \rightsquigarrow s}(v) = h(v) + \max\limits_{t \in L_v}\Big(w_{s \rightsquigarrow t}(v)\Big).$$
+
+   for otherwise we would be able to assemble a longer w-path that goes through $s$. This is not possible because we supposed that $u' \rightsquigarrow v'$ is the longest such w-path. Therefore we can conclude that:
+
+   $$ w(u', v') \le \max\limits_{\substack{u, v \in N(s) \\ u \ne v}}\{ h(u) + \max\limits_{t \in L_u}\Big(w_{s \rightsquigarrow t}(u)\Big) + h(v) + \max\limits_{t \in L_v}\Big(w_{s \rightsquigarrow t}(v)\Big) + w_{u \rightsquigarrow v}(s)\}. $$
+
+   The w-path combination we have presented produces a valid path in the tree. It follows that it cannot be strictly bigger than $w(u', v')$. Therefore they are equal and the computation produces the longest w-path that goes through the root of the tree.
+
+\end{proof}
+
+
+\begin{lem} The Algorithm produces the w-diameter of a height tree. \end{lem}
+
+\begin{proof}
+
+   We just showed the longest w-path through the root of subtree is computed correctly. As the value of the optimal solution is taken in the same way as in the dynamic programming tree diameter algorithm [] then the correctness of our algorithm follows directly from it.
+
+\end{proof}
+
+The pseudocode of the proposed w-dimater algorithms is shown in Algorithm [].
+
+
+Having proven that the algorithm correctly computes the desired w-diameter we will now provide formal bounds on the time and space complexity of the proposed solution. We can summarise the time complexity in the following formula:
+
+$$ O\bigg( |V| + |E| + \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} + \sum_{u \in V}{d(u)^2}  \bigg) ,$$
+
+where we use $d(u)$ for the degree of a vetex. The term $|V| + |E|$ comes from executing the Depth First Search, the term $\sum_{u \in V}{\sum_{v \in N(u)}{d(v)}}$ is the nested double loop over all children of children of all vertices (on line 15 and 22) and $\sum_{u \in V}{d(u)^2}$ is the nested double loop over all children in the final path combination (on line 31). We wil begin by showing that:
+
+$$ O\bigg( \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} \bigg) = O(|V|) $$
+
+When running DFS on a tree it is not possible to visit a vertex as a child of a child more than once. Suppose for the sake of contradiction that is were possible. Let $T$ be a height tree with root $s$ and $u, v$ be two distinct vertices such that the vertex $t$ is a child of a child of both. Then $s \rightsquigarrow u \rightsquigarrow t \rightsquigarrow v \rightsquigarrow s$ is a cycle. Trees have no cycles so this is a contradiction.
+
+Let us now move on to the last term $\sum_{u \in V}{d(u)^2}$. We can immediately bound it from bellow via the inequality $ \sum_{u \in V}{d(u)^2} \ge \sum_{u \in V}{d(u)} = 2|E|$. This inequality holds because the degree of a vertex is a positive integer and for any $x \in Z^+$ $ x^2 \ge x$. Let us now work our way to bounding the term from above.
+
+A triangle is a complete graph on three vertices. Trees have no cycles thus they cannot have induced triangles. Therefore for any edge in a tree $uv \in E(T)$ we have that $d(u) + d(v) \le |V|$. If there were a vertex $t$ that is in both $N(u)$ and $N(v)$ then $uv, tu, tv \in E(T)$ would be an induced triangle which is a contradiction. If we use this to sum over all edge we obtain that:
+
+$$ \sum_{uv \in E(T)}{d(u) + d(v)} \le |E|.|V|. $$
+
+The key to tranforming this inequality is to notice is that if we expand the summation $\sum_{uv \in E(T)}{d(u) + d(v)}$ then every term $d(u)$ will be present exactly $d(u)$ times. One time for each one of it's adjacent edges and there are exactly $d(u)$ adjacent edges. Therefore:
+
+$$ \sum_{u \in V(T)}{d(u)^2} = \sum_{uv \in E(T)}{d(u) + d(v)} \le |E||V| .$$
+
+To summarise what we've obtained so far:
+
+$$ O\bigg( \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} \bigg) = O(|V|)  , ~~ O\bigg( \sum_{u \in V(T)}{d(u)^2} \bigg) = O(|V||E|).$$
+
+Therefore a upper bound on the wost case time complexity of our dynamic programming solution is:
+
+$$ O\big( |V| + |E| + |V| + |V||E|  \big) = O\big(|V||E|\big).$$
+
+The worst case running time we obtained for the DP algorithm is quadratic. The bound is tight by Equation []. This does not bode well for us especially since the brute force approach is quadratic as well. We do however believe that this worst case is very rarely exhibited and that the algorithm has the potential for good practical performance. One reason that we believe so is that for every vertex of high degree in a tree there are at as many leaves as the degree of that vertex which require constant processing time as the base cases of our recursion. We will however abstrain from further theoretical inquiries and instead test this informal hypothesis by implementing both the 2xBFS and DP algorithms and comparing the running time of the implementations. In the next section we will expand on the details of the implementations and in the final chapter of the dissertation we will present the results from the running time comparison of the implementations.
+% Here is the pseudocode for a recursive implementation of this algorithm.
+
+
+\begin{algorithm}[h]{}
 \caption{Computing the W Diameter of a Height Tree.}
 \begin{algorithmic}[1]
+    \label{algo:dp}%
 
 %\Function{W\_DFS}{T, s}
     \State{\textbf{Function}W\_DFS}(T, s)
@@ -483,54 +578,6 @@ Here is the pseudocode for a recursive implementation of this algorithm.
 \end{algorithm}
 
 
-Let us now prove the correctness of the algorithm with the following Lemma.
-
-\begin{lem} The computation for the longest w-path that goes through the root of a subtree is correct. \end{lem}
-\begin{proof}
-
-    Let $T$ be a rooted height tree and $s$ be its root.
-
-    \em Case 1. $s$ has one child. \em
-
-    When $s$ has exactly one child then the w-length of the longest path that goes through $s$ is equal to the w-height of $s$ by the definition of w-height.
-
-    \em Case 2. $s$ has more than one child. \em
-
-    Let $u', v' \ne s$ be two distinct leaves of $T$ such that the path $u' \rightsquigarrow v'$ is the longest w-path that goes through $s$.
-    We can decompose the path $u' \rightsquigarrow v'$ at $s$ as: $w(u', v') = w(u', s) + w(v', s) + w_{u' \rightsquigarrow v'}(s)$.
-
-    Let $u$ and $v$ be the two children of $s$ through which the path goes through.
-    The paths $w(u', s)$ and $w(v', s)$ can be further decomposed at $u$ and $v$ respectively. We obtain that
-    $w(u', s) = w(u', u) + w(u, s) + w_{u' \rightsquigarrow s}(u)$ and
-    $w(v', s) = w(v', v) + w(v, s) + w_{v' \rightsquigarrow s}(v)$.
-    In both cases $w(v, s) = 0$ and $w(u, s) = 0$ because $u$ and $v$ are adjacent to $s$. This means that the paths $u \rightsquigarrow s$ and $v \rightsquigarrow s$ have no inside vertices.
-    Lasty we have that $w_{u' \rightsquigarrow v'}(s) = w_{u \rightsquigarrow v}(s)$ because $u \rightsquigarrow v$ is a subpath of $u' \rightsquigarrow v'$.
-    By substituting these into the first equation we obtain that:
-
-    $$w(u', v') = w(u', u) + w_{u' \rightsquigarrow s}(u) + w(v', v) + w_{v' \rightsquigarrow s}(v) + w_{u \rightsquigarrow v}(s). $$
-
-    This equation is similar to Equation []. By observing the two carefully we can infer that
-
-    $$w(u', u) + w_{u' \rightsquigarrow s}(u) = h(u) + \max\limits_{t \in L_u}\Big(w_{s \rightsquigarrow t}(u)\Big)$$
-    and
-    $$w(v', v) + w_{v' \rightsquigarrow s}(v) = h(v) + \max\limits_{t \in L_v}\Big(w_{s \rightsquigarrow t}(v)\Big).$$
-
-    for otherwise we would be able to assemble a longer w-path that goes through $s$. This is not possible because we supposed that $u' \rightsquigarrow v'$ is the longest such w-path. Therefore we can conclude that:
-
-    $$ w(u', v') \le \max\limits_{\substack{u, v \in N(s) \\ u \ne v}}\{ h(u) + \max\limits_{t \in L_u}\Big(w_{s \rightsquigarrow t}(u)\Big) + h(v) + \max\limits_{t \in L_v}\Big(w_{s \rightsquigarrow t}(v)\Big) + w_{u \rightsquigarrow v}(s)\}. $$
-
-    The w-path combination we have presented produces a valid path in the tree. It follows that it cannot be strictly bigger than $w(u', v')$. Therefore they are equal and the computation produces the longest w-path that goes through the root of the tree.
-
-\end{proof}
-
-
-\begin{lem} The Algorithm produces the w-diameter of a height tree. \end{lem}
-
-\begin{proof}
-
-    We just showed the longest w-path through the root of subtree is computed correctly. As the value of the optimal solution is taken in the same way as in the dynamic programming tree diameter algorithm [] then the correctness of our algorithm follows directly from it.
-
-\end{proof}
 
 
 %\begin{prop} Given a rooted tree $T$ the w-diameter of $T$ either passes through the root or is entirely contained in one of the subtrees of the children of the root. \end{prop}
@@ -549,35 +596,6 @@ Let us now prove the correctness of the algorithm with the following Lemma.
 
 %As path combination is correct then the optimal sumproblem function is correct. Then the whole algorithm must be correct.
 
-Having proven that the algorithm correctly computes the desired w-diameter we will now provide formal bounds on the time and space complexity of the proposed solution. We can summarise the time complexity in the following formula:
-
-$$ O\bigg( |V| + |E| + \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} + \sum_{u \in V}{d(u)^2}  \bigg) ,$$
-
-where we use $d(u)$ for the degree of a vetex. The term $|V| + |E|$ comes from executing the Depth First Search, the term $\sum_{u \in V}{\sum_{v \in N(u)}{d(v)}}$ is the nested double loop over all children of children of all vertices (on line 15 and 22) and $\sum_{u \in V}{d(u)^2}$ is the nested double loop over all children in the final path combination (on line 31). We wil begin by showing that:
-
-$$ O\bigg( \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} \bigg) = O(|V|) $$
-
-When running DFS on a tree it is not possible to visit a vertex as a child of a child more than once. Suppose for the sake of contradiction that is were possible. Let $T$ be a height tree with root $s$ and $u, v$ be two distinct vertices such that the vertex $t$ is a child of a child of both. Then $s \rightsquigarrow u \rightsquigarrow t \rightsquigarrow v \rightsquigarrow s$ is a cycle. Trees have no cycles so this is a contradiction.
-
-Let us now move on to the last term $\sum_{u \in V}{d(u)^2}$. We can immediately bound it from bellow via the inequality $ \sum_{u \in V}{d(u)^2} \ge \sum_{u \in V}{d(u)} = 2|E|$. This inequality holds because the degree of a vertex is a positive integer and for any $x \in Z^+$ $ x^2 \ge x$. Let us now work our way to bounding the term from above.
-
-A triangle is a complete graph on three vertices. Trees have no cycles thus they cannot have induced triangles. Therefore for any edge in a tree $uv \in E(T)$ we have that $d(u) + d(v) \le |V|$. If there were a vertex $t$ that is in both $N(u)$ and $N(v)$ then $uv, tu, tv \in E(T)$ would be an induced triangle which is a contradiction. If we use this to sum over all edge we obtain that:
-
-$$ \sum_{uv \in E(T)}{d(u) + d(v)} \le |E|.|V|. $$
-
-The key to tranforming this inequality is to notice is that if we expand the summation $\sum_{uv \in E(T)}{d(u) + d(v)}$ then every term $d(u)$ will be present exactly $d(u)$ times. One time for each one of it's adjacent edges and there are exactly $d(u)$ adjacent edges. Therefore:
-
-$$ \sum_{u \in V(T)}{d(u)^2} = \sum_{uv \in E(T)}{d(u) + d(v)} \le |E||V| .$$
-
-To summarise what we've obtained so far:
-
-$$ O\bigg( \sum_{u \in V}{\sum_{v \in N(u)}{d(v)}} \bigg) = O(|V|)  , ~~ O\bigg( \sum_{u \in V(T)}{d(u)^2} \bigg) = O(|V||E|).$$
-
-Therefore a upper bound on the wost case time complexity of our dynamic programming solution is:
-
-$$ O\big( |V| + |E| + |V| + |V||E|  \big) = O\big(|V||E|\big).$$
-
-The worst case running time we obtained for the DP algorithm is quadratic. The bound is tight by Equation []. This does not bode well for us especially since the brute force approach is quadratic as well. We do however believe that this worst case is very rarely exhibited and that the algorithm has the potential for good practical performance. One reason that we believe so is that for every vertex of high degree in a tree there are at as many leaves as the degree of that vertex which require constant processing time as the base cases of our recursion. We will however abstrain from further theoretical inquiries and instead test this informal hypothesis by implementing both the 2xBFS and DP algorithms and comparing the running time of the implementations. In the next section we will expand on the details of the implementations and in the final chapter of the dissertation we will present the results from the running time comparison of the implementations.
 
 
 %To adapt the DP algorithm to a bottom up approach we firstly ran a standard Breadth First Search from a node in the tree. With it we computed the leaves, 1st order leaves, 2nd order leaves and so on. After this we extracted all of the code that was used in the backtracking phase of the Depth First Search and applied it first to all leaves, than 1st order leaves and so on. This ensured that all children of a vertex were computed before the node it self and allowed us to avoid using recursion at the expense of some additional preprocessing and higher memory footprint for storing the order of a vertex.
