@@ -4,91 +4,75 @@
     <!-- - Complexity of Parallel Algorithm. -->
     <!-- - Add Reflective Bullshit thingy. -->
     <!-- - Move Things around -->
+    <!-- - Add the method for contour tree Simplification. -->
+    <!-- - Explain Barcode Diagrams. -->
+    <!-- - Fix Branch Decomposition. -->
+    <!-- - Fix EP (Extended Persistence) vs BD (Branch Decomposition) -->
+    <!-- - Fix Tree diameter algorithms. -->
+    <!-- - Refactor Summary. -->
+    <!-- - CH3. Talk about time and work complexity of the parallel algorithm and the merge phase in particular. -->
 
-    Thursday
-        <!-- - Add the method for contour tree Simplification. -->
-        <!-- - Explain Barcode Diagrams. -->
-        - CH4. Find references for 2xBFS and DP algorithms.
-        - CH4. Find references for Hamiltonia path reduction 4.@.
-
-        <!-- - Fix Branch Decomposition. -->
-        - Run Algorithms Correctness
-
-    Friday
-        <!-- - Fix EP (Extended Persistence) vs BD (Branch Decomposition) -->
-        <!-- - Fix Tree diameter algorithms. -->
-        - CH7. Make table for NxBFS Testing
-        - Add Murmuration
-        - Say where you've done original research
-        - Add index of tables
+    - !!! Final Refactor.
+    - !!! Check Spelling and Grammar.
+    - !!! Fix Reference.
+    - !!! Fix Table and Figures.
+    - !!! Run Algorithms Correctness
 
 
-    Weekend
-        - Refactor Name and Summary.
-        - Refactor Future Work.
-        - Refactor Personal Reflection
-        - Check if figures are right
+    - CH4. Find references for 2xBFS and DP algorithms.
+    - CH4. Find references for Hamiltonia path reduction 4.@.
+    - CH7. Find Reference for GTOPO
 
-        - Add Ethical Issues Addressed
-        - Justify Things
-        - Add column meanings in charts runing times.
+
+
+    - CH7. Make table for NxBFS Testing
+
+    - Add Murmuration
+    - Say where you've done original research
+    - Add index of tables
+
+    - Refactor Conclusion.
+    - Add Ethical Issues Addressed
+    - Justify Things ???
+    - Add column meanings in charts runing times.
 
 
 
     - CH2. Definitions about Reeb Graph should be taken directly from somewhere. Do not experiment.
+    - CH2 Image about Reeb Graphs. You would have to draw a surface and a graph. (Octave + Dot).
     - CH3. Contour Tree Join/Split Tree Definition. Add superarcs and supernodes
-    <!-- - CH3. Talk about time and work complexity of the parallel algorithm and the merge phase in particular. -->
-
-    - CH4. Find references for 2xBFS and DP algorithms.
-    - CH4. Find references for Hamiltonia path reduction 4.@.
     - CH4. Check if you notation about time complexity see if it's called that.
-
-    - CH7. Find Reference for GTOPO
     - CH7. Make table for NxBFS Testing
-
     - REF. Improve references.
+    - Restart numbering in DP algorithm pseudocode.
+    - Do New basis homoogy example with edges, not vertices
+    - Add morse theory cirtical points at vertices to join, split trees.
+    - Add this  The most recent extensions of this work introduce high quality topological simplification [4] where the contour tree is pruned incrementally to reduce its complexity and highlight the fundamental structures present in the data. The scheme involves exact and approx (FROM ORLY)
+    - You have to add something in Join/Split Tree but I can't remember what.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 # This is an epic todo list
 
-- Finish Algorithms Overview.
-
-- Finish Contour Tree Simplification.
-
-- Restart numbering in DP algorithm pseudocode.
-
-- Do New basis homoogy example with edges, not vertices
-
-- Add morse theory cirtical points at vertices to join, split trees.
 
 
-- Add this  The most recent
-extensions of this work introduce high quality topological simplification [4] where the contour tree is pruned incrementally to reduce
-its complexity and highlight the fundamental structures present in
-the data. The scheme involves exact and approx (FROM ORLY)
 
-- Write the reflective thingy
 
-- Add parallel algorithm bounds
 
-- Add quotient topological spaces
 
-- You have to add something in Join/Split Tree but I can't remember what.
 
-# Wednesday
-<!-- - Refactor Empirical Study -->
-- Finish Algorithms Overview.
-- Finish Contour Tree Simplification.
-
-# Thursday
-- Add the rest and refactor.
-
-# Friday
-- pictures
-
-# Weekend
 
 
 # Practical
