@@ -19,9 +19,13 @@
     - !!! Run Algorithms Correctness
 
 
+
     - CH4. Find references for 2xBFS and DP algorithms.
     - CH4. Find references for Hamiltonia path reduction 4.@.
     - CH7. Find Reference for GTOPO
+    - Picture of Reeb Graph
+    - Add ref for first ct paper
+    - Add triangles to simplicial mesh.
 
 
 
