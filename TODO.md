@@ -11,56 +11,52 @@
     <!-- - Fix Tree diameter algorithms. -->
     <!-- - Refactor Summary. -->
     <!-- - CH3. Talk about time and work complexity of the parallel algorithm and the merge phase in particular. -->
-
-    - !!! Final Refactor.
-    - !!! Check Spelling and Grammar.
-    - !!! Fix Reference.
-    - !!! Fix Table and Figures.
-    - !!! Run Algorithms Correctness
+    <!-- - CH7. Make table for NxBFS Testing -->
 
 
-
-    - CH4. Find references for 2xBFS and DP algorithms.
-    - CH4. Find references for Hamiltonia path reduction 4.@.
-    - CH7. Find Reference for GTOPO
-    - Picture of Reeb Graph
-    - Add ref for first ct paper
-    - Add triangles to simplicial mesh.
-
-
-
-    - CH7. Make table for NxBFS Testing
-
-    - Add Murmuration
-    - Say where you've done original research
-    - Add index of tables
-
-    - Refactor Conclusion.
-    - Add Ethical Issues Addressed
-    - Justify Things ???
-    - Add column meanings in charts runing times.
+    IMPORTANT
+        - !!! THINK OF A NAME!
+        - !!! Run Algorithms Correctness
+        - !!! Final Refactor. W-Structures, Homology, EP vs DP        
+        - !!! Say where you've done original research
+        - !!! Fix References in text.
+        - !!! Fix Table and Figures.
+                
+        - !!! Check Spelling and Grammar.
 
 
-
-    - CH2. Definitions about Reeb Graph should be taken directly from somewhere. Do not experiment.
-    - CH2 Image about Reeb Graphs. You would have to draw a surface and a graph. (Octave + Dot).
-    - CH3. Contour Tree Join/Split Tree Definition. Add superarcs and supernodes
-    - CH4. Check if you notation about time complexity see if it's called that.
-    - CH7. Make table for NxBFS Testing
-    - REF. Improve references.
-    - Restart numbering in DP algorithm pseudocode.
-    - Do New basis homoogy example with edges, not vertices
-    - Add morse theory cirtical points at vertices to join, split trees.
-    - Add this  The most recent extensions of this work introduce high quality topological simplification [4] where the contour tree is pruned incrementally to reduce its complexity and highlight the fundamental structures present in the data. The scheme involves exact and approx (FROM ORLY)
-    - You have to add something in Join/Split Tree but I can't remember what.
+    MEDIUM
+        - CH4. Find references for 2xBFS and DP algorithms.
+        - CH4. Find references for Hamiltonia path reduction 4.@.
+        - CH7. Find Reference for GTOPO
+        - Picture of Reeb Graph
+        - Add index of tables
+        - Add ref for first ct paper
 
 
+    SMALL
+        - Add triangles to simplicial mesh.
+        - Add more references.
+        - Add Murmuration
+        - Add Ethical Issues Addressed
+        - Add column meanings in charts runing times.
+        - Say you've added ct filtration in appendix.
+        - Justify Things ???
+        - CH4. Check if you notation about time complexity see if it's called that.
+        - Restart numbering in DP algorithm pseudocode.
 
 
+    <!-- - CH2. Definitions about Reeb Graph should be taken directly from somewhere. Do not experiment. -->
+    <!-- - CH2 Image about Reeb Graphs. You would have to draw a surface and a graph. (Octave + Dot). -->
+    <!-- - CH3. Contour Tree Join/Split Tree Definition. Add superarcs and supernodes -->
 
+    <!-- - CH7. Make table for NxBFS Testing -->
+    <!-- - REF. Improve references. -->
 
-
-
+    <!-- - Do New basis homoogy example with edges, not vertices -->
+    <!-- - Add morse theory cirtical points at vertices to join, split trees. -->
+    <!-- - Add this  The most recent extensions of this work introduce high quality topological simplification [4] where the contour tree is pruned incrementally to reduce its complexity and highlight the fundamental structures present in the data. The scheme involves exact and approx (FROM ORLY) -->
+    <!-- - You have to add something in Join/Split Tree but I can't remember what. -->
 
 
 
