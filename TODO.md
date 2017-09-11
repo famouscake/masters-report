@@ -21,7 +21,7 @@
         - !!! Say where you've done original research
         - !!! Fix References in text.
         - !!! Fix Table and Figures.
-                
+
         - !!! Check Spelling and Grammar.
 
 
@@ -32,6 +32,9 @@
         - Picture of Reeb Graph
         - Add index of tables
         - Add ref for first ct paper
+        - Put spacing before definitions.
+        - Space complexity of DP.
+        - Add figure in improving 2xBSF accuracy
 
 
     SMALL
@@ -44,6 +47,7 @@
         - Justify Things ???
         - CH4. Check if you notation about time complexity see if it's called that.
         - Restart numbering in DP algorithm pseudocode.
+        - Make definitions not em.
 
 
     <!-- - CH2. Definitions about Reeb Graph should be taken directly from somewhere. Do not experiment. -->
