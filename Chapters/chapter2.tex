@@ -26,7 +26,7 @@ Next we will define a special class of functions that preserve the properties of
 
 \begin{defn} A function $f : X \to Y$ is said to be continuous when the preimage of an open set in $Y$ is an open set in $X$. \end{defn}
 
-In formal notation if $U \in Y$ is open in $Y$ then $f^{-1}(U)$ is open in $X$. This definition captures the understanding we have of continuity from calculus in the more general context of topology. If $f$ is a bijection and $f^{-1}$ is also continuous we will call $f$ a homeomorphism. Homeomorphisms play a special role in topology. Two topological spaces are homeomorphic when there exists a homeomorphism between then. As continuous functions preserve open sets it follows that homeomorphic spaces are topologically identical. This is the reason why topologists are mostly interested in classifying and analysing spaces up to homeomorphism.
+In formal notation if $U \in Y$ is open in $Y$ then $f^{-1}(U)$ is open in $X$. This definition captures the understanding we have of continuity from calculus in the more general context of topology. If $f$ is a bijection and $f^{-1}$ is also continuous we will call $f$ a homeomorphism. Homeomorphisms play a special role in topology. Two topological spaces are homeomorphic when there exists a homeomorphism between them. As continuous functions preserve open sets it follows that homeomorphic spaces are topologically identical. This is the reason why topologists are mostly interested in classifying and analysing spaces up to homeomorphism.
 
 
 
@@ -56,7 +56,7 @@ The second way of obtaining new topologies is via the quotient topology. To unde
 
 \begin{defn} Let $X$ be a topological space and $\sim$ be an equivalence relation defined on $X$. The quotient topology of $X / \sim$ is formed by the sets $U \subseteq X / \sim$ such that $\pi^{-1}(U)$ is open in $X$. \end{defn}
 
-By this definition the function $\pi$ is continuous. We can use this fact to infer that if a topological space $X$ is path-connected then $X / \sim$ is path connected for any equivalence relation $\sim$ because there exists a continuous function $\pi : X \to X / \sim$. An important example is when we take quotients of subsets of topological spaces. Let $A \subseteq X$. We can define an equivalence relation as $x \sim y$ whenever both $x, y \in A$. We will call the resulting quotient space $X / A$. The geometrical interpretation of $X / A$ is that all points in $A$ are contracted to a single point in $X / A$. As a direct example of this consider the closed disk $D = \{x^2 + y^2 \le 1\}$ and its subset the circle $S^1 = \{x^2 + y^2 = 1\}$.
+By this definition the function $\pi$ is continuous. We can use this fact to infer that if a topological space $X$ is path-connected then $X / \sim$ is path connected for any equivalence relation $\sim$ because there exists a continuous function $\pi : X \to X / \sim$. An example of this is when we take quotients of subsets of topological spaces. Let $A \subseteq X$. We can define an equivalence relation as $x \sim y$ whenever both $x, y \in A$. We will call the resulting quotient space $X / A$. The geometrical interpretation of $X / A$ is that all points in $A$ are contracted to a single point in $X / A$. As a direct example of this consider the closed disk $D = \{x^2 + y^2 \le 1\}$ and its subset the circle $S^1 = \{x^2 + y^2 = 1\}$.
 The quotient space $D / S^1$ is homeomorphic to the three dimensional sphere $S^2 = \{x^2 + y^2 + z^2 = 1\}$.
 
 % To see why this is true imagine embedding $D$ in the $xy$ plane of a three dimensional space. Now imagine contracting all points along $S^1$ to a single point above the $xy$ plane. The resulting object resembles $S^2$ but with a cusp.
@@ -66,7 +66,7 @@ Now we will present our final definition. That of a topological manifold - a mat
 % @TODO Should it be an open neighbourhood?
 \begin{defn} A $d-manifold$ is topological space where every point has an neighbourhood that is homeomorphic to $\mathbb{R}^d$.  \end{defn}
 
-An example of a 0-dimensional manifold is a single point in $\mathbb{R}^n$. Examples of one dimensional manifolds are lines, circles, graphs and curves. Examples of 2-dimensional manifolds are the surfaces we are familiar with from geometry such as the sphere, the torus and so on. In this dissertation we will only consider manifolds of dimension zero, one, two and three. The reason for this is that our primary focus is on the visualisation aspect of computational topology. Visually modelling natural spacial phenomena prohibits us from using high dimensional manifolds they cannot be properly embedded in two or three dimensional Eucledian space.
+An example of a 0-dimensional manifold is a single point in $\mathbb{R}^n$. Examples of one dimensional manifolds are lines, circles, graphs and curves. Examples of 2-dimensional manifolds are the surfaces we are familiar with from geometry such as the sphere, the torus and so on. In this dissertation we will only consider manifolds of dimension zero, one, two and three. The reason for this is that our primary focus is on the visualisation aspect of computational topology. Visually modelling natural spacial phenomena prohibits us from using high dimensional manifolds because they cannot be properly embedded in two or three dimensional Eucledian space.
 
 % *Manifolds are the playground where topology meets geometry.*
 
@@ -75,7 +75,7 @@ It is often difficult to analyse the topology of a space by just considering its
 
 \section{Differential Topology}
 
-Differential topology is the study of differentiable functions defined on differentiable manifolds. One of the most well developed fields of differential topology is Morse Theory \cite{morse-theory-book, morse-theory-book-milnor}. Morse theory is the study of the relationship between spaces and functions defined on them. One way we can study manifolds via differentiable functions is by analysing the critical values of the functions. Due to complexity of doing so especially in relation to degenerate critical points we will restrict ourself to a special class of differentiable functions called Morse functions.
+Differential topology is the study of differentiable functions defined on differentiable manifolds. One of the most well developed fields of differential topology is Morse Theory \cite{morse-theory-book, morse-theory-book-milnor}. Morse theory is the study of the relationship between spaces and functions defined on them. One way we can study manifolds via differentiable functions is by analysing the critical values of the functions. Due to complexity of doing so especially in relation to degenerate critical points we will restrict ourselfs to a special class of differentiable functions called Morse functions.
 
 % One of the main goals is to determine the shape of a space by analysing the class of functions that can be defined on it.
 
@@ -92,7 +92,7 @@ We can use a Morse function defined on a manifold to decompose it into a family 
 
 Sublevel sets are defined in terms of the preimage of $f$ of intervals of the form $[-\infty, a]$. A sublevel set at $a$ is defined as $f^{-1}([-\infty, a]) = \{x \in M: f(x) \in [-\infty, a] \}$. Superlevel sets are defined analogously in terms of intervals of the form $[a, \infty]$.
 
-Morse functions ensures the following properties hold:
+Morse functions ensure the following properties hold:
 
 \begin{itemize}
     \item None of the critical points are degenerate.
@@ -116,15 +116,15 @@ The reason we have defined Reeb graphs is because the contour tree is a special 
 
 \section{Algebraic Topology}
 
-Algebraic Topology is a branch of topology that uses tools from the field of abstract algebra to study topological spaces. The primary goal is to derive algebraic structures such as groups, rings and vector spaces from topological spaces that remain invariant under continuous mappings. Modern Algebraic Topology has its roots in combinatorially defined topological spaces \cite{combinatorial-algebraic-topology}. Unlike Point Set Topology and Differential Topology this allows us to obtain exact algorithms for computing the algebraic invariants we are interested in. To make matters clearer we will introduce one of the most basic combinatorial topological spaces - Simplicial Comlexes and then we will introduce one of the earliest discovered algebraic invariants - the Euler Characteristic. We will continue our discussion on Algebraic Topology in chapter 5 where we will see how the concept of the Euler Characteristic can be generalised to the field of Algebraic Topology called Homology.
+Algebraic Topology is a branch of topology that uses tools from the field of abstract algebra to study topological spaces. The primary goal is to derive algebraic structures such as groups, rings and vector spaces from topological spaces that remain invariant under continuous mappings. Modern Algebraic Topology has its roots in combinatorially defined topological spaces \cite{combinatorial-algebraic-topology}. Unlike Point Set Topology and Differential Topology this allows us to obtain exact algorithms for computing the algebraic invariants we are interested in. To make matters clearer we will introduce one of the most basic combinatorial topological spaces - Simplicial Comlexes and then we will introduce one of the earliest discovered algebraic invariants - the Euler Characteristic. We will continue our discussion on Algebraic Topology in Chapter 5 where we will see how the concept of the Euler Characteristic can be generalised to the field of Algebraic Topology called Homology.
 
 \subsection{Simplicial Complexes}
 
-Simplical Complexes are the one of the first combinatorially flavoured topological spaces one encounters in Algebraic Topology. A simplicial complex is a subset of $\mathbb{R}^n$ that consists of points, line segments, triangles and their higher dimensional analogues attached to one another in a single geometric object. In order to understand simplicial complexes we must first define their basic building blocks \cite{comp-topo}.
+Simplical Complexes are one of the first combinatorially flavoured topological spaces one encounters in Algebraic Topology. A simplicial complex is a subset of $\mathbb{R}^n$ that consists of points, line segments, triangles and their higher dimensional analogues attached to one another in a single geometric object. In order to understand simplicial complexes we must first define their basic building blocks \cite{comp-topo}.
 
 \begin{defn} Let $\{v_0, ..., v_k\}$ be $k$ points in $\mathbb{R}^n$. The convex combination of the points is the sum $\sum_{i=0}^k{\lambda_iv_i}$ where $\lambda_i \ge 0$ and $\sum_{i=0}^n{\lambda_i} = 1$.  \end{defn}
 
-If we decide to take the subset of $\mathbb{R}^n$ covered by all possible convex combination we obtain the convex hull of the points.
+If we decide to take the subset of $\mathbb{R}^n$ covered by all possible convex combinations we obtain the convex hull of the points.
 
 \begin{defn} Let $\{v_0, ..., v_k\}$ be points in $\mathbb{R}^{k+1}$. The convex combination of those points is the $k-simplex$ defined by the points. We will write that simplex as $[v_0, ..., v_n] \subset \mathbb{R}^{k+1}$  \end{defn}
 
@@ -192,7 +192,7 @@ Throughout this dissertation most of the graphs we will be working with will be 
 
 % The height of a rooted tree $T$ is defined as the longest path that starts at the root of the tree. The height of a rooted subtree $T_u$ of $T$ is simply the height of $T_u$ as a rooted tree.
 
-In chapter 4 we will be interested in finding the longest path in a tree. This is known as the diameter of a tree. Here we will  describe two of the most well known linear time tree diameter algorithms.
+In Chapter 4 we will be interested in finding the longest path in a tree. This is known as the diameter of a tree. Here we will  describe two of the most well known linear time tree diameter algorithms.
 
 \subsection{Tree Diameter Algorithms}
 
@@ -202,7 +202,7 @@ The first algorithm we will discuss is based on the following theoretical result
 
 To implement this algorithm we require a way of finding the most distant vertex from a given vertex. This can be done using Breadth First Search (BFS). Let $T$ be a tree and $s \in V(T)$ be any vertex. We can run BFS with $s$ as its root to find a vertex $u$ such that $d(s, u) \ge d(s, t)$ for all $t \in V(T)$. We can then run a second BFS with root $u$ to obtain a vertex $v$ such that $d(u, v) \ge d(u, t)$ for all $t \in V(T)$. Since $u$ is the farthest vertex from $s$ by Lemma~\ref{2xbfs-lemma} it must be the endpoint of a diameter. The diameter of $T$ is the longest path in $T$. Therefore the second BSF produces a path whose length as much as the diameter of $T$. Therefore $d(u, v) \ge d(a, b)$ for all $a,b \in V(T)$.
 
-The space and time complexity of BSF are linear \cite{intro-to-algo} and therefore the space and time complexity of this algorithm are linear as well. This follows from that fact that the algorithm consists of running BFS two consecutive times.
+The space and time complexity of BSF are linear \cite{intro-to-algo} and therefore the space and time complexity of this algorithm are linear as well. This follows from the fact that the algorithm consists of running BFS two consecutive times.
 
 The second approach is based on the Dynamic Programming paradigm. Dynamic programming is a method that is used to solve optimisation problems whose solution can be refomulated recursively through solutions of subproblems of the original problem. The key ingredients in developing a dynamic programming algorithm are \cite{intro-to-algo}:
 
@@ -212,7 +212,7 @@ The second approach is based on the Dynamic Programming paradigm. Dynamic progra
     \item Compute the value of the optimal solution.
 \end{enumerate}
 
-We will characterise the structure of the optimal solution through all subtrees of a tree. If we root a tree $T$ in any of its vertices then then structure of the optimal solution is defined via all the rooted subtrees of $T$ or $\{T_u\}_{u \in V(G)}$. We can recursively define the value of the optimal solution with the following observation. Starting at the root, of the tree the longest path in the tree either goes through the root or is entirely contained in one of the subtrees rooted at the children of the root. This reasoning can be extended to all rooted subtrees of the tree.
+We will characterise the structure of the optimal solution through all subtrees of a tree. If we root a tree $T$ in any of its vertices then then structure of the optimal solution is defined via all the rooted subtrees of $T$ or $\{T_u\}_{u \in V(G)}$. We can recursively define the value of the optimal solution with the following observation. Starting at the root the longest path in the tree either goes through the root or is entirely contained in one of the subtrees rooted at the children of the root. This reasoning can be extended to all rooted subtrees of the tree.
 
 In order to formalise this idea we will make use of two functions. Let $T$ be a rooted tree with root $s$. Let $h(u)$ be the height of the subtree rooted at $u$. The height is defined as the longest path in $T_u$ from $u$ to one of the leaves of $T_u$. We will also call such a path a height path. Let $D(u)$ be the length of the longest path contained entirely in $T_u$. The function $D$ will contain the value of the optimal solution for all subtrees. The value of $D(s)$ is either equal to the value of $D(u)$ where $u$ is a child of $s$ or it is equal to combining the two maximum height paths of two of the children of $u$. This is sumamrised by he following formula.
 

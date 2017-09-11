@@ -24,6 +24,7 @@
         <!-- - !!! Final Refactor. W-Structures, Homology, EP vs DP         -->
         <!-- - !!! Say where you've done original research -->
 
+        - !!! Fix things from hrisi
         - !!! Fix References in text.
         - !!! Fix Table and Figures.
 
@@ -32,7 +33,7 @@
 
         - !!! Change pictures
 
-        - !!! Fix things from hrisi
+
         - Find ref for half vertices are leafs
 
 
@@ -51,6 +52,7 @@
         - Add appendix and reference to it.
         - Add Gihub repo.
         - Return pagraph about star.
+        - Explain why 2xbfs did not run on large gotpo
 
     SMALL
         - Put spacing before definitions.
