@@ -15,7 +15,6 @@ In this section we will present an example which demonstrates that at least one 
 
 Conversely the 0th persistence homology can be computed either on a filtration of the simplicial mesh or on a filtration of the contour tree directly. The output will be the same because the contour tree records the changes in connectivity of level sets of the simplicial mesh. For completeness we will present the ascending and descending filtration of the contour tree in the Appendix [], but we will not use the directly here. To conclude we will compute and compare the following:
 
-% @TODO Make sure these are correct
 \begin{itemize}
 
     \item The join tree (Figure \ref{fig:join-tree-decomp} a), split tree (Figure \ref{fig:split-tree-decomp} a) and contour tree (Figure \ref{fig:contour-tree-decomp} a).
@@ -34,8 +33,7 @@ Conversely the 0th persistence homology can be computed either on a filtration o
 
 \end{itemize}
 
-% @TODO Remove places thay say master branch.
-We will compute the branch decomposition of the join, split and contour trees first. We already computed the branch decomposition of the contour tree in chapter []. For the join tree the candidate branches are $(2, 5)$, $(3, 7)$ and $(3, 8)$. We remove them in order of persistence. First we remove $(2, 5)$, then $(3, 7)$ and afterwards we remove the root branch $(0, 8)$ as only remaining branch. In the split tree there are only two candidate branches. Those are $(0, 4)$ and $(1, 4)$. We remove $(1, 4)$ because it has lower persistence. This leaves us with the root branch $(0, 8)$.
+We will compute the branch decomposition of the join, split and contour trees first. We already computed the branch decomposition of the contour tree in Chapter 3. For the join tree the candidate branches are $(2, 5)$, $(3, 7)$ and $(3, 8)$. We remove them in order of persistence. First we remove $(2, 5)$, then $(3, 7)$ and afterwards we remove the root branch $(0, 8)$ as only remaining branch. In the split tree there are only two candidate branches. Those are $(0, 4)$ and $(1, 4)$. We remove $(1, 4)$ because it has lower persistence. This leaves us with the root branch $(0, 8)$.
 
 \begin{figure}[h]%
     \centering
@@ -218,7 +216,7 @@ To conclude extended persistence is not equivalent to the branch decomposition o
 
 
 
-% @TODO Check spelling in references.
+
 
 
 
@@ -249,7 +247,6 @@ To conclude extended persistence is not equivalent to the branch decomposition o
 %*Show the branch decomposition*
 
 
-% @TODO Add quote
 %As you can see these methods produce very different pairings. We will conclude that the claims made in [] are either false of not well defined. The correct way to phrase this is the following. "Our definition of persistence is quivalent to extended persistence for the join and split trees. It is not directly applicable in the case of the contour tree itself in terms of the formalism it's built on".
 
 
@@ -260,7 +257,6 @@ To conclude extended persistence is not equivalent to the branch decomposition o
 
 %Let $X$ be a simplical complex, $B \subset X$ be a subcomplex of $X$ and $A \subset B$ be a subcomplex of $B$. Then we can find a natural map from $H_n(X, A)$ to $H_n(X, B)$ induced by the inclusion from $A$ to $B$. Let us write out $C_n(X), C_n(A), C_n(B)$ through their generator simplicies.
 
-% @TODO Fix these brackets
 %$$ C_n(X) = <a_1, a_2, ..., a_k, ..., a_l, ..., a_n> $$
 %$$ C_n(A) = <a_l, ..., a_n>$$
 %$$ C_n(B) = <a_k, ..., a_l, ..., a_n>$$
@@ -271,8 +267,6 @@ To conclude extended persistence is not equivalent to the branch decomposition o
 %$$ C_n(X, A) = <a_1, ..., a_k, ..., a_{l-1}>$$
 %$$ C_n(X, B) = <a_1, ..., a_{k-1}>$$
 
-
-% @TODO Show it is a chain map
 
 %Where we can introduce a natural inclusion map $f : C_n(X, A) \to C_n(X, B)$ where $f(a_i) = a_i$ when $i < k$ and $f(a_i) = 0$ when $i \ge k$. The map $f$ is well defined as an inclusion map and furthermore it is a chain map. Chain maps induce linear maps on the homology. Therefore we obtain the map $f_* : H_n(X, A) \to H_n(X, B)$ where $f_*([\alpha]) = [f(\alpha)]$. Where the brackets denote the homology quotient classes in $H_n(X, A) \text{ and } H_n(X, B)$ respectively.
 
@@ -310,7 +304,6 @@ To conclude extended persistence is not equivalent to the branch decomposition o
 
 % *Let us look at the following example. Show a pretty picture and explain it*
 
-% @TODO Why is this true?
 % There is a theorem that states that the persistence digram of a filtration encodes all of the information about the persistent homology groups.
 %
 % *Examples*
@@ -358,11 +351,10 @@ To conclude extended persistence is not equivalent to the branch decomposition o
 %
 % \begin{defn} The persistence of a single homology class in persistent homology that is born at time $t_1$ and dies at time $t_2$ is $t_1 - t_2$.  \end{defn}
 %
-% % @TODO Do this
 %     There are two primary ways to visualize the persistence pairing produces by persistent homology. The first in through persistence diagrams \cite{comp-topo}. In the persistence diagrams the pairs are visualised as points in the Carthesian coordinate system above the main diagonal $y = x$. Example []. The second way is through barcode diagrams. You can see the barcode digram on fig[]. For every simplical complex in the filtration we have a number of starting lines equal to the number of generators for the homology classes. These lines feed into each other according to where the induced by inclusion homomorphism take them in the next simplical complex.
 %
 %
-% % @TODO Return these.
+
 %
 % %\begin{figure}[h]%
 %     %\centering
@@ -379,7 +371,6 @@ To conclude extended persistence is not equivalent to the branch decomposition o
 % %\end{figure}
 %
 %
-% % @TODO Add reference
 % % Furthermore when two classes merge we must choose which one survives and which one dies. By established convention [] we will use the Elder Rule. By the Elder Rule the class that was born first continues to persistent and the younger one is destroyed.
 %
 %
@@ -408,14 +399,14 @@ To conclude extended persistence is not equivalent to the branch decomposition o
 % $$ H_n(M) = H_n(M, M^{c_n}) \rightarrow H_n(M, M^{c_{n - 1}}) \rightarrow ... \rightarrow H_n(M, M^{c_{1}}) = 0 $$
 
 
-% @TODO By which def (end of paragraph)
+
 % In this relative filtration the linear maps are induced by inclusions on the relative homology groups. To see this let $(M, M^{c_i})$ and $(M, M^{c_{i+1}})$ two consecutive pairs. The inclusion map from $M$ to $M$ takes the superlevel set $M^{c_i}$ in the superlevel set $M^{c_{i+1}}$ because $M^{c_i} \subseteq M^{c_{i+1}}$. By definition [] this is a simplicial map from $(M, M^{c_i})$ and $(M, M^{c_{i+1}})$ and thus induces a homomorphism between $H_n(M, M^{c_i})$ and $H_n(M, M^{c_{i+1}})$.
 
 % The final step to complete our desired sequence is to "glue" these two filtrations together at the point $ H_n(M_{c_n}) = H_n(M) = H_n(M, M^{c_n})$. The second equality holds because $M^{c_n} = \emptyset$ and quotienting by the empty set leaves the underlying relative chain complexes unchanged. Putting this all together yields the following chain of homology groups.
 %
 % $$ 0 = H_n(M_{c_1}) \rightarrow ... \rightarrow H_n(M_{c_n}) = H_n(M) = H_n(M, M^{c_n}) \rightarrow ... \rightarrow H_n(M, M^{c_{1}}) = 0.$$
 %
-% % @TODO Is that really what a close subcomplex is?
+
 %
 % This augmented filtration justifies the pairing of essential classes according to the intuitive understanding we obtained from example []. The only issue is that the relative homology groups are difficult to interpret on their own. To aid our comprehension of what exactly occurs in the relative filtration we shall employ the Excision Theorem where $H_n(M, M^{c_i}) = H_0(M / M^{c_i}, pt) = \overset{\sim}{H}_0(M / M^{c_i})$ where $M^{c_i}$ is a closed subcomplex of $M$ as required for all $i \in \{1, 2, 3, ..., n\}$.
 %
@@ -447,8 +438,7 @@ To conclude extended persistence is not equivalent to the branch decomposition o
 % As $M$ is Path-Connected it has one path-connected component and therefore $H_0(M) = H_0(M_0) \simeq  \mathbb{Z}_2$.  Our aim here will be to show that all of the $H_0(M, M^{c_i})$ are trivial. This will mean that the single homology class that exists in $H_0(M)$ will die at $H_0(M, M^{c_n})$ which is exactly the global maximum.
 %
 %
-% % @TODO Define Excision
-% % @TODO  Add the thing where this holds - H_n(M / M^{c_i}, pt) = \overset{\sim}{H}_n(M / M^{c_i})
+
 % As a corollary of the Excision Theorem we have that
 %
 % $$H_0(M, M^{c_i}) = H_0(M / M^{c_i}, pt) = \overset{\sim}{H}_0(M / M^{c_i})$$
@@ -458,7 +448,7 @@ To conclude extended persistence is not equivalent to the branch decomposition o
 % Now let us explore the reduced homology of the topological space $M / M^{c_i}$. We will show that is it path-connected and therefore the reduced homology is trivial.
 %
 %
-% % @TODO Add quote
+
 % By definition $M$ is path connected. Consider the function $\pi: M \to M/ M^{c_i}$ that takes a point to it's equivalent class. By point set topology [] we know that $\pi$ is continuous. We can also infer that $\pi$ is surjective. Indeed there there is no equivalence class that no point maps to. Furthermore the continuous image of a path connected is connected by []. As we have that $M$ is path-connected therefore $\pi(M) = M / M^{c_i}$ is path-connected.
 %
 % By [] we have that $H_0(M / M^{c_i}) = \mathbb{Z}_2$ and by [] that $H_0(M / M^{c_i}) = \overset{\sim}{H}_0(M / M^{c_i}) \bigoplus \mathbb{Z}_2$

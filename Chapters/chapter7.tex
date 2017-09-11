@@ -5,11 +5,11 @@ In the final chapter we will suplement our theoretical ivestigation of the w-str
 
 \section{Algorithm Implementations}
 
-For the purpose of conducting the empirical study we implemented all three w-diameter algorithms we developed in Chapter []. Those are the brute force algorithm (NxBFS), the 2xBFS and DP algorithms.  We implemented the brute force algorithm by running the modified version of 2xBFS from every vertex in the tree and outputting the largest w-path we found. The implementation of the 2xBFS algorithm was based entirely on the pseudocode we provided in Chapter []. Initially we made an recursive implementation of the DP algorithm based on the pseudocode we provided in Chapter []. This approach was not efficient enough because the recursion added a substantial amount of overhead in large data sets. We resorted to converting our recursive version to an iterative one.
+For the purpose of conducting the empirical study we implemented all three w-diameter algorithms we developed in Chapter 4. Those are the brute force algorithm (NxBFS), the 2xBFS and DP algorithms.  We implemented the brute force algorithm by running the modified version of 2xBFS from every vertex in the tree and outputting the largest w-path we found. The implementation of the 2xBFS algorithm was based entirely on the pseudocode we provided in Chapter 4. Initially we made an recursive implementation of the DP algorithm based on the pseudocode we provided in Chapter 4. This approach was not efficient enough because the recursion added a substantial amount of overhead in large data sets. We resorted to converting our recursive version to an iterative one.
 
-When converting a dynamic programming algorithm from a recursive to an iterative solution one first identifies all base case subproblems and solves them. Afterwards one works their way up to subproblems that depend only on the base case solutions and solve those. This process is repeated until all subproblems are solved. In our particular example the base cases are the leaves of the tree. The subproblems that depend on those are for all vertices whose distance from a leaf is one. Once those are solved we move on to vertices whose distance from a leaf is two and so on. In order to make sure that we have solved the subproblems for all children of vertex we first root the tree using standard BFS. The root of the tree can be any vertex. Using the BFS we not only assing parrents to all vertices, but we also rank them based on their distance from the root. By processing vertices from furthest to the root we ensure that the subproblems of any vertex are solved for because its children have a bigger distance. In order to solve a subproblem at a vertex we can use the code we have provided in the backgracking part of the DFS in the pseudocode in Chapter [].
+When converting a dynamic programming algorithm from a recursive to an iterative solution one first identifies all base case subproblems and solves them. Afterwards one works their way up to subproblems that depend only on the base case solutions and solve those. This process is repeated until all subproblems are solved. In our particular example the base cases are the leaves of the tree. The subproblems that depend on those are for all vertices whose distance from a leaf is one. Once those are solved we move on to vertices whose distance from a leaf is two and so on. In order to make sure that we have solved the subproblems for all children of vertex we first root the tree using standard BFS. The root of the tree can be any vertex. Using the BFS we not only assing parrents to all vertices, but we also rank them based on their distance from the root. By processing vertices from furthest to the root we ensure that the subproblems of any vertex are solved for because its children have a bigger distance. In order to solve a subproblem at a vertex we can use the code we have provided in the backgracking part of the DFS in the pseudocode in Chapter 4.
 
-Finally we also implemented the serial contour tree algorithm as it is described in []. The reason for doing so is that we needed to use it compute the contour tree of test data and then execute the w-diameter algorithms of those contour trees. This required us to make some modifications in the output of the contour tree algorithm to better suit the w-diameter algorithms. All four algorithms we devloped were written in C++ and their source code can be found in their github repository [].
+Finally we also implemented the serial contour tree algorithm as it is described in \cite{ct-big-paper}. The reason for doing so is that we needed to use it compute the contour tree of test data and then execute the w-diameter algorithms of those contour trees. This required us to make some modifications in the output of the contour tree algorithm to better suit the w-diameter algorithms. All four algorithms we devloped were written in C++ and their source code can be found in their github repository [].
 
 \section{Data sets Overview}
 
@@ -37,23 +37,23 @@ To overcome this issue we opted for using the output of the NxBFS algorithm as g
 
 We then used this methodology to run tests on one thousand trees of sizes $50$, $100$, $250$, $500$, $750$, $1000$, $2500$, $5000$, $7500$, $10000$ resulting in $10000$ individual tests alltogether. The output of all tests was in line with what we predicted in Chapter 3. The algorithms DP and NxBSF had identical output and the output of the 2xBSF algorithm was no less than two of their output. These results strengthen our belief in the correctness of all three algorithms.
 
-The second test we will perform is on the running time of the algorithms. In this test we will separate the algorithms in two groups. The first group will consist of NxBFS and the second group of 2xBFS and DP. We have separated them because we expect the running time of NxBFS to be quadratic, 2xBFS to be linear, DP to be close to linear and we want to results from each group to be comparable. The results from testing the NxBSF algorithm were completely as expected. You can see the running time on Figure []. *I willl add them if I have space otherwise not*
+The second test we will perform is on the running time of the algorithms. In this test we will separate the algorithms in two groups. The first group will consist of NxBFS and the second group of 2xBFS and DP. We have separated them because we expect the running time of NxBFS to be quadratic, 2xBFS to be linear, DP to be close to linear and we want to results from each group to be comparable. The results from testing the NxBSF algorithm were completely as expected. You can see the running time on Figure \ref{fig:running-time-nxbfs}.
 
 \begin{figure}[h]%
     \centering
     \includegraphics[center, scale=0.6 ]{./images/empirical/chart-nbfs.eps}
-    \caption{Running time of 2xBFS (blue) and DP (red) on randomly generated trees. }%
-    \label{fig:case1.1}%
+    \caption{Running time of NxBFS on randomly generated trees. }%
+    \label{fig:running-time-nxbfs}%
 \end{figure}
 
 
-The tests of the 2xBFS and DP algorithm suprised. The test consisted of generating five tree on vertices in the range $\{5000, 10000, ..., 200000\}$, running both algorithm on all five trees and plotting the average running time on Figure [].
+The tests of the 2xBFS and DP algorithm suprised. The test consisted of generating five tree on vertices in the range $\{5000, 10000, ..., 200000\}$, running both algorithm on all five trees and plotting the average running time on Figure \ref{fig:running-time-dp-2xbfs}.
 
 \begin{figure}[h]%
     \centering
     \includegraphics[center, scale=0.6 ]{./images/running-time-new.eps}
     \caption{Running time of 2xBFS (blue) and DP (red) on randomly generated trees. }%
-    \label{fig:case1.1}%
+    \label{fig:running-time-dp-2xbfs}%
 \end{figure}
 
 Both algorithms appear to fit a line almost perfectly. This is reason enough to believe that the peformance of both scale linearly with randomly generated data. This comes as no suprise as regards to the 2xBSF algorithm. What is interesting to see is that the DP algorithm's performance scales linearly as well. We must note however that these tests use randomly generated trees and are a very limited sample so this trend may not hold for all possible inputs and especially for larger trees. Despite these reservations this test gives credibility to the claim we made in the Chapter 3 that the DP algorithm has potential for good practical performance.
@@ -111,7 +111,7 @@ gtopo30w020n40	       & 2436622 	                 & 6.609592	                   
 The results here are quite suprising and they requried us to double check the test multiple time. On the outlook it seems that the two algorithm had exchanged their positions. For all these unaugmented contour trees DP is 1.2 - 3 times faster than the 2xBFS algorith. We are curious to know why this is the case. The difference between the augmented and the unaugmented datasets is that in the unaugmented datasets all vertices of degree two are removed. It would appear to be the case that such vertices are processed faster by the 2xBFS algorithm and the DP algorithm has some overhead associted with them.
 
 
-*I'll leave this paragarph and expand it if I have extra space*. Finally we would like to present a special case where the DP algorithm perform poorly. This case is for trees with vertices of high degree. Take for example a type of tree called a start Figure []. The doubly nested loop of the algorithm causes quadratic performance. To test this we generated a number of star like trees and compared the performance of NxBFS and DP.
+% *I'll leave this paragarph and expand it if I have extra space*. Finally we would like to present a special case where the DP algorithm perform poorly. This case is for trees with vertices of high degree. Take for example a type of tree called a start Figure []. The doubly nested loop of the algorithm causes quadratic performance. To test this we generated a number of star like trees and compared the performance of NxBFS and DP.
 
 % As we can see the results are again consistent with what we had with the random data sets.
 %
@@ -122,7 +122,7 @@ The results here are quite suprising and they requried us to double check the te
 
 \section {Dataset w-diameter analysis}
 
-In this section we will examine w-structures present in real data sets. Our goal is to demonstrate that they not only pose a theoretical difficulty, but also appear in real data and hinder performace. In this study we will run our w-diameters algorithm on the mountain range data taken from GTOPO30. We will compare the w-diameters of the contour trees of the data sets with the diameters of the unaugmented and the augmented contour trees. We will demonstrate that w-diameter of a contour tree is a better theoretical upper bound on the time complexity of the parallel contour tree algorithm than either of the diameters. Secondly we will compare the w-diameter of a contour tree with the number of iterations that are need to collapse the join and split trees. We hope to find a correlation between the two and shed light on whether it is the largest w-structure in a contour tree that prevents logarithmic in the merge phase. We have taken the number of iterations by running an implementation of the parallel contour tree algorithm based on [] provided to us by Dr. Hamish Carr [].
+In this section we will examine w-structures present in real data sets. Our goal is to demonstrate that they not only pose a theoretical difficulty, but also appear in real data and hinder performace. In this study we will run our w-diameters algorithm on the mountain range data taken from GTOPO30. We will compare the w-diameters of the contour trees of the data sets with the diameters of the unaugmented and the augmented contour trees. We will demonstrate that w-diameter of a contour tree is a better theoretical upper bound on the time complexity of the parallel contour tree algorithm than either of the diameters. Secondly we will compare the w-diameter of a contour tree with the number of iterations that are need to collapse the join and split trees. We hope to find a correlation between the two and shed light on whether it is the largest w-structure in a contour tree that prevents logarithmic in the merge phase. We have taken the number of iterations by running an implementation of the parallel contour tree algorithm based on \cite{parallel-peak-pruning} provided to us by Dr. Hamish Carr.
 
 \begin{center}
 \begin{tabular}{l*{6}{c}r}
@@ -151,7 +151,7 @@ Secondly we can confirm that the w-diameter in almost all of the data sets (exce
 
 % Another interesting thing to note is that pukaskwa is a subset of the gtopo30w020n40 dataset and yet it's w-diameter is far smaller. This proves that the contour trees of subsets of data need not have a smaller w-diamete. Strangely enough as a consequence of this subsets of data may not be faster to compute. This has
 
-Fillay we turn our attention to the diameter of the augmented and unaugmented contour trees. The parallel contour tree algorithm currently uses those as an uppen bound on the time complexity of the merge phase []. We have already shown theoretically that the w-diameter of a height tree is necessarily smaller than its diameter. This empirical study demonstrates the practical relevance of this findind. In the most extreme example, that of gtopo30w020n40, the w-diameter of the augmented contour tree is 1,970,870 times smaller than its diameter. For all practical intents and purposes this is a staggering difference. If the w-diameter of that data sets were equal to the actual diameter, than we would expect the merge phase to take a far larger number of iterations and severly limit the available parallelism in it.
+Fillay we turn our attention to the diameter of the augmented and unaugmented contour trees. The parallel contour tree algorithm currently uses those as an uppen bound on the time complexity of the merge phase \cite{parallel-peak-pruning}. We have already shown theoretically that the w-diameter of a height tree is necessarily smaller than its diameter. This empirical study demonstrates the practical relevance of this findind. In the most extreme example, that of gtopo30w020n40, the w-diameter of the augmented contour tree is 1,970,870 times smaller than its diameter. For all practical intents and purposes this is a staggering difference. If the w-diameter of that data sets were equal to the actual diameter, than we would expect the merge phase to take a far larger number of iterations and severly limit the available parallelism in it.
 
 % \section{Generating W-Structures Manually}
 %
@@ -268,7 +268,7 @@ Fillay we turn our attention to the diameter of the augmented and unaugmented co
 %
 % The only third party program that was used was provided by Hamish Carr and it was his implementation of this contour tree algorithm.
 
-% @TODO Describe how
+
 %Another algorithm I implemented is one that generates all possible $n \times m$ 2-d grids. The objective here is to find the minimum one that produces a w-structure.
 
 %Lastly I implemented the algorithm in [] that computes extended persistence. I did this to verify the claims that I will make in the next chapter about the pairing of the global minimum and maximum.
@@ -284,14 +284,11 @@ Fillay we turn our attention to the diameter of the augmented and unaugmented co
 
 % \subsection{Running Times}
 
-% @TODO Run tests again with new BFS
 
-% @TODO Fix the end of this paragraph.
 % Now we will demonstrate that the running times of the algorithms we have implemented correspond to the theoretical results we proved in the previous chapter. We will only test the 2xBFS and DP algorithms because they are the only novel ones. As such they have not yet been implemented to out knowledge. The biggest contribution here is demonstrating is that the DP algorithm does scale linearly with randomly generated data input. This shows that the average running time of that algorithm may be linear and not quadratic which we have shown to be it's worse case running time. A more detailed algorithmic analysis is needed to prove this theoretically. We will defer doing so for now.
 
 % The following chart shows the running time of the two algorithms on a sequence of randomly generated trees. The number of vertices in the trees is plotted on the horizontal axis and the running time in seconds is plotted in the vertical axis.
 
-% @TODO Do this propertly fix the Map in the image (Column D)
 
 
 
@@ -302,7 +299,6 @@ Fillay we turn our attention to the diameter of the augmented and unaugmented co
 % Let us now analyse the running time of the algorithms on real data. We can see on the following table that the linear relationship between the two still holds. The "Factor" column indicated how many times slower DP is compared to 2xBFS.
 
 
-% @TODO Optimise code to run on last GTopo.
 % \begin{center}
 % \begin{tabular}{l*{6}{c}r}
 % Dataset             & Vertices          & 2xBFS          & DP            & Factor \\
@@ -323,7 +319,7 @@ Fillay we turn our attention to the diameter of the augmented and unaugmented co
 % \end{tabular}
 % \end{center}
 
-% @TODO What would further tests include?
+
 
 % The running time of 2xBFS is as we can expect linear. The more interesting finding we obtained is that on average in practise the running time of DP is linear as well. Our hypothesis that that the expected running time would drop to linear on trees is proven to be correct by the data. Further tests would include ...
 
@@ -332,7 +328,7 @@ Fillay we turn our attention to the diameter of the augmented and unaugmented co
 % I will analyse three types of datasets. Two of the types are taken from real life data and one is synthetic. The first type is data that is the elevation of a mountain range in Canada. The second one is images. The third one is randomly generated graphs. The goal here is firstly to demonstrate where w-structures appear in the contour trees of real life data. The second goal is to analyse random graphs and derive statistical information on the probability of having large w-structures in contour trees of large data sets.
 %
 %
-% % @TODO Define the augmented and unaugmented controur tree
+
 % This table is for augmented contour trees.
 
 % \subsection{Mountain Range Data}
@@ -344,9 +340,7 @@ Fillay we turn our attention to the diameter of the augmented and unaugmented co
 
 %The datasets are all part of something. Explain where they are from.
 
-% @TODO Add iterations needed for collapse
 
-% @TODO Finish table. Iterations are taken from PPPContourTreeCriticalOpenMP
 
 % \begin{center}
 % \begin{tabular}{l*{6}{c}r}

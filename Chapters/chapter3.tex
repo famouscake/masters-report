@@ -1,15 +1,9 @@
-% @TODO Change this
 \chapter{Contour Trees}
 \label{chapter3}
 
-% @TODO Add quote reeb graph intro.
 The Reeb graph of a scalar field is connected and acyclic \cite{comp-topo}. As such we will call the Reeb graph of a scalar field the contour tree. In this chapter we will assemble the theory we have presented thus far and use it to introduce the state of the art serial and parallel algorithms for contour tree computation. We will begin with a short discussion on how we treat input data and what theoretical simplifying assumptions we are making. Afterwards we will present an overview of contour tree algorithms and then introduce some graph theoretical properties of contour trees. Next we will describe in detail how the serial and parallel contour tree algorithm work. This will lead us to defining the so called w-structures. We will demonstrate why exactly they are a pathological case that causes poor performance in the parallel contour tree algorithm. The final topic of this chapter is contour tree simplification. This is the process of identifying and removing parts of the contour tree that are not topologically significant.
 
 \section{Typical Input Data}
-
-% @TODO Add this back if you have the time.
-
-% Such a process is for example the sampling of temperature from a bounded volume of air [] or the height of points over a geographic region []. The contour tree is shown to be a robust tool primarily used in the visualisation of such natural phenomena [].
 
 Many scientific and medical applications require the sampling of scalar values from a bounded area or volume in two or three dimensional Euclidean space \cite{carr-masters}. The theory we have presented so far is applicable only in the continuous setting but the resolution of any sampling process is finite. If we are to leverage this theory we must assume an underlying continuous function in the whole of the area or volume and not just at the sampled points. To do so we will construct an approximation of this function based on the values we have sampled. This is usually done by constructing a simplicial complex where the data points are the vertices and higher dimensional simplicies are added to completely fill the space between them (see Figure \ref{fig:simplicial-mesh}). We will call the resulting data structure a simplical mesh \cite{carr-masters}.
 
@@ -21,7 +15,7 @@ Many scientific and medical applications require the sampling of scalar values f
     \caption{Triangulation of input data to obtain a simplicial mesh.}%
     \label{fig:simplicial-mesh}%
 \end{figure}
-For simplicity and without loss of generality we will work with two-dimensional domains where the value samples are evenly spaced out in a grid-like fashion (Figure \ref{fig:simplicial-mesh}). The values of the approximation function at the simplicies are obtained via linear interpolation between the verticies of each simplex \cite{carr-masters}[]. As long as the original values we have sampled are unique it can be shown that the linear interpolation function is a Morse function and that all critical points are the vertices of the mesh \cite{curvature-embeded-polyhedra}.
+For simplicity and without loss of generality we will work with two-dimensional domains where the value samples are evenly spaced out in a grid-like fashion (Figure \ref{fig:simplicial-mesh}). The values of the approximation function at the simplicies are obtained via linear interpolation between the verticies of each simplex. As long as the original values we have sampled are unique it can be shown that the linear interpolation function is a Morse function and that all critical points are the vertices of the mesh \cite{curvature-embeded-polyhedra}.
 
 \section{Contour Tree Computation}
 
@@ -33,17 +27,10 @@ The first efficient algorithm for constructing contour trees \cite{first-ct-algo
 More recent developments in the field focus on extending the existing algorithms to accomodate the distributed \cite{distributed-ct-algo, distributed-ct-algo-2} and shared memory parallelism paradigms \cite{parallel-peak-pruning, parallel-ct-1}. The focus of this dissertation we will be one of the latest devlopments in a data parallel shared memory algorithm for contour tree computation
 \cite{parallel-peak-pruning}. Before introducing how that algorithm operates and one of the issues related to its parallel performance we will first give a more detailed overview of the most established serial algorithm \cite{ct-big-paper} on which the data parallel one is based on. In order to talk about any of the two algorithm we must establish some notation and define height graphs and trees as they are defined in \cite{carr-masters}.
 
-% @TODO Finish this.
-% Also define regular points!
 
 \section{Height Trees}
 
-% @TODO Talk about supernodes and superarcs
-
-% @TODO Target application domain.
-A height graph is a graph $G = (V, E)$ together with a real valued function $h$ defined on the vertices of $G$. Height graphs are also known in the literature as weighted graphs. We are changing our notation to be more indicative of the fact that the weight function is defined on the vertices and that it corresponds to height in our target application domain. A height tree is a height graph which is a tree. Contour trees are height trees because nodes in the contour tree correspond to nodes in the mesh and can inherit their height (sampled) value. Analogous to the assumption we have made about uniqueness of values we will also assume all vertices in the height trees we consider have unique heights. In other words $h(u) \ne h(v)$ for all $u ,v \in V(G)$ where $u \ne v$. The function $h$ naturally induces a total ordering on the vertices. From now on we will assume the vertices of $G$ are given in ascending order. That is to say, $V(G) = \{v_1, v_2, ... , v_n\}$ where $h(v_1) < h(v_2) < ... < h(v_n)$. This lets us work with the indices of the vertices without having to compare their heights directly. In this notation $h(v_i) < h(v_j)$ when $i < j$.
-
-%@TODO Remove this if you will not use it.
+A height graph is a graph $G = (V, E)$ together with a real valued function $h$ defined on the vertices of $G$. Height graphs are also known in the literature as weighted graphs. We are changing our notation to be more indicative of the fact that the weight function is defined on the vertices and that it corresponds to height of points in a simplicial messh. A height tree is a height graph which is a tree. Contour trees are height trees because nodes in the contour tree correspond to nodes in the mesh and can inherit their height (sampled) value. Analogous to the assumption we have made about uniqueness of values we will also assume all vertices in the height trees we consider have unique heights. In other words $h(u) \ne h(v)$ for all $u ,v \in V(G)$ where $u \ne v$. The function $h$ naturally induces a total ordering on the vertices. From now on we will assume the vertices of $G$ are given in ascending order. That is to say, $V(G) = \{v_1, v_2, ... , v_n\}$ where $h(v_1) < h(v_2) < ... < h(v_n)$. This lets us work with the indices of the vertices without having to compare their heights directly. In this notation $h(v_i) < h(v_j)$ when $i < j$.
 
 Introducing the height function allows us to talk about ascending and descending paths. A path in a graph is a sequence of vertices $(u_1, u_2, ... , u_k)$ where $u_i \in V(G)$ for $i \in \{1, 2, ..., k\}$ and $u_iu_{i+1} \in E(G)$ for $i \in \{1, 2, ..., k-1\}$. A path in a height graph is ascending whenever $h(u_1) < h(u_2) < ... < h(u_k)$. If we traverse the path in the opposite direction it would be descending. We will simply call these paths monotone whenever we wish to avoid committing to a specific direction of travel.
 
@@ -58,7 +45,7 @@ If $\delta^+(v) = 0$ and $\delta^-(v) = 1$ then $v$ is an upper leaf. We will se
 
 \section{Serial Algorithm}
 
-The contour tree is a tree that consists of []:
+The contour tree is a tree that consists of \cite{first-ct-algo}:
 
 \begin{itemize}
     \item Vertices or supernodes that correspond to level sets that contain a critical point.
@@ -84,7 +71,7 @@ The contour tree contains information of four types of events - creation, destru
     \label{fig:mesh-join-split-contour}%
 \end{figure}
 
-The reason we would like to study join and split trees is that the contour tree can be reconstructed from them. The core idea of the algorithm we will present is that we can derive the join and split trees directly from the simplicial mesh and then combine them to obtain the contour tree. We will first describe how the join and split trees are computed from the mesh. We only have to describe the process for the join tree because their construction is symetrical [].
+The reason we would like to study join and split trees is that the contour tree can be reconstructed from them. The core idea of the algorithm we will present is that we can derive the join and split trees directly from the simplicial mesh and then combine them to obtain the contour tree. We will first describe how the join and split trees are computed from the mesh. We only have to describe the process for the join tree because their construction is symetrical \cite{ct-big-paper}.
 
 \begin{defn} A join component is a connected component in the superlevel set $f^{-1}([h, \infty))$ at some $h \in \mathbb{R}$.  \end{defn}
 
@@ -94,8 +81,6 @@ of nested subsets of $M$. We can see from this definition that $M^a \subseteq M^
 %We will not formalise the notion of tracking join components and constructing a join tree. Let us work in the general setting where $X$ is any path-connected topological space and $h : X \to \mathbb{R}$ is a function defined on $X$. The claims we make will hold in the special case where $X$ is a simplicial complex. Let us consider all sublevel sets $X_t = h^{-1}((-\infty, t]) = \{x \in X : h(x) \in (-\infty, t] \}$. They form a one parameter family $\{X_t\}_{t \in \mathbb{R}}$ of nested subsets where $X_a \subseteq X_b$ whenever $a \le b$. What the join tree captures is how the connectivity of the sublevel sets changes as the parameter $t$ is increased.
 
 To visualise this process we can contract every join component to a point much like we did in the Reeb graph. The only difference here is that the equivalence relation is defined for all points in a superlevel set $h^{-1}([t, \infty))$ instead of a level set $h^{-1}(\{t\})$. Because of this change and because join components can only merge the join tree is a tree \cite{comp-topo}. Furthermore if $M_m = M$ is the last superlevel set for some $m \in \mathbb{R}$ then all join components merge into one because $M$ is path connected.
-
-% @TODO Add citation
 
 We will briefly outline the algorithm for constructing the join tree and refer the reader to \cite{ct-big-paper} for further implementational details. We know that all crical points are vertices of $M$ and that it is only at the critical points that changes in the topology of the superlevel sets can happen. The algorithm works by considering the vertices of the simplicial mesh in ascending order of their height. If the current vertex is a local minimum we directly add it in the join tree because it starts a join component. If the current vertex is a saddle that joins two or more components (join saddle) we add it to the join tree and add an edge between it and the local minima of the join components it merges. At the end of the computation all vertices will be in the same join component. In order to keep track of which join components different vertices belong to we can use the union-find data structure. The term  $\alpha(n)$ in the time complexity of the contour tree algorithm come from the basic operations of find and search in the union-find data structure.
 
@@ -113,8 +98,6 @@ There is an analogous property in the case of down leafs and their adjacent edge
 
 \begin{property} Let $v$ be a vertex such that its up degree in the join tree is $1$, its down degree in the split tree is $0$ and $u$ is its only down neighbour in the join tree. Then $v$ is a down leaf in the contour tree and $vu$ is an edge in the contour tree.  \end{property}
 
-% @TODO Is it really known as pruning leaves?
-
 Now suppose that we have identified $v$ as a leaf and $vu$ as its adjacent edge in the split or join tree. Another property \cite{carr-masters} tells us that if we perform vertex contraction on $v$ (remove $v$ and form a clique from its neighbourhood) from the join, split and contour trees we obtain the join and split trees of the contour tree with $v$ removed. This allows us to iteratively remove leafs from the join and split trees, add them the contour tree and them delete from the join and split tree. We can reapeat this process until we have removed all vertices from the join and split trees and all vertices are present in the contour tree. For a detailed description of this process we refer the reader to \cite{ct-big-paper}.
 
  % We are allowed to do so because removing all leaves in a tree leaves the tree with at least one leaf if it is not empty where the algorithm will terminate.
@@ -127,7 +110,6 @@ The Serial algorithm for the construction of the contour tree is a summary of th
 
 \textbf{Step 3.} Iteratively remove leafs from the augmented join and split trees and add them to the augmented contour tree until the augmented join and split trees are empty.
 
-% @TODO Define regular vertices.
 \textbf{Step 4.} Remove regular vertices from the augmented contour tree by contracting them.
 
 \section{Parallel Algorithm}
@@ -142,7 +124,7 @@ The main issue that arrises is that leaf chains which are not monotone paths are
 
 % The issue arises from batching monotone paths is not a monotone path and some of the vertices inside it have alternating height. The we can only batch monotone subpaths and not the whole path. The more zig zags there are in the path the less monotone paths there and the more iterations we will require. This effectively serialises computation along them.
 
-The theoretical issue caused by the w-structures becomes evident in the algorithmic analysis of the parallel contour tree algorithm. According to that the key question in the merge phase of the algorithm is how many iterations are needed to collapse the contour tree. Each iterations takes $O(1)$ steps because all leafs can be processed in parallel and $O(t)$ work, where $t$ is the number of leaves. This leads to an overall complexity of $O(log(t))$ steps and $O(tlog^2(t)$ work if we assume that no w-structures are present. If however there is a w-structure with more "zig zags" than $log(t)$ then the authors of the paper claim that the best formal guarantee they can give for the steps is the diameter of the contour tree. One of our goals in analysing the w-structures is to provide a better bound than the diameter of the tree. We will demonstrate how this can be done by developing some new theory about the w-structures in Chapter [] and through an empirical analysis in Chapter [].
+The theoretical issue caused by the w-structures becomes evident in the algorithmic analysis of the parallel contour tree algorithm. According to that the key question in the merge phase of the algorithm is how many iterations are needed to collapse the contour tree. Each iterations takes $O(1)$ steps because all leafs can be processed in parallel and $O(t)$ work, where $t$ is the number of leaves. This leads to an overall complexity of $O(log(t))$ steps and $O(tlog^2(t)$ work if we assume that no w-structures are present. If however there is a w-structure with more "zig zags" than $log(t)$ then the authors of the paper claim that the best formal guarantee they can give for the steps is the diameter of the contour tree. One of our goals in analysing the w-structures is to provide a better bound than the diameter of the tree. We will demonstrate how this can be done by developing some new theory about the w-structures in Chapter 4 and through an empirical analysis in Chapter 7.
 
 
 \section{Contour Tree Simplification}
@@ -175,7 +157,7 @@ The produced pairs of critical points are $(2, 5), (0, 4), (3, 7)$ and $(1,8)$.
     \centering
     \subfloat[Branch Decomposition.]{{\includegraphics[scale=0.11]{./images/w3x3-ct-decomp.eps}}}%
     \subfloat[Heirarchical view of the branches.]{{\includegraphics[scale=0.11]{./images/w3x3-ct-h-decomp.eps}}}%
-    \caption{Branch Decomposition of the Contour tree from Figure \ref{fig:mesh-join-split-contour} [which subfigure?].}%
+    \caption{Branch Decomposition of the Contour tree from Figure \ref{fig:mesh-join-split-contour} b}%
     \label{fig:branch-decomp}%
 \end{figure}
 

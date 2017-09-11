@@ -1,4 +1,3 @@
-% @TODO Change this
 \chapter{W-structures - Theory and Algorithms}
 \label{chapter4}
 
@@ -6,9 +5,7 @@ This chapter continues our discussion on the w-structures in a more formal setti
 
 \section{Formal Description of the w-structures}
 
-% @TODO Is this really a path definition?
-
-We are interested in describing paths in height trees which form a characteristic zigzag pattern we described in Chapter []. Let us first establish some of the basic notation we shall make use of. A path in a graph is a sequence of distinct and adjacent vertices. When dealing with paths in trees we will refer to them through their first and last vertex, because there is a unique path between any two vertices in a tree. For example when dealing with the path $v_1, v_2, v_3, v_4$ we will denote it with the shorthand $v_1 \rightsquigarrow v_4$. A subpath $P'$ of a path $P$ is a path whose vertices are also vertices of $P$. We will denote it as $P' \subseteq P$.
+We are interested in describing paths in height trees which form a characteristic zigzag pattern we described in Chapter 3. Let us first establish some of the basic notation we shall make use of. A path in a graph is a sequence of distinct and adjacent vertices. When dealing with paths in trees we will refer to them through their first and last vertex, because there is a unique path between any two vertices in a tree. For example when dealing with the path $v_1, v_2, v_3, v_4$ we will denote it with the shorthand $v_1 \rightsquigarrow v_4$. A subpath $P'$ of a path $P$ is a path whose vertices are also vertices of $P$. We will denote it as $P' \subseteq P$.
 
 The first important property of paths in height trees is their monotone path decomposition. The monotone path decomposition of a path is a sequence of vertexwise maximal monotone subpaths which share exactly one vertex and have alternating direction. An example of the path decomposition of a path is shown in Figure \ref{fig:monotone-decomposition}.
 If $P$ is a path in a height tree we can decompose it into a sequence of monotone paths $P_1, P_2, ..., P_k$ such that $P_i \subseteq P$ for $i \in \{1, 2, ..., k\}$, $|P_i \cap P_{i+1}| = 1$ and $P_i \cup P_{i+1}$ is not a monotone path for $i \in \{1, 2, ..., k-1\}$ and $k \ge 1$. We can use the number of paths in the monotone path decomposition to characterise paths in height trees. To simplify this characterisation note that the number of subpaths in the monotone path decomposition is one more than the number of vertices where an ascending subpath ends and a descending subpath begins (or vice versa). We shall name those special vertices kinks. In the example path on Figure \ref{fig:monotone-decomposition} these vertices are $3$ and $6$.
@@ -42,7 +39,7 @@ We can use the number of kinks in a path to define a metric on it. We will call 
 \end{figure}
 
 
-In chapter [] we foreshadowed our intention of obtaining the largest w-structure in a contour tree. We can now put his in more precise terms as the path in a height tree that has the maximum w-length (or the longest w-path). We can immediately obtain a brute force approach for this problem by considering all paths in the contour tree and computing their w-length to find the maximum one. This can be expressed with the following optimization term
+In Chapter 3 we foreshadowed our intention of obtaining the largest w-structure in a contour tree. We can now put his in more precise terms as the path in a height tree that has the maximum w-length (or the longest w-path). We can immediately obtain a brute force approach for this problem by considering all paths in the contour tree and computing their w-length to find the maximum one. This can be expressed with the following optimization term
 
 \begin{equation}
     \label{eq:brute-force}
@@ -52,7 +49,7 @@ In chapter [] we foreshadowed our intention of obtaining the largest w-structure
 The search space is quadratic in the number of vertices and measuring the w-length of a given path can be done by inspecting the height of every inside vertex and its two neighbours in the path. The worst case time complexity of this algorithm is $O(dn^2)$ where $d$ is the diameter (longest path) of the tree and $n$ is the number of vertices. This is far from satisfactory given that the worst case time complexity of the algorithm for computing the contour tree is close to linear. We can in fact do better.
 
 
-In chapter [] we described two algorithms for obaining the diameter of a tree. The analogy we made between w-length and length is that both are a metric on paths in a tree. Therefore it may be possible to modify those two algorithms to obtain the longest w-path instead of the longest path. We will call the longest w-path in a tree its w-diameter. Before showing how we can adapt the two tree diameter algorithms we need to establish the two key properties that will play a crutial role in prooving the correctness of the two new algorithms.
+In Chapter 2 we described two algorithms for obaining the diameter of a tree. The analogy we made between w-length and length is that both are a metric on paths in a tree. Therefore it may be possible to modify those two algorithms to obtain the longest w-path instead of the longest path. We will call the longest w-path in a tree its w-diameter. Before showing how we can adapt the two tree diameter algorithms we need to establish the two key properties that will play a crutial role in prooving the correctness of the two new algorithms.
 
 %As the reader may have noticed the definitions we have made so far are analogous to the task of computing the longest path between any two vertices of a tree. This is completely intentional as we will demonstrate how algorithms for computing the longest path in a tree can be modified to produce the longest w-path instead. Finding the longest path of a graph in the general case is an \em NP-hard\em. Fortunately the Contour Tree is a tree. The longest path in a tree is known in the literature as it's diameter and has a polynomial time algorithm. The two most popular linear time algorithms found in the literature I will denote as Double Breadth First Search (2xBFS) and Dynamic Programming (DP). We will now take a look at how these algorithms work and hint at how they can be adapted in the next chapter.
 
@@ -91,11 +88,12 @@ To see why this property is true observe that $u_i$ can be a kink in the path fr
 
 \section{Linear Time Algorithm - 2xBFS}
 
-Let us first explore how the Breadth First Search based tree diameter algorithm can be adapted to compute the w-diameter of a height tree. We will call the adaptation 2xBFS for short and it will follow exactly the same steps. The difference is that it will make use of a modified version of BFS that computes w-distances [see algorithm next page] from a given root vertex to all other vertices in the tree. The algorithm works by first running the modified BFS from any vertex in the height tree and then records the leaf that is farthest in terms of w-length. It then runs the modified BFS a second time from that vertex and again records the farthest vertex from it.
+Let us first explore how the Breadth First Search based tree diameter algorithm can be adapted to compute the w-diameter of a height tree. We will call the adaptation 2xBFS for short and it will follow exactly the same steps. The difference is that it will make use of a modified version of BFS that computes w-distances from a given root vertex to all other vertices in the tree. The algorithm works by first running the modified BFS from any vertex in the height tree and then records the leaf that is farthest in terms of w-length. It then runs the modified BFS a second time from that vertex and again records the farthest vertex from it.
 
-The pseudocode for this algorithm is presented in []. In the algorithm we use two properties of vertices. The property $u.d$ for $u \in V(T)$ is the w-distance of a vertex from the root and the property $u.\pi$ is the parent of a vertex in the modified BFS. We use the function $h(u)$ for the height of a vertex and we use the variable $furthest$ to record the furthest vertex from the root in terms of w-length. Note that because of the comparison u.d $\ge$ furthest.d the furthest vertex will always be a leaf of tree. Theoretically it does not have to, but it will simplify some of our notation and proofs. Therefore we will assume that the w-diameter in a height tree is always between two leafs.
+The pseudocode for this algorithm is presented in Algorithm 1. In the algorithm we use two properties of vertices. The property $u.d$ for $u \in V(T)$ is the w-distance of a vertex from the root and the property $u.\pi$ is the parent of a vertex in the modified BFS. We use the function $h(u)$ for the height of a vertex and we use the variable $furthest$ to record the furthest vertex from the root in terms of w-length. Note that because of the comparison u.d $\ge$ furthest.d the furthest vertex will always be a leaf of tree. Theoretically it does not have to, but it will simplify some of our notation and proofs. Therefore we will assume that the w-diameter in a height tree is always between two leafs.
 
 \begin{algorithm}
+
 \caption{Computing the W Diameter of a Height Tree.}
 
 \begin{algorithmic}[1]
@@ -147,7 +145,9 @@ The pseudocode for this algorithm is presented in []. In the algorithm we use tw
 %\begin{lem} The Algorithm produces the endpoints of a path who is at most 2 kinks shy of being the kinkiest path in the tree. \end{lem}
 This algorihm however does is not guarateed to produce an optimal solution. It may fail to produce the tree's w-diameter, but we can bound the error in terms of the w-diameter. The correctness of the algorithm is based on the following Lemma.
 
-\begin{lem} The farthest leaf in terms of w-length from any vertex in a height tree is guaranteed to be the endpoint of a path whose w-length is at least that of the w-diameter minus two. \end{lem}
+\begin{lem} The farthest leaf in terms of w-length from any vertex in a height tree is guaranteed to be the endpoint of a path whose w-length is at least that of the w-diameter minus two.
+\label{lem:2xbfs-proof}
+\end{lem}
 
 \begin{proof}
 Let $T$ be a height tree and $s \in V(T)$ be the initial vertex we start the first search at. After running the modified BFS twice we obtain two vertices $u$ and $v$ such that:
@@ -174,8 +174,6 @@ By this equation we have that $w(a, b) \ge w(u, v)$. Our goal in this proof will
 {\em Case 1. When the path from $a$ to $b$ does not share any vertices with the path from $s$ to $u$.}
 
 {\em Case 1.1. When the path from $u$ to $t$ goes through $s$.}
-
-
 
 % @TODO Explain that the dotted lines are paths.
 \begin{figure}[h]%
@@ -309,7 +307,7 @@ Let us now show some formal bounds on the time and space complexity of the 2xBFS
 
 \subsection{Pathological Cases in 2xBFS}
 
-Here we will present some examples of pathological cases where the w-diameter outputted by the 2xBFS algorithm differs from the actual w-diameter (Figure \ref{fig:path-cases}). Each one of the examples corresponds to one of the cases in Lemma []. In all examples the initial vertex is taken to be $s$. After running the algorithm the vertex outputted by the first BFS function is $u$. After running the second BFS the longest w-path would be $u \rightsquigarrow a$ or $u \rightsquigarrow b$. We can see that that in all figures $w(u, a) = w(u, b) = 1 \text{ or } 2$, but $w(a, b) = 3$.
+Here we will present some examples of pathological cases where the w-diameter outputted by the 2xBFS algorithm differs from the actual w-diameter (Figure \ref{fig:path-cases}). Each one of the examples corresponds to one of the cases in Lemma \ref{lem:2xbfs-proof}. In all examples the initial vertex is taken to be $s$. After running the algorithm the vertex outputted by the first BFS function is $u$. After running the second BFS the longest w-path would be $u \rightsquigarrow a$ or $u \rightsquigarrow b$. We can see that that in all figures $w(u, a) = w(u, b) = 1 \text{ or } 2$, but $w(a, b) = 3$.
 
 % Even if we adapt the algorithm so that it finds the vertex with that is farthest in terms of both w-length and length we will still be able to make simillar pathological case examples. We just need to augment the height trees by making $u$ further away from $s$ that $a$ and $b$ but keeping the same relative w-length of all paths.
 
@@ -330,28 +328,22 @@ Here we will present some examples of pathological cases where the w-diameter ou
 \subsection{Attempts at resolving the accuracy of 2xBFS}
 
 
-% @TODO Chapter 3 here may change.
-
 %For the intents and purposes of this dissertation the accuracy of this algorithm is sufficient. In large enough data sets this estimate provides enough insight to correlate the observed iterations needed to collapse the split and join trees and the resulting w-diameter of the tree. This is demonstrated empirically in Chapter 3. Regardless of such practical considerations it is still of inherent theoretical interest to investigate how we may be able to obtain a more accurate modification of this algorithm.
 
 % In this section we adapted the first of the tree diameter algorithms to obtain a w-diameter algorithm with what we claim is reasonable accurate. That accuracy is supported by Lemma [], but we have not way of knowing whether the w-path obtained through 2xBFS is optimal of not. Here we will present two possible ways of improving the accuracy of the output of the 2xBFS algorithm and explain why were not able improve upon the theoretical bound of Lemma [].
 
-Here we will present two possible ways of improving the accuracy of the output of the 2xBFS algorithm and explain why were not able improve upon the theoretical bound of Lemma [].
+Here we will present two possible ways of improving the accuracy of the output of the 2xBFS algorithm and explain why were not able improve upon the theoretical bound of Lemma \ref{lem:2xbfs-proof}.
 
 One key observation we can make is that on the second run of the BFS we get a w-path that is necessarily longer or equal to one found in the first BFS search. A natural question to ask is whether running the BFS a third, fourth or for that matter nth time would result in the actual w-diameter. On every successive iteration we get a w-path that is longer or equal to the previous one, because w-length is a symmetric path property ($w(a, b) = w(b, a)$). By doing this we can hope that we will eventually obtain a w-path closer to the w-diameter. However there is no guarantee that this will happen. In some cases it is possible that each successive BFS returns the same path over and over again. Obverse how in Figure [] all iterations of BFS go from the vertex $u$ to the vertex $v$ and then from $v$ to $u$ and so on.
 
 A different heuristic we can apply is to run the algorithm multiple times from different starting vertices and keep the maximum value found. This approach is more reliable for if we run the algorithm from all vertices in the tree we will obtain the actual w-diameter. The issue in doing is that the time complexity will become quadratic and we would be no better off that with the exhaustive brute force approach. If however we run the algorithm for some subset of the vertices in the tree we lose all guaratees on the accuracy. There may simply be too few vertices from which the algorithm would obtain the actual w-diameter.
 
-%Consider @TODO fig[]. That artificial example shows that there can simply be too few starting points which would produce the w-diameter.
 
 
-% @TODO Redo Last Paragraph.
+
 %In the search for a better solution let $s$ be a starting vertex and let the vertices $U = \{u_1, u_2, ..., u_n\}$ be the furthest away in terms of w-distance and $W = \{w_1, w_2, ..., w_n\}$ be the ones second furthest away. By the proof of the algorithm we know that not necessarily all vertices in those sets would produce a w-diameter. Thus lets us define $R \subseteq U \cup W$ as the set of vertices which are endpoints of a w-diameter. As we have shown we can construct an example where $|R| = 2$ and $|U \cup W|$ is arbitrarily large. Can we then find some property of the vertices in $R$ and pick them out in the first phase of the algorithm? *This I will leave open for the future generations to ponder. I hope in doing so all people of the world will unite unite and end all wars and prejudices in order to work towards this common good!*
 
 \section{Dynamic Programming Algorithm - DP}
-
-% @TODO
-%*Idea redefine $N(u) = N(u) / u.\pi$ so you can simplify notation.*
 
 It is encouraging that we have obtained an algorithm that bounds the w-diameter but it is also unsatisfactory that we were not able to directly obtain it. To remedy this we will resort to modifying the second tree diameter algorithm. We will use the same optimisation strategy i.e. dynamic programming by making two key changes. Instead of the function $h(u)$ that stores the height of a subtree with root $u$ we will use the function $w(u)$ that stores the longest w-path that starts at the root of the subtree (the w-height). We will remane the function that stores the value of the optimal solutions for subroblems from $D(u)$ to $W(u)$ accordingly. To summarise $W(u)$ returns the length of the largest w-path in the subtree $T_u$ and $w(u)$ the length of the largest w-path in $T_u$ that starts at $u$.
 
@@ -428,11 +420,11 @@ We will prove the correctness of the algorithm with the following Lemma.
 
 \begin{proof}
 
-   We just showed the longest w-path through the root of subtree is computed correctly. As the value of the optimal solution is taken in the same way as in the dynamic programming tree diameter algorithm [] then the correctness of our algorithm follows directly from it.
+   We just showed the longest w-path through the root of subtree is computed correctly. As the value of the optimal solution is taken in the same way as in the dynamic programming tree diameter algorithm then the correctness of our algorithm follows directly from it.
 
 \end{proof}
 
-The pseudocode of the proposed w-dimater algorithms is shown in Algorithm [].
+The pseudocode of the proposed w-dimater algorithms is shown in Algorithm 2.
 
 
 Having proven that the algorithm correctly computes the desired w-diameter we will now provide formal bounds on the time and space complexity of the proposed solution. We can summarise the time complexity in the following formula:
@@ -463,7 +455,7 @@ Therefore a upper bound on the wost case time complexity of our dynamic programm
 
 $$ O\big( |V| + |E| + |V| + |V||E|  \big) = O\big(|V||E|\big).$$
 
-The worst case running time we obtained for the DP algorithm is quadratic. This not good because the time complexity of the brute force approach is quadratic as well. We do however believe that the worst case running time is rarely exhibited and that the algorithm has the potential for good practical performance. One reason that we believe so is that for every vertex of high degree in a tree there are at as many leafs as the degree of that vertex which require constant processing time as the base cases of our recursion. We will however abstrain from further theoretical inquiries and instead test this informal hypothesis by implementing both the 2xBFS and DP algorithms and comparing the running time of the implementations. We will do se in chapter [].
+The worst case running time we obtained for the DP algorithm is quadratic. This not good because the time complexity of the brute force approach is quadratic as well. We do however believe that the worst case running time is rarely exhibited and that the algorithm has the potential for good practical performance. One reason that we believe so is that for every vertex of high degree in a tree there are at as many leafs as the degree of that vertex which require constant processing time as the base cases of our recursion. We will however abstrain from further theoretical inquiries and instead test this informal hypothesis by implementing both the 2xBFS and DP algorithms and comparing the running time of the implementations. We will do se in Chapter 7.
 
 % In the next section we will expand on the details of the implementations and in the final chapter of the dissertation we will present the results from the running time comparison of the implementations.
 % Here is the pseudocode for a recursive implementation of this algorithm.

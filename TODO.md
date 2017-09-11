@@ -30,6 +30,11 @@
         - !!! Check Spelling and Grammar.
         <!-- - !!! Make better intro for homology. -->
 
+        - !!! Change pictures
+
+        - !!! Fix things from hrisi
+        - Find ref for half vertices are leafs
+
 
     MEDIUM
         - CH4. Find references for 2xBFS and DP algorithms.
@@ -37,6 +42,15 @@
         - Add index of tables
         - Space complexity of DP.
         - Add figure in improving 2xBSF accuracy
+        - Think about this contruction and destruction busines, join/split trees.
+        - CH3 Define Join Saddles and Subdivided edges
+        - CH3 Add hamish phd thesis as generalisation?
+        - Talk about N(u) in DP proof.
+        - Check pseudocode again
+        - Find a way to reference DP equation.
+        - Add appendix and reference to it.
+        - Add Gihub repo.
+        - Return pagraph about star.
 
     SMALL
         - Put spacing before definitions.

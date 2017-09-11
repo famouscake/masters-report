@@ -1,4 +1,3 @@
-% @TODO Change this
 \chapter{Background}
 \label{chapter2}
 
@@ -23,7 +22,6 @@ Let us now introduce the topology we are going to use on n-dimensional Euclidean
 
 % But how is it possible to update this? How fast is it? * What do you mean by this? *
 
-% @TODO Expand if you have time
 Next we will define a special class of functions that preserve the properties of topological spaces. Those are the continuous functions.
 
 \begin{defn} A function $f : X \to Y$ is said to be continuous when the preimage of an open set in $Y$ is an open set in $X$. \end{defn}
@@ -39,7 +37,6 @@ We will call a property of a space that is preserved under homeomorphisms a topo
 
 \begin{defn} Let $X$ be a topological space and let $x, y \in X$ be any two points. A path between $x$ and $y$ in $X$ is a continuous function $f: [0, 1] \to X$ such that $f(0) = x$ and $f(1) = y$.  \end{defn}
 
-% @TODO Add this
 Using this definition we can define a path-connected topological space as follows.
 
 \begin{defn} A topological space $X$ is said to be path-connected if there exists a path between any two points $x, y \in X$  \end{defn}
@@ -69,12 +66,10 @@ Now we will present our final definition. That of a topological manifold - a mat
 % @TODO Should it be an open neighbourhood?
 \begin{defn} A $d-manifold$ is topological space where every point has an neighbourhood that is homeomorphic to $\mathbb{R}^d$.  \end{defn}
 
-% @TODO Redo last sentence.
 An example of a 0-dimensional manifold is a single point in $\mathbb{R}^n$. Examples of one dimensional manifolds are lines, circles, graphs and curves. Examples of 2-dimensional manifolds are the surfaces we are familiar with from geometry such as the sphere, the torus and so on. In this dissertation we will only consider manifolds of dimension zero, one, two and three. The reason for this is that our primary focus is on the visualisation aspect of computational topology. Visually modelling natural spacial phenomena prohibits us from using high dimensional manifolds they cannot be properly embedded in two or three dimensional Eucledian space.
 
 % *Manifolds are the playground where topology meets geometry.*
 
-% @TODO Redo last sentence. Why?
 It is often difficult to analyse the topology of a space by just considering its open sets. This is why in the following two sections we will employ additional tools from other fields of mathematics to aid in our analysis of the topology of a space. These tools are differentiable functions over differentiable spaces and combinatorial approximations of topological spaces.
 
 
@@ -96,10 +91,6 @@ We can use a Morse function defined on a manifold to decompose it into a family 
 \begin{defn} A level set at a value $h$ of a Morse function $f: M \to \mathbb{R}$ is the set $f^{-1}(\{h\}) = \{x \in M: f(x) = h \}$   \end{defn}
 
 Sublevel sets are defined in terms of the preimage of $f$ of intervals of the form $[-\infty, a]$. A sublevel set at $a$ is defined as $f^{-1}([-\infty, a]) = \{x \in M: f(x) \in [-\infty, a] \}$. Superlevel sets are defined analogously in terms of intervals of the form $[a, \infty]$.
-% @TODO Include this somewhere else?
-% We will call the path-connected components of a level set contours.
-
-% @TODO Explain Critical Points and Critical Value.
 
 Morse functions ensures the following properties hold:
 
@@ -113,9 +104,6 @@ Morse functions allow us to decompose a manifold into its level sets. We will us
 
 \subsection{Reeb Graph}
 
-% @TODO Define the quotient topology. Also I'm not sure if you definition of reeb graph is correct!
-
-
 The Reeb Graph is a tool that encapsulates the evolution of the topology of level sets of a continuous function. When the function is Morse, an edge in the Reeb graph corresponds to a sequence of contours in the level sets whose topology does not change. The vertices correspond to critical points where the topology of those components does changes. An example of a topological change is when connected components in the level sets appear or dissapear or when two connected components split or merge. Morse theory ensures that critical points occur at distinct values of the parameter and are isolated. This removes ambiguities that may arise in the construction of the Reeb graph.
 
 \begin{defn}
@@ -128,8 +116,7 @@ The reason we have defined Reeb graphs is because the contour tree is a special 
 
 \section{Algebraic Topology}
 
-% @TODO Incorrect English in last sentece
-Algebraic Topology is a branch of topology that uses tools from the field of abstract algebra to study topological spaces. The primary goal is to derive algebraic structures such as groups, rings and vector spaces from topological spaces that remain invariant under continuous mappings. Modern Algebraic Topology has its roots in combinatorially defined topological spaces \cite{combinatorial-algebraic-topology}. Unlike Point Set Topology and Differential Topology this allows us to obtain exact algorithms for computing the algebraic invariants we are interested in. To make matters clearer we will introduce one of the most basic combinatorial topological spaces - Simplicial Comlexes and then we will introduce one of the earliest discovered algebraic invariants - the Euler Characteristic. We will continue our discussion on Algebraic Topology in Chapter [] where we will see how the concept of the Euler Characteristic can be generalised to the field of Algebraic Topology called Homology.
+Algebraic Topology is a branch of topology that uses tools from the field of abstract algebra to study topological spaces. The primary goal is to derive algebraic structures such as groups, rings and vector spaces from topological spaces that remain invariant under continuous mappings. Modern Algebraic Topology has its roots in combinatorially defined topological spaces \cite{combinatorial-algebraic-topology}. Unlike Point Set Topology and Differential Topology this allows us to obtain exact algorithms for computing the algebraic invariants we are interested in. To make matters clearer we will introduce one of the most basic combinatorial topological spaces - Simplicial Comlexes and then we will introduce one of the earliest discovered algebraic invariants - the Euler Characteristic. We will continue our discussion on Algebraic Topology in chapter 5 where we will see how the concept of the Euler Characteristic can be generalised to the field of Algebraic Topology called Homology.
 
 \subsection{Simplicial Complexes}
 
@@ -179,9 +166,9 @@ The first topological invariant of algebraic nature we shall encounter is the Eu
 % continue it indefinitely with the number of 3-cells, then 4-cells, etc., as follows
 %
 %
-% % For example this allowed for the classification of the Platonic solids [].
+% % For example this allowed for the classification of the Platonic solids .
 %
-% % @TODO Define CW complexes, simplical complexes may not generalise polyhedra
+
 %
 %
 % all spaces that can be decomposed into a finite number of cells. Let us first consider simplical complexes *because they generalise polyhedra*. The natural generalisation of the alternating sum is to continue it indefinitely with the number of 3-cells, then 4-cells, etc., as follows
@@ -201,11 +188,11 @@ The last piece of background theory we will cover is from Graph Theory. In this 
 
 We will assume that the reader has is familiar with basic concepts from graph theory such as graphs, subgraphs, vertices, edges, paths and cycles and the basic algorithm such as Breadth First Search (BFS) and Depth First Search (DFS) \cite{intro-to-algo}. For a graph $G = (V, E)$ we will use notation $V(G)$ for the vertices of $G$ and $E(G)$ for the edges of $G$. We will use the notation $N(u)$ for the neighbouhood of $u$ or all the vertices $u$ is adjacent to. We will the notation $d(u, v)$ wherer $u, v \in V(G)$ for the length of the shortes path between $u$ and $v$ in $G$.
 
-Throughout this dissertation most of the graphs we will be working with will be trees. A tree is a connected graph that has no cycles. We will typically refer to trees as $T = (V, E)$. For our intents and purposes we shall define a subtree of a tree as a connected subgraph of a tree. We will refer to subtrees of rooted trees by their root. If $T$ is a rooted tree and $u$ is a node in $T$ then $T_u$ is the subtree of $T$ whoose root is $u$. In this notation if $s$ is the root of $T$ then $T_s = T$. If $u$ is any vertex that is not the root of $T$ then $T_u$ is the (vertex-wise) maximal subtree of $T$ that contains $u$ but does not contain the parent of $u$.
+Throughout this dissertation most of the graphs we will be working with will be trees. A tree is a connected graph that has no cycles. We will typically refer to trees as $T = (V, E)$. For our intents and purposes we shall define a subtree of a tree as a connected subgraph of a tree. We will refer to subtrees of rooted trees by their root. If $T$ is a rooted tree and $u$ is a node in $T$ then $T_u$ is the subtree of $T$ whoose root is $u$. In this notation if $s$ is the root of $T$ then $T_s = T$. If $u$ is any vertex that is not the root of $T$ then $T_u$ is the (vertex-wise) maximal subtree of $T$ that contains $u$ but does not contain the parent of $u$. We remind the reader that $N(u)$ does not include the parent of $u$ in a rooted tree.
 
 % The height of a rooted tree $T$ is defined as the longest path that starts at the root of the tree. The height of a rooted subtree $T_u$ of $T$ is simply the height of $T_u$ as a rooted tree.
 
-In Chapter [] we will be interested in finding the longest path in a tree. This is known as the diameter of a tree. Here we will  describe two of the most well known linear time tree diameter algorithms.
+In chapter 4 we will be interested in finding the longest path in a tree. This is known as the diameter of a tree. Here we will  describe two of the most well known linear time tree diameter algorithms.
 
 \subsection{Tree Diameter Algorithms}
 
@@ -225,8 +212,6 @@ The second approach is based on the Dynamic Programming paradigm. Dynamic progra
     \item Compute the value of the optimal solution.
 \end{enumerate}
 
-% @TODO Redefine N(u)
-
 We will characterise the structure of the optimal solution through all subtrees of a tree. If we root a tree $T$ in any of its vertices then then structure of the optimal solution is defined via all the rooted subtrees of $T$ or $\{T_u\}_{u \in V(G)}$. We can recursively define the value of the optimal solution with the following observation. Starting at the root, of the tree the longest path in the tree either goes through the root or is entirely contained in one of the subtrees rooted at the children of the root. This reasoning can be extended to all rooted subtrees of the tree.
 
 In order to formalise this idea we will make use of two functions. Let $T$ be a rooted tree with root $s$. Let $h(u)$ be the height of the subtree rooted at $u$. The height is defined as the longest path in $T_u$ from $u$ to one of the leaves of $T_u$. We will also call such a path a height path. Let $D(u)$ be the length of the longest path contained entirely in $T_u$. The function $D$ will contain the value of the optimal solution for all subtrees. The value of $D(s)$ is either equal to the value of $D(u)$ where $u$ is a child of $s$ or it is equal to combining the two maximum height paths of two of the children of $u$. This is sumamrised by he following formula.
@@ -243,6 +228,6 @@ The base case for this recursive formula is at the leaves of $T$. If $u$ is a le
 %
 % as each subtree is strictly smaller we must inevitably reach all leaves.
 
-%@TODO Fix sentece before
 
-%This results allows to compute in practice $\chi$ of manifolds by considering any of their finite triangulations. As long as there is a homeomorphism between a manifold and triangulation $\chi$ will not change. We will be well advised to pick the triangulations with the least number of simplices to improve computational efficiency. For example the octahedron is a triangulation of a sphere and therefore the Euler Characteristic of the sphere is zero. For further information on this subject we refer the reader to [].
+
+%This results allows to compute in practice $\chi$ of manifolds by considering any of their finite triangulations. As long as there is a homeomorphism between a manifold and triangulation $\chi$ will not change. We will be well advised to pick the triangulations with the least number of simplices to improve computational efficiency. For example the octahedron is a triangulation of a sphere and therefore the Euler Characteristic of the sphere is zero. For further information on this subject we refer the reader to .

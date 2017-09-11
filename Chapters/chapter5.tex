@@ -5,9 +5,6 @@ In this chapter we will shift our attention back to algebraic topology and cover
 
 \section{Homology}
 
-
-% @TODO Fix introduction
-
 The guiding principle behind the Euler Characteristic was to decompose a space into cells, count them and perform cancellations based on the parity of the dimension of the cells. This approach yields valuable information about a topological space, but we can hope to gain more by generalising it. We shall accomplish this by leveraging the mathematical machinery of Homology. Homology is a tool that was first developed to measure the topological complexity of manifolds \cite{persistence-original}. For example with homology we can recognize that there is a hole in the torus and a 3-dimensional volume enclosed in the sphere. The theory of Homology comes in two flavours - \textbf{simplical} and \textbf{singular}. Simplicial homology is geared towards analysing simplical complexes and singular homology its generalisation to arbitrary topological spaces. In this dissertation we will restrict our attention to singular homology because we are primarily interested in the computational aspect of homology.
 
 %We will however on occasion refer to singular homology when we desire to leverage a more general result from the relevant theory. More information on singular homology can be found in the following sources \cite{algebraic-topology, elementary-applied-topology}
@@ -40,7 +37,7 @@ Let $X$ be a simplicial complex. An n-chain of $X$ is a formal sum of n-simplice
 
 \end{itemize}
 
-What we have defined as the chain complex of $X$ is no more that a collection of vector spaces together with linear maps between. When $n$ is smaller than zero or bigger than the dimension of $X$ then the vector spaces $C_n(X)$ are trivial. They consisting only of the zero element. We can visualise the chain complex of $X$ with the so called quiver representation []. For our example simplical complex it would look like:
+What we have defined as the chain complex of $X$ is no more that a collection of vector spaces together with linear maps between. When $n$ is smaller than zero or bigger than the dimension of $X$ then the vector spaces $C_n(X)$ are trivial. They consisting only of the zero element. We can visualise the chain complex of $X$ with the so called quiver representation. For our example simplical complex it would look like:
 
 $$ 0 \overset{\partial_{3}}{\longrightarrow} C_2(X) \overset{\partial_{2}}{\longrightarrow} C_{1}(X) \overset{\partial_{1}}{\longrightarrow} C_{0}(X) \overset{\partial_0}{\longrightarrow}  0 $$
 
@@ -108,7 +105,7 @@ The dimensions of the homology groups are a summary of the topological informati
     \item Betti two  or $\beta_2 = dim(H_2)$ is the number two dimentional holes in a simplicial complex or simply voids.
 \end{itemize}
 
-The higher Betti numbers represent the number of higher dimensional voids. In a simplicial complex of finite dimension the Betting numbers higher than the dimension of the complex ae all zero. We refer the reader for examples of more homology computation to [].
+The higher Betti numbers represent the number of higher dimensional voids. In a simplicial complex of finite dimension the Betting numbers higher than the dimension of the complex ae all zero. We refer the reader for examples of more homology computation to \cite[p. 88]{comp-topo}.
 
 % Homology computations are far too envolved and lenghty to be given as examples here. We refer the eager and interested reader to [].
 
@@ -193,9 +190,6 @@ The general case of this definition is for two topological spaces $X$ and $Y$, t
 We will now turn our attention to one of the tools that has made topological data analysis so viable in recent years. This tool is called Persistent Homology (PH) and it is primarily used for measuring the signicance of topological features \cite{what-is-ph}. The primary motivation for introducing persistent homology in the first place was the practical need to cope with noise in data \cite{ph-a-survey}. The general idea is that once we extract the topological features from data we can attribute a metric to them. We can then use that metric to extract the important topological features by ignoring all features we deem of low significance (they are considered noise).
 
 
-% @TODO Define filtrations.
-% @TODO Introduce filtrations and VR complexes.
-
 Persistent homology emerged in the early 2000s in the works of Herbert et. at \cite{persistence-original} as a tool for automated topological simplification. The building blocks of persistent homoogy are sequences of nested simplicial complexes called filtrations. A filtration of a simplicial complex $X$ is a one parameter family of simplicial complexes $\{X_t\}_{t \in \{0, ..., n\}}$ where $X_i \subseteq X_j$ whenever $i \le j$ and $X = X_n$. If we arange the consequtive $X_i$ in a linear sequence we obtain the following:
 
 % The original motivation for introducing it was to better model point cloud data through filtrations of Vietoris Ribs complexes. Persistent Homology has since grown into a general methodology that can be applied any filtration of a topological space. To best illustrate what persistent homology is let us consider a filtration of a simplical complex $X$.
@@ -235,7 +229,6 @@ We have already shown in the previous chapter that inclusion maps induce linear 
 $$ H_p(X_0) \overset{i_*}{\longrightarrow} H_p(X_1) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_p(X_{n-1}) \overset{i_*}{\longrightarrow} H_p(X_n) $$
 for all $p \in \{0, 1, 2, ...\}$. The induced linear maps encode the information about the topological changes in the homology of consecutive complexes in the filtration. We will introduce the following terminology to help us interpret this information \cite{elementary-applied-topology}:
 
-% @TODO You may not be right about death here
 \begin{itemize}
     \item A homology class is \textbf{born} if it is not in the image of the homology group of the previous complex in the filtration under $i_*$.
     \item A homology class \textbf{dies} if its image under $i_*$ is the zero element or it merges with an older class.
@@ -247,8 +240,6 @@ Let us now expand on the case when two classes merge in a filtration. Suppose th
 In order to be consistent in choosing we will apply the Elder Rule \cite[p.~150]{comp-topo}. According to the elder rule the class whose birth time is smaller will persisnt and the other one will die. In the case of merging multiple classes all will die except the oldest. In the example whel $[0] = [1]$ in $H_0(X_2)$ we will pick $[0]$ as the representative of the homology class because it is older and say that $[1]$ dies at time $2$ because it merges with $[0]$.
 
 Using the language of birth and death we can define the persistence of a homology class. Let $\alpha$ be a homology class that is born in $X_i$ and dies in $X_j$. We call the difference $j - i$ the persistence of $\alpha$. Some classes however do not have a defined death time. These are the classes of the final complex in the filtration. We will call those classes essential and set their persistence to $\infty$. Classes that have persisted for a large number of timesteps are deemed significant. Ephemeral classes on the other hand are not. Such classes are often considered to correspond to statistical noise or sampling error.
-
-% @TODO Should you add X_i here istead of just t_i?
 
 One way to visualise persistent homology is by producing the so called persistence pairs and plotting them. A persistence pair $(t_1, t_2)$ of a homology class $\alpha$ is a pairing of two timestamps - the birth and death time of $\alpha$. The essential classes are the exception to this rule. A persistence pair of an essential class is formed as $(t, \infty)$ where their birth time is $t$ and we set their death time to $\infty$ due to the lack of one.
 
@@ -270,7 +261,6 @@ Another way to visualy persistent homology is via a barcode diagram \cite{barcod
 
 % You can see in the digram that one 0th homology class is born at time $1$ and another one at time $2$. In time $3$ the class born at time $1$ merges with the class that is born at time $1$ because it is the younger class. In time $4$ on the other hand two cycles or 1st homology classes are born. One of them dies at time $5$ and the other one pesists. These events corresponds to the persistent homology pairs $(2, 3), (4, 5), (1, \infty)$ and $(4, \infty)$.
 
-% @TODO What kind does the manifold have to be?
 Now let us apply the general theory of persistent homology to a more familiar domain. Let $M$ be a simplicial mesh that is the traingulation of a bounded area in $\mathbb{R}^2$ and let $f: M \to \mathbb{R}$ be a linear interpolat based on the vertices of $M$. We would like to obtain a filtration of $M$ that we can analyse with persistent homology. The filtration that is proposed in the literature \cite{comp-topo} for manifolds and morse functions is defined via the sublevel or superlevel sets of the manifold.
 
 From Chapter 3 we know that $M$ is a manifold and that $f$ is a Morse function. The following claims hold:
@@ -317,8 +307,6 @@ We can use both filtration to compute the persistent homology of the ascending a
 % This leads to incompleteness in the persistence pairings because persistence for some pa
 
 % which we would to remedy. Our goal in extending persistence it to devise a way to pair the essential homology classes with the remaining unpaired critical points \cite{persistence-extended}.
-
-% @TODO Add reference
 
 % Let $M$ be a traingulation of a bounded area in $\mathbb{R}^2$ and let $f: M \to \mathbb{R}$ be a linear interpolat.
 
@@ -407,11 +395,11 @@ A good aid in understanding extended persistence is the Excision Theorem. We can
 % \end{itemize}
 %
 %
-% % @TODO Define a homology class
+
 % The reason why we introduced simplicial maps is so that we can pose the following question. If there is a simplical map between two simplicial complexes, can we use it to relate their homology classes? The answer is yes, we can thanks to \cite{combinatorial-algebraic-topology}!
 %
 %
-% % @TODO Are simplicial maps continuous?
+
 %
 % \begin{defn} Let $X$ and $Y$ be two simplical complexes and $f: X \to Y$ be a simplicial map. Then $f$ induces a homomorphism $f_*: H_n(X) \to H_n(Y)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
 %
@@ -421,14 +409,12 @@ A good aid in understanding extended persistence is the Excision Theorem. We can
 %
 % We will use the shorthand $f: (X, A) \to (Y, B)$ for functions that satisfy the criteria of this definition. The function $f$ is called a simplicial map between simplicial pairs (analogous to continuous map between topological pairs in \cite{algebraic-topology}).
 
-% @TODO Define absolute homology
+
 % The homomorphism is induced by running the relative homology classes through the simplicial map and recording which class their image lands in. The primary type of map we will use in this chapter is a specific kind of simplicial map - the inclusion map. The reason for this will become clear in the following section. In the case of absolute homology when $X$ is a simplicial complex and $A$ is a subcomplex of $X$ there is a natural inclusion map $i: A \to X$ which is injective but not necessarily surjective. It takes the simplicies of $A$ to exactly the same simplicies of $X$ and leaves the simplicies outside of $A$ untouched.
 %
 % We shall define the inclusion of relative homology analogously. Let $B$ be another subcomplex of $X$ such that $A$ is also a subcomplex of $B$, or $A \subseteq B \subseteq X$. Then let $i : X \to X$ be the identity map. As $A \subseteq B$ then the restriction $i_A: A \to B$ is a well defined function and therefore $i(A) \subseteq B$. Therefore there is a map $i$ between the pairs $(X, A)$ and $(X, B)$ such that $i(A) \subseteq B$ by the previous definition this map induces a homomorphism $i_* : H_n(X, A) \to H_n(X, B)$.
 
 
-% @TODO Should I talk about chain maps?
-% @TODO Add proof for all of this?
 % Before introducing ourselves with persistent homology we will take a slight detour in order to introduce the last piece that we are missing to enable its construction. There is a general result in singular homology that shows the interaction of continuous maps and homomorphisms between homology groups.
 %
 % \begin{defn} Let $X$ and $Y$ be two topological spaces. Let $f: X \to Y$ be a continuous function. Then $f$ induces a homomorphism $f_*: H_n(X) \to H_n(Y)$ for all $n \in \{0, 1, 2, ...\}$. \end{defn}
@@ -436,5 +422,4 @@ A good aid in understanding extended persistence is the Excision Theorem. We can
 % This means that if we have a continuous function between two spaces we can immediately associate the homology classes of $X$ to those of $Y$. All we have to do to obtain the induced map is to compose the simplices with the continuous function $f$. The details of this process are outlines in \cite{algebraic-topology}.
 %
 %
-%  @TODO WHY?!
 % This general result is not appropriate for simplicial complexes. WHY?! We need a more tracktable definition to aid us in our computation. We will thus present the following combinatorially flavoured definition given by \cite{combinatorial-algebraic-topology}.
