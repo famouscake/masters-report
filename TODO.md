@@ -13,6 +13,68 @@
     <!-- - CH3. Talk about time and work complexity of the parallel algorithm and the merge phase in particular. -->
     <!-- - CH7. Make table for NxBFS Testing -->
 
+    EASY
+        <!-- - CH7. Find Reference for GTOPO -->
+
+
+    PICTURES
+
+
+    TAKE TIME
+        <!-- - Add Gihub repo. -->
+        - !!! Fix References in text.
+        - !!! Check Spelling and Grammar.
+
+
+make sure you didn't like about correctnes empirical
+        - !!! Fix Table and Figures.
+
+        <!-- - !!! Change pictures -->
+        <!-- - Say dotted line is a path. -->
+
+        <!-- - Find ref for half vertices are leafs -->
+        <!-- - CH4. Find references for 2xBFS and DP algorithms. -->
+
+        <!-- - Space complexity of DP. -->
+        <!-- - Check pseudocode again -->
+        <!-- - Add Ethical Issues Addressed -->
+
+    EXPENDABLE
+        - Put spacing before definitions.
+        - Make definitions not em.
+        - Restart numbering in DP algorithm pseudocode.
+        - Add figure in improving 2xBSF accuracy
+
+        - Add pages to book references.
+
+        - Picture of Reeb Graph
+        - CH3 Add hamish phd thesis as generalisation?
+        - Find a way to reference DP equation.
+        - CH4. Check if you notation about time complexity see if it's called that.
+        - Return pagraph about star.
+        - Remove indent github urls
+        - Find better reference for 2xBSF and DP
+
+
+
+
+
+
+        <!-- - Add triangles to simplicial mesh. -->
+        <!-- - Add more references. -->
+        <!-- - Add Murmuration -->
+
+
+        <!-- - Say you've added ct filtration in appendix. -->
+
+        <!-- - Justify Things ??? -->
+
+
+
+
+
+
+
 
     Q For Hamish
 
@@ -24,54 +86,61 @@
         <!-- - !!! Final Refactor. W-Structures, Homology, EP vs DP         -->
         <!-- - !!! Say where you've done original research -->
 
-        - !!! Fix things from hrisi
-        - !!! Fix References in text.
-        - !!! Fix Table and Figures.
-
-        - !!! Check Spelling and Grammar.
-        <!-- - !!! Make better intro for homology. -->
-
-        - !!! Change pictures
+        <!-- - !!! Fix things from hrisi -->
+                <!-- - !!! Make better intro for homology. -->
 
 
-        - Find ref for half vertices are leafs
+
+
+
 
 
     MEDIUM
-        - CH4. Find references for 2xBFS and DP algorithms.
 
-        - Add index of tables
-        - Space complexity of DP.
-        - Add figure in improving 2xBSF accuracy
-        - Think about this contruction and destruction busines, join/split trees.
-        - CH3 Define Join Saddles and Subdivided edges
-        - CH3 Add hamish phd thesis as generalisation?
-        - Talk about N(u) in DP proof.
+
+
+
+
+        <!-- - Think about this contruction and destruction busines, join/split trees. -->
+
+        <!-- - CH3 Define Join Saddles and Subdivided edges -->
+
+
+
+        <!-- - Talk about N(u) in DP proof. -->
+
         - Check pseudocode again
+
         - Find a way to reference DP equation.
-        - Add appendix and reference to it.
+
+        <!-- - Add appendix and reference to it. -->
+
         - Add Gihub repo.
+
         - Return pagraph about star.
-        - Explain why 2xbfs did not run on large gotpo
+        - Restart numbering in DP algorithm pseudocode.
+
+        <!-- - Explain why 2xbfs did not run on large gotpo -->
 
     SMALL
         - Put spacing before definitions.
-        - Add triangles to simplicial mesh.
-        - Add more references.
-        - Add Murmuration
-        - Add Ethical Issues Addressed
-        - Add column meanings in charts runing times.
-        - Say you've added ct filtration in appendix.
-        - Justify Things ???
-        - CH4. Check if you notation about time complexity see if it's called that.
-        - Restart numbering in DP algorithm pseudocode.
         - Make definitions not em.
-        - Fix picture position EP VS BD
-        - Fix indentation after equation
-        - Add pages to book references.
-        - Picture of Reeb Graph
-        - Change numbers of ph diagram to start at 0 not 1
-        - CH7. Find Reference for GTOPO
+
+        <!-- - Add triangles to simplicial mesh. -->
+        <!-- - Add more references. -->
+        <!-- - Add Murmuration -->
+        - Add Ethical Issues Addressed
+
+        <!-- - Say you've added ct filtration in appendix. -->
+
+        <!-- - Justify Things ??? -->
+        - CH4. Check if you notation about time complexity see if it's called that.
+
+
+
+        <!-- - Fix picture position EP VS BD -->
+        <!-- - Fix indentation after equations -->
+
 
 
     <!-- - CH2. Definitions about Reeb Graph should be taken directly from somewhere. Do not experiment. -->

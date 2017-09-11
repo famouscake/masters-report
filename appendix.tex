@@ -1,38 +1,125 @@
 \begin{appendices}
 
-% \chapter{Additional Proofs}
-%
-% \begin{lem} In a tree with no vertices of degree two at least half of the vertices are leaves. \end{lem}
-%
-% \begin{proof}
-%     Let $T = (V, E)$ be a tree with no vertices of degree two and let $L \subseteq V$ be the set of all leaves. As all leaves have degree one we have that $L = \{u \in V: d(u) = 1\}$. Furthermore for any tree we know that $|E| = |V| - 1$. Let us now use the handshake lemma:
-%
-%     $$ \sum_{u \in V}{d(u)} = 2|E| = 2(|V| - 1) = 2|V| - 2.$$
-%
-%     We will not separe the sum on the leftmost hand side of the equation in two parts. One for the vertices vertices in $L$ and one for the vertices in $V\textbackslash L$.
-%
-%
-%     $$ \sum_{u \in L}{d(u)} + \sum_{u \in V\textbackslash L}{d(u)} = 2|V| - 2.$$
-%
-%     All the vertices in $L$ are leaves. By definition the degree of a leaf is one. Therefore $\sum_{u \in L}{d(u)} = |L|$. This leads us to the following:
-%
-%     $$  |L| + \sum_{u \in V\textbackslash L}{d(u)} = 2|V| - 2$$
-%     $$  |L|  = 2|V| - 2 - \sum_{u \in V\textbackslash L}{d(u)}.$$
-%
-%     There are no vertices in $T$ of degree two and all vertices of degree one are in $L$. This means that all vertices in $V \textbackslash T$ have degree at least three. We can conclude that:
-%     $$\sum_{u \in V\textbackslash L}{d(u)} \ge \delta(T - L).|V\textbackslash L| = 3(|V| - |L|) $$
-%
-%     Combining this with the previous equation we obtain that:
-%
-%     $$  |L| \le 2|V| - 2 - 3(|V| - |L|)$$
-%     $$  |L| \le 2|V| - 2 - 3|V| + 3|L|$$
-%     $$  -2|L| \le -|V| - 2$$
-%     $$  |L| \ge \frac{|V|}{2} + 1$$
-%
-%     Which is exactly what we set out to proove.
-%
-%
-% \end{proof}
+\chapter{Ascending Filtration of the Contour Tree}
+\label{chapter-asc}
+
+\begin{figure}[h]%
+    \captionsetup[subfigure]{labelformat=empty}
+    \centering
+    \subfloat[$CT(X)_0$]{{\includegraphics[scale=0.08]{./images/filtration/asc-tree/x1.pdf}}}%
+    \qquad
+    \subfloat[$CT(X)_1$]{{\includegraphics[scale=0.08]{./images/filtration/asc-tree/x2.pdf}}}%
+    \qquad
+    \subfloat[$CT(X)_2$]{{\includegraphics[scale=0.08]{./images/filtration/asc-tree/x3.pdf}}}%
+
+    \par\bigskip
+
+    \subfloat[$CT(X)_3$]{{\includegraphics[scale=0.08]{./images/filtration/asc-tree/x4.pdf}}}%
+    \qquad
+    \subfloat[$CT(X)_4$]{{\includegraphics[scale=0.08]{./images/filtration/asc-tree/x5.pdf}}}%
+    \qquad
+    \subfloat[$CT(X)_5$]{{\includegraphics[scale=0.08]{./images/filtration/asc-tree/x6.pdf}}}%
+
+    \par\bigskip
+
+    \subfloat[$CT(X)_6$]{{\includegraphics[scale=0.08]{./images/filtration/asc-tree/x7.pdf}}}%
+    \qquad
+    \subfloat[$CT(X)_7$]{{\includegraphics[scale=0.08]{./images/filtration/asc-tree/x8.pdf}}}%
+    \qquad
+    \subfloat[$CT(X)_8$]{{\includegraphics[scale=0.08]{./images/filtration/asc-tree/x9.pdf}}}%
+
+    \caption{Ascending Filtration of the Dataset.}%
+    \label{fig:asc-filtration-tree}%
+\end{figure}
+
+
+\chapter{Descending Filtration of the Contour Tree}
+\label{chapter-desc}
+
+\begin{figure}[h]%
+    \captionsetup[subfigure]{labelformat=empty}
+    \centering
+    \subfloat[$CT(X)^9$]{{\includegraphics[scale=0.08]{./images/filtration/desc-tree/x1.pdf}}}%
+    \qquad \qquad
+    \subfloat[$CT(X)^8$]{{\includegraphics[scale=0.08]{./images/filtration/desc-tree/x2.pdf}}}%
+    \qquad \qquad
+    \subfloat[$CT(X)^7$]{{\includegraphics[scale=0.08]{./images/filtration/desc-tree/x3.pdf}}}%
+
+    \par\bigskip
+
+    \subfloat[$CT(X)^6$]{{\includegraphics[scale=0.08]{./images/filtration/desc-tree/x4.pdf}}}%
+    \qquad \qquad
+    \subfloat[$CT(X)^5$]{{\includegraphics[scale=0.08]{./images/filtration/desc-tree/x5.pdf}}}%
+    \qquad \qquad
+    \subfloat[$CT(X)^4$]{{\includegraphics[scale=0.08]{./images/filtration/desc-tree/x6.pdf}}}%
+
+    \par\bigskip
+
+    \subfloat[$CT(X)^3$]{{\includegraphics[scale=0.08]{./images/filtration/desc-tree/x7.pdf}}}%
+    \qquad \qquad
+    \subfloat[$CT(X)^2$]{{\includegraphics[scale=0.08]{./images/filtration/desc-tree/x8.pdf}}}%
+    \qquad \qquad
+    \subfloat[$CT(X)^1$]{{\includegraphics[scale=0.08]{./images/filtration/desc-tree/x9.pdf}}}%
+
+    \caption{Descending Filtration of the Dataset.}%
+    \label{fig:desc-filtration-tree}%
+\end{figure}
+
+
+\chapter{Github Repositories}
+\label{chapter-github}
+
+
+DP Algorithm - \url{https://github.com/famouscake/w-detector}
+
+2xBFS Algorithm - \url{https://github.com/famouscake/w-detector}
+
+Contour Tree Algoritm - \url{https://github.com/famouscake/ContourTree}
+
+\chapter{Ethical Issues Addressed}
+\label{chapter-ethical}
+
+\section{Data Sources}
+
+For this project data sources were required to compute contour trees. The data sources that were used are publicly available on the Internet. They did not require any special permissionssions to use.
+
+\section{Software}
+All software that was used is publicly available on the internet and free. It has been referenced and acknowledgement in the text.
+
+\chapter{Additional Proofs}
+\label{chapter-proofs}
+
+\begin{lem} In a tree with no vertices of degree two at least half of the vertices are leaves. \end{lem}
+
+\begin{proof}
+    Let $T = (V, E)$ be a tree with no vertices of degree two and let $L \subseteq V$ be the set of all leaves. As all leaves have degree one we have that $L = \{u \in V: d(u) = 1\}$. Furthermore for any tree we know that $|E| = |V| - 1$. Let us now use the handshake lemma:
+
+    $$ \sum_{u \in V}{d(u)} = 2|E| = 2(|V| - 1) = 2|V| - 2.$$
+
+    We will not separe the sum on the leftmost hand side of the equation in two parts. One for the vertices vertices in $L$ and one for the vertices in $V\textbackslash L$.
+
+
+    $$ \sum_{u \in L}{d(u)} + \sum_{u \in V\textbackslash L}{d(u)} = 2|V| - 2.$$
+
+    All the vertices in $L$ are leaves. By definition the degree of a leaf is one. Therefore $\sum_{u \in L}{d(u)} = |L|$. This leads us to the following:
+
+    $$  |L| + \sum_{u \in V\textbackslash L}{d(u)} = 2|V| - 2$$
+    $$  |L|  = 2|V| - 2 - \sum_{u \in V\textbackslash L}{d(u)}.$$
+
+    There are no vertices in $T$ of degree two and all vertices of degree one are in $L$. This means that all vertices in $V \textbackslash T$ have degree at least three. We can conclude that:
+    $$\sum_{u \in V\textbackslash L}{d(u)} \ge \delta(T - L).|V\textbackslash L| = 3(|V| - |L|) $$
+
+    Combining this with the previous equation we obtain that:
+
+    $$  |L| \le 2|V| - 2 - 3(|V| - |L|)$$
+    $$  |L| \le 2|V| - 2 - 3|V| + 3|L|$$
+    $$  -2|L| \le -|V| - 2$$
+    $$  |L| \ge \frac{|V|}{2} + 1$$
+
+    Which is exactly what we set out to proove.
+
+
+\end{proof}
 %
 % \begin{lem} There are at least $k$ vertices for every vertex of degree $k$ in a tree. \end{lem}
 %

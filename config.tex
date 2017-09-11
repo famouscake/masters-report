@@ -13,6 +13,7 @@
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{hyperref}
 
 % For psudocode
 \usepackage{algorithm}
@@ -25,6 +26,20 @@
 \usepackage{parskip}
 
 % For making definitions, lemma, theorems, etc.
+% \newtheorem{defn}{Definition}
+% \theoremstyle{definition}
+
+% \newtheoremstyle{blq}% name
+% {8pt}% Space above1
+% {8pt}% Space below1
+% {}% Body font
+% {}% Indent amount2
+% {\bfseries}% Theorem head font
+% {.}% Punctuation after theorem head
+% {.5em}% Space after theorem head3
+% {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}% Theorem head spec (can be left empty, meaning ‘normal’)
+
+\theoremstyle{blq}
 \newtheorem{defn}{Definition}
 \newtheorem{ex}{Example}
 \newtheorem{lem}{Lemma}
@@ -32,6 +47,9 @@
 \newtheorem{prop}{Proposition}
 \newtheorem{property}{Property}
 \newtheorem{cor}{Corrolary}
+
+
+
 
 % For putting two figures on the same line
 \usepackage{subfig}
