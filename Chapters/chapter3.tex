@@ -11,7 +11,7 @@ The Reeb graph of a scalar field is connected and acyclic \cite{comp-topo}. As s
 
 % Such a process is for example the sampling of temperature from a bounded volume of air [] or the height of points over a geographic region []. The contour tree is shown to be a robust tool primarily used in the visualisation of such natural phenomena [].
 
-Many scientific and medical applications require the sampling of scalar values from a bounded area or volume in two or three dimensional Euclidean space \cite{carr-masters}. The theory we have presented so far is applicable only in the continuous setting but the resolution of any sampling process is finite. If we are to leverage this theory we must assume an underlying continuous function in the whole of the area or volume and not just at the sampled points. To do so we will construct an approximation of this function based on the values we have sampled. This is usually done by constructing a simplicial complex where the data points are the vertices and higher dimensional simplicies are added to completely fill the space between them (see Figure []). We will call the resulting data structure a simplical mesh \cite{carr-masters}.
+Many scientific and medical applications require the sampling of scalar values from a bounded area or volume in two or three dimensional Euclidean space \cite{carr-masters}. The theory we have presented so far is applicable only in the continuous setting but the resolution of any sampling process is finite. If we are to leverage this theory we must assume an underlying continuous function in the whole of the area or volume and not just at the sampled points. To do so we will construct an approximation of this function based on the values we have sampled. This is usually done by constructing a simplicial complex where the data points are the vertices and higher dimensional simplicies are added to completely fill the space between them (see Figure \ref{fig:simplicial-mesh}). We will call the resulting data structure a simplical mesh \cite{carr-masters}.
 
 \begin{figure}[h]%
     \centering
@@ -21,7 +21,7 @@ Many scientific and medical applications require the sampling of scalar values f
     \caption{Triangulation of input data to obtain a simplicial mesh.}%
     \label{fig:simplicial-mesh}%
 \end{figure}
-For simplicity and without loss of generality we will work with two-dimensional domains where the value samples are evenly spaced out in a grid-like fashion (Figure \ref{fig:simplicial-mesh}). The values of the approximation function at the simplicies are obtained via linear interpolation between the verticies of each simplex []. As long as the original values we have sampled are unique it can be shown that the linear interpolation function is a Morse function and that all critical points are the vertices of the mesh \cite{curvature-embeded-polyhedra}.
+For simplicity and without loss of generality we will work with two-dimensional domains where the value samples are evenly spaced out in a grid-like fashion (Figure \ref{fig:simplicial-mesh}). The values of the approximation function at the simplicies are obtained via linear interpolation between the verticies of each simplex \cite{carr-masters}[]. As long as the original values we have sampled are unique it can be shown that the linear interpolation function is a Morse function and that all critical points are the vertices of the mesh \cite{curvature-embeded-polyhedra}.
 
 \section{Contour Tree Computation}
 

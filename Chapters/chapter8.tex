@@ -26,37 +26,25 @@ Overall the project evolved as I was working on it and my ideas for what exacly 
 
 \section{Future Work}
 
-Finally we will present possile direction for extending this empirical study:
+Finally we will present possile direction for future work. They will be presented in two part on part related to the empirical study of the w-structures and another to the the relation of extended persistence to the contour tree.
 
 \subsection{Practical}
 
-\begin{itemize}
-    \item One obvious direction is to extend the empirical study by ontaining more real life data to analyse.
+One of the most obvious directions is to extend the empirical study by obtaining more real life data to analyse. Another one is to investigate how different w-structures in the contour tree interact with one another during the merge phase. This would require algorithms that produce more than just the largest w-structure.
 
-    \item Can we obtain the w-diameter of a contour tree directly from raw data? Computing the w-diameter of the contour tree itself is useful, but it is like port mortem analysis. If we are able to obtain the w-diameter without constructing the contour tree explicitly we may be able to use the information to speed up the contruction around the w-diameter.
-
-    \item Are there other ways of generating w-structures? Can we devise a general way that would work in any number of dimensions?
-
-    \item We did not have a chance to investigate how different w-structures interact with one another during the merge phase. This will probably be the next best step.
-
-\end{itemize}
+A more fruitful line of research might be to obtain the w-diameter of a contour tree directly from the simplicial mesh. Computing the w-diameter from the contour tree itself is good start for our investigation, but it is like port mortem analysis. If we are able to obtain the w-diameter without constructing the contour tree explicitly we may be able to use the information to speed up the contruction around the w-diameter.
 
 \subsection{Theoretical}
 
-There are many more unansweared question on the relations of contour tree simplification and persistent homology. For example notice that the way the 0th persistence of an ascending filtration is computed is similar to how a join tree is computer. The similarity is in that joining components correspond to connected components in sublevel sets which in turn correspond to homology classes in the 0th homology. The joining of components coresponds to merging of homology classes. Consequently the persistent pairs correspond to branches in the join tree. If we instead take a descending filtration we obtain a similarity between the split tree and the persistent homology of the descending filtration. Further work can be done in showing whether the computations are equivalent formally and in translating idea from each of the frameworks to the other.
+% There are many unansweared question on the relations of contour tree simplification and persistent homology. For example notice that the way the 0th persistence of an ascending filtration is computed is similar to how a join tree is computer. The similarity is in that joining components correspond to connected components in sublevel sets which in turn correspond to homology classes in the 0th homology. The joining of components coresponds to merging of homology classes. Consequently the persistent pairs correspond to branches in the join tree. If we instead take a descending filtration we obtain a similarity between the split tree and the persistent homology of the descending filtration. Further work can be done in showing whether the computations are equivalent formally and in translating idea from each of the frameworks to the other.
 
-Another question is whether contour tree simplification can be expressed through through some filtration similar to persistent homology. Consider for example a simplicial mesh $M$ and its level sets $M_i$. Homology gives us to tools of identifying the connected components of the the $M_i$ by computing the 0th homology. It is possible however to somehow relate the homology classes of different level sets. This would require a sequence of the form
+The primary direction this can take is to further explore the connection between contour tree simplification and branch decomposition. A way to do this would be to explore both in a broader context and produce results on whether the two are equivalent in general in the case of join/split trees and descending/descending filtrations.
+
+Another question is whether contour tree simplification can be expressed through another filtration that is not the ascending or descending filtration. Consider for example a simplicial mesh $M$ and its level sets $M_i$. Homology gives us to tools of identifying the connected components of the the $M_i$ by computing the 0th homology. It is possible however to somehow relate the homology classes of different level sets. This would require a sequence of the form
 
 $$ ... \rightarrow H_0(M_i) \rightarrow H_0(M_{i+1}) \rightarrow ... \rightarrow H_0(M_{j}) \rightarrow H_0(M_{j+1}) \rightarrow ...$$
 
-But what would the function between the homology groups be? Can me somehow induce them through function between the sublevel sets themselvs? We certainly cannot use inclusion maps because level sets are not neseted. It is worth contemplating whether this is feasble. Another question is whether it would be practical at all. Even if we do so all we will obtain is a mathematical reformulation of a problem we already have. Will that lead to more efficient algorithms or to better understanding of the subject?
-
-We are not able to expand more on questions like these and leave them as subject for further study.
-
-
-
-
-
+But what would the function between the homology groups be? Can me somehow induce them through function between the sublevel sets themselvs? We certainly cannot use inclusion maps because level sets are not subsets of one another. It is worth contemplating whether this is feasble. Another question is whether it would be practical at all. Even if we do so all we will obtain is a mathematical reformulation of a problem we already have. Will that lead to more efficient algorithms or to better understanding of the subject?
 
 % This is the conclusion.
 %

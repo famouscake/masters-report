@@ -1,68 +1,66 @@
 \chapter{Homology}
 \label{chapter5}
 
-In this chapter we will shift our attention back to algebraic topology and more specifically the field of Homology. We will use Homology to analyse the connectivity, number of the holes and voids in a simplical complex. We are putting all this work in Homology because it is a prerequisite to one of the leading tools in topological data analysis - Persistent Homology. In the next chapter we will analyse some of the similarities between persistent homology computations and contour tree computations.
+In this chapter we will shift our attention back to algebraic topology and cover the last pieces of background material we need. Those are Homology and Persistent Homology. We will introduce Homology and as tool to analyse the connectivity and number of the holes and voids in a simplical complex. Using Homology we will define the concept of Persistent Homology. Persistent homology makes use of homology to analyse how the connectivity of a simplicial complex changes as we attach new cells to it.
 
 \section{Homology}
 
 
 % @TODO Fix introduction
 
-The guiding principle behind the Euler Characteristic was to decompose a space into cells, count them and perform cancellations based on the parity of the dimension of the cells. This approach yields valuable information about a topological space, but we can hope to gain more by generalising it. We shall accomplish this by leveraging the mathematical machinery of Homology. Homology is a tool that was first developed to measure the topological complexity of manifolds \cite{persistence-original}. For example with homology we can recognize that there is a hole in the torus and a volume enclosed in the sphere. The theory of Homology comes in two flavours - \textbf{simplical} and \textbf{singular}. Simplicial homology is geared towards analysing simplical complexes and singular homology is the appropriate generalisation for arbitrary topological spaces. In this dissertation we restrict attention on singular homology because we are primarily interested in the computational aspect of homology.
+The guiding principle behind the Euler Characteristic was to decompose a space into cells, count them and perform cancellations based on the parity of the dimension of the cells. This approach yields valuable information about a topological space, but we can hope to gain more by generalising it. We shall accomplish this by leveraging the mathematical machinery of Homology. Homology is a tool that was first developed to measure the topological complexity of manifolds \cite{persistence-original}. For example with homology we can recognize that there is a hole in the torus and a 3-dimensional volume enclosed in the sphere. The theory of Homology comes in two flavours - \textbf{simplical} and \textbf{singular}. Simplicial homology is geared towards analysing simplical complexes and singular homology its generalisation to arbitrary topological spaces. In this dissertation we will restrict our attention to singular homology because we are primarily interested in the computational aspect of homology.
 
 %We will however on occasion refer to singular homology when we desire to leverage a more general result from the relevant theory. More information on singular homology can be found in the following sources \cite{algebraic-topology, elementary-applied-topology}
 \begin{figure}[h]%
     \centering
     \includegraphics[scale=0.08]{./images/simplex/complex-romb.pdf}%
-    \caption{An Example Simplical Complex}%
+    \caption{A simplical complex.}%
     \label{fig:hom-sc}%
 \end{figure}
 
-Homology is built around the interplay between two key concepts of \textbf{cycles} and \textbf{boundaries}. Let us consider the simplical complex depicted on Figure \ref{fig:hom-sc} as an example. It consists of four vertices $\{a, b, c, d\}$, five edges $\{ab, bc, ca, db, cb\}$ and one face $\{abc\}$. Let us first explain what a boundary is. The boundary of a simplex consists of its codimension-1 faces. For example the boundary of the 1-dim simplex $ab$ consists of the 0-dim simplices $a \text{ and } b$. The boundary of the 2-dim simplex $abc$ consists of the 1-dim simplices $ab, ac \text{ and } cb$. A cycle on the other hand consists of the simplices that form the boundary of a simplex that is of one dimension higher (regardless of whether that one dimension simplex is in the complex). In our example we can observe that the edges $ab, bc, ca$ and $bd, dc, cb$ form a 1-dim cycle because they are the boundary of the-dimensional simlices $abc$ and $bdc$. The first simplex $abc$ is in the complex while $bdc$ is not. The definition of one dimensional cycles is in line with the graph theoretic definition. The first and last vertex of the paths formed by those edges are the same. A more geometric way to put it is that the edges enclose an 2-dim area of space. To expand this definition to higher dimensional cycles picture the faces of the tetrahedron. They would form a 2-cycle as they completely enclose a 3-dim volume. In general an n-cycle consists of simplices that are the boundary of a n+1-dim simplex
+Homology is built around the interplay between the two key concepts of \textbf{cycles} and \textbf{boundaries}. Let us consider the simplical complex depicted on Figure \ref{fig:hom-sc} as an example. It consists of four vertices $\{a, b, c, d\}$, five edges $\{ab, bc, ac, bd, bc\}$ and one face $\{abc\}$. Let us first explain what a boundary is. The boundary of a simplex consists of all faces of the simplex whose dimension is one less. We will also call these the codimension-1 faces of the simplex. For example the boundary of the 1-dimensional simplex (1-simplex) $ab$ consists of the 0-simplices $a \text{ and } b$. The boundary of the 2-simplex $abc$ consists of the 1-simplices $ab, ac \text{ and } bc$.
 
+A cycle consists of the simplices that form the boundary of a simplex that is of one dimension higher (regardless of whether that simplex is in the complex). In our example we can observe that the edges $ab, bc, ac$ and $bd, cd, bc$ form a 1-dim cycle (1-cycle) because they are the boundary of the 2-simplices $abc$ and $bcd$. The first simplex $abc$ is in the complex while $bcd$ is not. The definition of one dimensional cycles is similar to the graph theoretic definition of a cycle. The first and last vertex of the paths formed by those edges are the same. A more geometric way explain this is to say that a 1-cycles is a set of edges that completely enclose a 2-dimensional area. To expand this definition to higher dimensional cycles consider the codimension-1 faces of a tetrahedron (four triangles). They form a 2-cycle as they completely enclose a 3-dimensional volume. In general an n-cycle consists of simplices that are the boundary of a (n+1)-simplex.
 
+The interplay between between cycles and boundaries is best described by the following question. Which cycles in the complex are \textbf{not} the boundary of a higher dimensional simplex? Such cycles are important because they introduce a void in the complex. Cycles which are the boundary of a higher dimensional simplex can be disregarded because the void they introduce is filled by that higher dimensional simplex. Coming back to our example the cycle $ab, bc, ac$ is the boundary of the 2-simplex $abc$, but the cycle $bd, cd, bc$ it not the boundary of a simplex that is in the simplical complex. The cycle $bd, cd, bc$ represents a 2-dimensional hole in the simplical complex. Note that the cycle $ab, bd, cd, ac$ is in a sense equivalent to the cycle $bd, cd, bc$ because both describe the same 2-dimensional hole in the complex - namely the missing 2-simplex $bcd$.
 
-The interplay between between cycles and boundaries is in asking the question - which cycles in the complex are \textbf{not} the boundary of a higher dimensional simplex. Such cycles are important because they introduce a void in the space. Cycles which are the boundary of a higher dimensional simplex can be disregarded because the void they introduces is filled by that higher dimensional simplex. Coming back to our example the cycle $ab, bc, ac$ is the boundary of $abc$, but the cycle $db, cd, bc$ it not the boundary of another simplex in the simplical complex. The cycle $db, cd, bc$ represents a 2-dim hole in the simplical complex. Finally note that the cycle $ab, bd, dc, ac$ is in a sense equivalent to the cycle $db, cd, bc$ because both describe the same 2-dim hole in the complex - namerly the missing 2-dim simplex $bdc$.
+Finally observe that the paths formed by the edges $bc, ac, ab$ and $ac, ab, bc$ represent the same cycle. The only difference is which vertex is the starting and ending point. To emphasise that these two cycels are the same we will completely disregard the concept of starting and ending point in a cycle by introducing additive algebraic notation. In this notation the same cycle would be written as $ab + bc + ca$.
 
-%This is important because these cycles cannot be contracted to a point. The lack of higher dimensional simplex the enclose means there is a void of some dimension in our simplex.
+Additive notation implies associativity but it does not have the sole purpose of illustrating the point of disregarding edge order. Its more important aspect is that it allows us to treat sums of edges as linear combinations in an abstract vector space. We will work with vector spaces over the field of coefficients $\mathbb{Z}_2 = \{0, 1\}$ together with the standard operations of addition and multiplication modulo two. We will call the elements of these vector spaces n-chains.
 
-Notice also that the paths formed by the edges $bc, ca, ab$ and $ac, ab, bc$ represent the same cycle. The only difference is which vertex is the starting and ending point. We would like to disregard the choice of starting point and order of edges completely because for example the paths $bc, ac, ab$ and $ac, ab, bc$  represent the same structure in the simplical complex. Enter additive algebraic notation. In this notation the same cycle would be written as $ab + bc + ca$.
+Let $X$ be a simplicial complex. An n-chain of $X$ is a formal sum of n-simplices of $X$ \cite{comp-topo}. The notation we will use for an n-chain is $\sum{a_i \sigma_i}$ where $a_i \in \mathbb{Z}_2$ and $\sigma_i$ is an n-simplex of $X$. We can add two n-chains component wise much like we would add polynomials. For example $(ab + bc) + (ab + cd + bd) = 2ab + bc + cd + bd = bc + cd + bd$ because $2 = 0$ in $\mathbb{Z}_2$. Based on the n-chains of $X$ we can define the \em chain complex \em of $X$. It is made up of the following vector spaces and linear maps between them:
 
-Additive notation implies associativity but it does not have to sole purpose of illustrating the point of disregarding edge order. Its more important aspect is that it allows us to treat sums of edges as linear combinations in an abstract vector space. To begin with, we will operate with vector spaces over the field of coefficients $\mathbb{Z}_2 = \{0, 1\}$ together with the standard operations of addition and multiplication modulo two. We will use abstract vector spaces over the field of coefficients $\mathbb{Z}_2$ as the building blocks of our study of Homology.
-
-Let $X$ be a simplicial complex. An n-chain of $X$ is a formal sum of n-simplices of $X$ \cite{comp-topo}. The notation we will use for an n-chain is $\sum{a_i \sigma_i}$ where $a_i \in \mathbb{Z}_2$ and $\sigma_i$ is an n-simplex of $X$. We can add two n-chains component wise much like we would add polynomials. For example $(ab + bc) + (ab + cd + db) = 2ab + bc + cd + db = bc + cd + bd$ because $2 = 0$ in $\mathbb{Z}_2$.
-
-Based on the n-chains of $X$ we can define the \em chain complex \em of $X$. It is made up of the following vector spaces and linear maps between them:
+% We will use abstract vector spaces over the field of coefficients $\mathbb{Z}_2$ as the building blocks of our study of Homology.
 
 \begin{itemize}
 
-    \item The \textbf{group of n-chains} $C_n(X)$ of $X$. These are the vector spaces where the vectors are all possible n-chains of $X$ and the coeficients are $\mathbb{Z}_2$.
+    \item The \textbf{group of n-chains} $C_n(X)$ of $X$. These are vector spaces where the vectors are all possible n-chains of $X$ and the coeficients are $\mathbb{Z}_2$.
 
     \item The \textbf{boundary maps} $\partial_n$ between the groups of n-chains of $X$. These are linear maps between consecutive groups of n-chains $\partial_n : C_n(X) \to C_{n-1}(X)$.
 
 \end{itemize}
 
-What we have defined as the chain complex of $X$ is no more that a collection of vector spaces together with linear maps between. When n is smaller than zero bigger than the dimension of $X$ then the approriate vector space is the trivial, consisting only of the zero element. We can visualise the chain complex of $X$ with the so called quiver representation. For our example simplical complex it would look like:
+What we have defined as the chain complex of $X$ is no more that a collection of vector spaces together with linear maps between. When $n$ is smaller than zero or bigger than the dimension of $X$ then the vector spaces $C_n(X)$ are trivial. They consisting only of the zero element. We can visualise the chain complex of $X$ with the so called quiver representation []. For our example simplical complex it would look like:
 
 $$ 0 \overset{\partial_{3}}{\longrightarrow} C_2(X) \overset{\partial_{2}}{\longrightarrow} C_{1}(X) \overset{\partial_{1}}{\longrightarrow} C_{0}(X) \overset{\partial_0}{\longrightarrow}  0 $$
 
 In the general case for an n-dimensional simplical complex $X$ the full chain complex would be:
 
 $$ ... \longrightarrow 0 \overset{\partial_{n+1}}{\longrightarrow} C_n(X) \overset{\partial_{n}}{\longrightarrow} C_{n-1}(X) \overset{\partial_{n-1}}{\longrightarrow} ... \longrightarrow  \overset{\partial_1}{\longrightarrow} C_0(X) \overset{\partial_0}{\longrightarrow} 0 \longrightarrow ... $$
+where we can extend both the right and lefthand sides with the zero vector spaces and zero maps infinitely. More specifically in this sequence $\partial_{n+1} \text{ and } \partial_{0}$ are zero maps. The boundary map $\partial_{n+1}$ sends the zero vector of $0$ to the zero vector of $C_n(X)$ and the map $\partial_0$ sends all vectors in $C_0(X)$ to the zero vector in $0$.
 
-where we can extend both right and lefthand sides with the zero vector spaces and zero maps infinitely. More specifically in this sequence $\partial_{n+1} \text{ and } \partial_{0}$ are zero maps. The boundary map $\partial_{n+1}$ sends the zero vector of $0$ to the zero vector of $C_n(X)$ and the map $\partial_0$ sends all vectors in $C_0(X)$ to the zero vector in $0$.
+Let us now explain how the groups of n-chains and the boundary maps of a simplical complex are constructed explicitly. In our working example $C_0(X)$ is the vector space that is spanned by all possible linear combinations of the vertices $\{a, b, c, d\}$ of the complex. Therefore $\{a, b, c, d\}$ is a basis for $C_0(X)$ and we write this as $C_0(X) = span(\{a, b, c, d\})$. A vector in $C_0(X)$ is a linear combination of the basis vectors using coefficients in $\mathbb{Z}_2$. Let $\sigma \in C_0(X)$ be an 0-chain, then we can express it as $\sigma  = \alpha_0a + \alpha_1b + \alpha_2c + \alpha_3d$ where $\alpha_i \in \{0 ,1\}$ for every $i = 0, 1, 2, 3$.
 
-Let us now expand on how the groups of n-chains and the boundary maps of a simplical complex are constructed explicitly. In our working example $C_0(X)$ is the vector space that is spanned by the vertices $\{a, b, c, d\}$ of the complex. We write this as $C_0(X) = span(\{a, b, c, d\})$. A vector in $C_0(X)$ is a linear combination of the basis vectors using coefficients in $\mathbb{Z}_2$. Let $\sigma \in C_0(X)$ be a vector, then we can express it as $\sigma  = \alpha_0a + \alpha_1b + \alpha_2c + \alpha_3d$ where $\alpha_i \in \{0 ,1\}$ for every $i = 0, 1, 2, 3$. Going a dimension up $C_1(X) = span(\{ab, bc, ca, cd, bd\})$. As we pointed out earlier the cycle that consists of the edges $bc, cd, db$ is represented by the sum or linear combination $bc + dc + bd = 0ab + 1bc + 0ca + 1cd + 1bd$ and has coordinates $(0, 1, 0, 1, 1)$ in $C_1(X)$ with respect to the basis we have chosen. We may of course work in any basis we like. For example $C_0(X) = span(\{a + b, b, c, c + d\})$ because the vectors $(1, 1, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0) \text { and } (0, 0, 1, 1,)$ are linearly independent. In this basis the 0-simplex $a + b + c + d$ will have coordinates $(1, 0, 0 1)$.
+Going a dimension up $C_1(X) = span(\{ab, bc, ac, cd, bd\})$. As we pointed out earlier the cycle that consists of the edges $bc, cd, bd$ is represented by the sum or linear combination $bc + cd + bd = 0ab + 1bc + 0ca + 1cd + 1bd$ and has coordinates $(0, 1, 0, 1, 1)$ in $C_1(X)$ with respect to the basis $\{ab, bc, ac, cd, bd\}$. We may of course work use a different basis for the groups of n-chains. For example $C_0(X) = span(\{a + b, b, c, c + d\})$ because the vectors $(1, 1, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0) \text { and } (0, 0, 1, 1,)$ are linearly independent. In this basis the 0-simplex $a + b + c + d$ has coordinates $(1, 0, 0 1)$.
 
-The boundary maps are defined analogously to how we presented them in the beginning of the section. The effect a boundary map has on a simplex $\sigma \in C_n(X)$ is that it returns the linear combination consisting of the simplices of $C_{n-1}(X)$ that are codimension-1 faces of $\sigma$. If $\sigma$ is the convex  combination of the vertices $[v_0, v_1, ..., v_n]$ then we define it's boundary as
+The boundary maps are defined analogously to how we presented them in the beginning of the section. The effect a boundary map has on a simplex $\sigma \in C_n(X)$ is that it returns the linear combination of the simplices of $C_{n-1}(X)$ that are codimension-1 faces of $\sigma$. If $\sigma$ is the convex  combination of the vertices $[v_0, v_1, ..., v_n]$ then we define its boundary as
 
 $$ \partial(\sigma) = \partial([v_0, v_1, ..., v_n]) = \sum_{i=0}^{n}[v_0, ... , \hat{v_i}, ..., v_n] ,$$
-
-where the hat on top of $v_i$ signifies that we omit it in the convex combination. From this definition we can extend $\partial$ linearly by allowing it commute with vector addition and scalar multiplication like so:
+where the hat on top of $v_i$ in the sum signifies that we omit it in the convex combination. From this definition we can extend $\partial$ to all n-chains in $C_n(X)$ linearly by allowing it commute with vector addition and scalar multiplication like so:
 
 $$ \partial\bigg(\sum_{\sigma}a_{\sigma}\sigma\bigg) = \partial\bigg(\sum_{\sigma}{a_{\sigma}[v_{\sigma_0}, v_{\sigma_1}, ..., v_{\sigma_n}]}\bigg) = \sum_{\sigma}{a_{\sigma} \sum_{i=0}^{n}[v_{\sigma_0},..., \hat{v}_{\sigma_i}, ..., v_{\sigma_n}]} .$$
 
-Going back to our working example let $\sigma = ab + bc + ca$ be an n-chain in $C_{1}(X)$. Then $\partial(ab + bc + ca) = \partial(ab) + \partial(bc) + \partial(ca) = a + b + b + c + c + a = 2a + 2b + 2c = 0$. This examples allows us to observe an important fact. We know that the n-chain $ab + bc + ca$ is a cycle and we obtained that it's boundary is zero. This is no concidence. The defining feature of a cycles is that they have no boundary. In general the n-cycles in $C_{n}(X)$ are exactly the n-chains that go to zero under the boundary map. The set of all vector that go to zero under a linear map is known as the kernel of the linear map. The kernel of the boundary map $\partial_n : C_{n}(X) \to C_{n-1}(X)$ is denoted as:
+Going back to our working example on Figure \ref{fig:hom-sc} let $\sigma = ab + bc + ac$ be an n-chain in $C_1(X)$. Then $\partial(ab + bc + ac) = \partial(ab) + \partial(bc) + \partial(ac) = a + b + b + c + a + c = 2a + 2b + 2c = 0$. This examples allows us to observe an important fact. We know that the n-chain $ab + bc + ca$ is a cycle and we obtained that its boundary is zero. This is no concidence. The defining feature of a cycles is that they have zero boundary. The n-cycles in $C_{n}(X)$ are defined as the n-chains that go to zero under the boundary map. The set of all vectors that go to zero under a linear map is known as the kernel of the linear map. The kernel of the boundary map $\partial_n : C_{n}(X) \to C_{n-1}(X)$ is denoted as:
 
 $$ Z_n = ker(\partial_n) = \Big\{\sigma \in C_{n}(X): \partial_n\big(\sigma\big) = 0 \Big\}. $$
 
@@ -76,41 +74,43 @@ $$ B_n = im(\partial_{n+1}) = \Big\{\partial_{n+1}(\sigma) \in C_{n}(X): \sigma 
 
 %From linear algebra we know that for a linear function $f: V \to W$, $ker(f)$ is a linear subspace of $V$ and $im(f)$ is a subspace of $W$. In the context of chain complexes this means that the images and kernels of all the boudary maps are linear subspaces of their respective n-chains. Before learning how the interplay between cycles and boundaries is translated in this setting we must present the following fundamental theorem
 
-Now that we have the means of describing the cycles and boundaries the only thing that we are missing is to partition the cycles into groups of cycles that differ from each other only by their boundary. We want of way of making precise the notion that the cycles $ab, bd, dc, ac$ and $db, cd, bc$ in Example [] are equivalent because they both represent the missing simplex $dbc$. To do so we must first understand how $Z_n$ and $B_n$ are related through the fundamental Lemma of Homology.
+Now that we have the means of describing the cycles and boundaries the only thing that we are missing is a way to partition the cycles into groups that differ from each other only by their boundary. This would make precise the notion that the cycles $ab, bd, cd, ac$ and $bd, cd, bc$ in Figure \ref{fig:hom-sc} are equivalent because they both represent hole caused by the missing simplex $bcd$. We must first understand how $Z_n$ and $B_n$ are related through the fundamental Lemma of Homology.
 
-\begin{lem} Fundamental Lemma of Homology. $(\partial_{n-1} \circ \partial_n) (\sigma) = 0, \text{ for every } \sigma \in C_{n}(X)$. \end{lem}
+\begin{lem} (Fundamental Lemma of Homology) $\partial_{n-1}(\partial_n(\sigma)) = 0, \text{ for every } \sigma \in C_{n}(X)$. \end{lem}
 
 \begin{proof}
-    We will only sketch the intuitive outline of the proof and refer the reader to \cite{algebraic-topology} for a more complete version.
+    We will only sketch the intuitive outline of the proof and refer the reader to \cite{algebraic-topology} for a more comprehensive version.
 
-    Let us consider the boundary of $\sigma \in C_n(X)$ which is $\partial_n(\sigma)$. It contains all of the n-1 faces of $\sigma$. Furthermore every n-2 face of $\sigma$ belongs to exactly two n-1 faces of sigma. Therefore they will cancel out in the second boundary operation $\partial_{n-1}\partial_n(\sigma)$.
+    Let us consider the boundary of $\sigma \in C_n(X)$ which is $\partial_n(\sigma)$. It contains all of the n-1 faces of $\sigma$. Furthermore every n-2 face of $\sigma$ belongs to exactly two n-1 faces of $\sigma$. Therefore they will cancel out in the second boundary operation $\partial_{n-1}(\partial_n(\sigma)) = 0$.
 \end{proof}
 
 
 \begin{cor}  For every two consecutive boundary maps $\partial_n$ and $\partial_{n-1}$ in a chain complex $im(\partial_n) \subseteq ker(\partial_{n-1})$. \end{cor}
 
 \begin{proof}
-    If the image of $\partial_n$ were not in the kernel of $\partial_{n-1}$ then there would be at least one n-chain $\sigma$ for which $(\partial_{n-1} \circ \partial_n) (\sigma) \ne 0$. By the Fundamental Lemma of Homology this is not possible.
+    If the image of $\partial_n$ were not in the kernel of $\partial_{n-1}$ then there would be at least one n-chain $\sigma$ for which $\partial_{n-1}(\partial_n(\sigma)) \ne 0$. By the Fundamental Lemma of Homology this is not possible.
 \end{proof}
 
-We have found that $B_n \subseteq Z_n$, but we can make an even stronger statement. From linear algebra \cite{lin-alg-done-right} we know that the kernel and image of a linear function are linear subspaces of the domain and range of the linear map. Therefore $B_n$ and $Z_n$ are linear subspaces of $C_n(X)$. As $B_n \subseteq Z_n$ we can infer that $B_n$ is a linear subspace of $Z_n$. In order to partition all cycles in $Z_n$ into equivalence classes of cycles which only differ by a bounday in $B_n$ we can take the quotient of the two spaces. This quotient is in the heart of Homology!
 
-\begin{defn} The n-th homology group of a chain map is the quotient $H_n(X) = Z_p \big/ B_p = ker(\partial_{n+1})\big/im(\partial_n)$. \end{defn}
 
-We know two important things about the quotient $H_n(X)$. The first one is that the quotient of a vector space and its subspace is a vector space \cite{lin-alg-done-right}. The second one is that the dimension of the quotient space is equal to the difference of the dimension of the vector space and the dimension of the subspace \cite{lin-alg-done-right}. Therefore $H_n(X)$ is a vector space and $dim(H_n(X)) = dim(ker(\partial_{n+1})) - dim(im(\partial_n))$. The elements of $H_n(X)$ are called homology classes. For a cycle $\sigma \in Z_p$ we done it's homology class in the quotient $H_p(X)$ as $[\sigma]$. Two cycles are in the same homology class exactly when they only differ by a boundary. In our working example this means that $[ab + bd + dc + ac] = [db + cd + bc]$. Both cycles are representatives of the same homology class.
+Since $B_n = im(\partial_{n+1})$ and $Z_n = ker(\partial_n)$ then $B_n$ is a subset of $Z_n$. We can make an even stronger statement. From linear algebra \cite{lin-alg-done-right} we know that the kernel and image of a linear map are linear subspaces of the domain and range of the linear map. Therefore $B_n$ and $Z_n$ are linear subspaces of $C_n(X)$. As $B_n \subseteq Z_n$ we can infer that $B_n$ is a linear subspace of $Z_n$. In order to partition all cycles in $Z_n$ into equivalence classes of cycles which only differ by a bounday in $B_n$ we can take the quotient of the two spaces. This quotient is is what we call the homology of the chain complex.
+
+\begin{defn} The n-th homology group of a chain complex is the quotient $H_n(X) = Z_n \big/ B_n = ker(\partial_{n+1})\big/im(\partial_n)$. \end{defn}
+
+We know two important things about the quotient $H_n(X)$. The first one is that the quotient of a vector space and its subspace is a vector space \cite{lin-alg-done-right}. The second one is that the dimension of the quotient space is equal to the difference of the dimension of the vector space and the dimension of the subspace \cite{lin-alg-done-right}. Therefore $H_n(X)$ is a vector space and $dim(H_n(X)) = dim(Z_n) - dim(B_n)$. The elements of $H_n(X)$ are called homology classes. For a cycle $\sigma \in Z_p$ we denote its homology class in the quotient $H_p(X)$ as $[\sigma]$. Two cycles are in the same homology class exactly when they only differ by a boundary. In our working example this means that $[ab + bd + cd + ac] = [bd + cd + bc]$. To verify this let us compute the difference of the two $(ab + bd + cd + ac) - (bd + cd + bc) = (ab + bd + cd + ac) + (bd + cd + bc) = ab + ac + bc$. The n-chain $ab + ac + bc$ is the boundary of the simplex
+$abc$. We have shown that both cycles differ by a boundary. Therefore they are both representatives of the same homology class. In the language of abstract algebra we would say that they are in the same coset.
 
 The dimensions of the homology groups are a summary of the topological information about the connectivity of the n-dimensional simplicies of a complex. They are called Betti numbers and they have the following interpretation.
 
 \begin{itemize}
-    \item Betti zero or $\beta_0 = dim(H_0)$ is the number of connected components
-    \item Betti one  or $\beta_1 = dim(H_1)$ is the number one dimentional holes in a space or holes.
-    \item Betti two  or $\beta_2 = dim(H_2)$ is the number two dimentional holes in a space or voids.
+    \item Betti zero or $\beta_0 = dim(H_0)$ is the number of connected components in a simplicial complex.
+    \item Betti one  or $\beta_1 = dim(H_1)$ is the number one dimentional holes in a simplicial complex or simply holes.
+    \item Betti two  or $\beta_2 = dim(H_2)$ is the number two dimentional holes in a simplicial complex or simply voids.
 \end{itemize}
 
+The higher Betti numbers represent the number of higher dimensional voids. In a simplicial complex of finite dimension the Betting numbers higher than the dimension of the complex ae all zero. We refer the reader for examples of more homology computation to [].
 
-The higher Betti numbers represent the number of higher dimensional voids. In a simplicial complex of finite dimension the Betting numbers from a point onwards to all be zero. This of course means that the according homology group are the zero dimensional vector space.
-
-Homology computations are far too envolved and lenghty to be given as examples here. We refer the eager and interested reader to [].
+% Homology computations are far too envolved and lenghty to be given as examples here. We refer the eager and interested reader to [].
 
 % *Give example with the torus*
 
@@ -122,30 +122,29 @@ Homology computations are far too envolved and lenghty to be given as examples h
 
 \section{Reduced and Relative Homology}
 
-There are two extensions of homology we need to discuss so that we may to be able to fully harness the power of persistent homology in the following chapter. Those are reduced and relative homology.
+There are two extensions of homology we need to discuss so that we may to be able to fully harness the power of persistent homology in the following section. Those are reduced and relative homology.
 
-The need for reduced homology arises from a slight inconsistency in the interpretation of the homology groups. Take for example the simplical complex that consists of a single vertex. All of its homology groups except for the $H_0$ are trivial. It is convenient in many application to force $H_0$ behave like the rest of the homology group. More specifically, in our example of a single vertex we would like for it's 0th homology group it to be trivial. Consequently we would also like path-connected simplical complexes will have trivial 0th homology. The geometrical interpretation of this extension is the reduced 0th homology classes represent the number of voids that separate path connected components and not the path connected components themselves.
+The need for reduced homology arises from a slight inconsistency in the interpretation of the homology groups. Take for example the simplical complex that consists of a single vertex. All of its homology groups except for $H_0$ are trivial. It is convenient in many application to force $H_0$ to behave like the rest of the homology group. More specifically, we would like for the 0th homology group it to be trivial as well. In order to do this we must force all path-connected simplical complexes will have a trivial 0th homology group.
 
-In order to accomplish this we will augment the chain complex of simplical complex $X$ with one additional group $\mathbb{Z}_2$ and one linear map $\epsilon : C_0(X) \to \mathbb{Z}_2$. The resulting chain complex is:
+The geometrical interpretation of this extension is the reduced 0th homology classes represent the number of voids that completely separate path connected components and not the path connected components themselves \cite{comp-topo}. In order to accomplish this we will augment the chain complex of a simplical complex $X$ with one additional group $\mathbb{Z}_2$ and one linear map $\epsilon : C_0(X) \to \mathbb{Z}_2$. The resulting chain complex is
 
-$$ ... \longrightarrow C_1(X) \longrightarrow C_0(X) \overset{\epsilon}{\longrightarrow} \mathbb{Z}_2 \longrightarrow 0 .$$
+$$ ... \longrightarrow C_1(X) \longrightarrow C_0(X) \overset{\epsilon}{\longrightarrow} \mathbb{Z}_2 \longrightarrow 0 \longrightarrow ...~, $$
+where the function $\epsilon: C_0(X) \to \mathbb{Z}_2$ is defined as $\epsilon\big(\sum_{i}n_i\sigma_i\big) = \sum_{i}n_i$. The value of $\epsilon$ is equal to the parity of the number of simplicies in the chain. We will define the reduced homology as the homology of the augmented chain complex or $\overset{\sim}{H}_n(X)$. From \cite{algebraic-topology} we have that $\overset{\sim}{H}_n(X) = H_n(X)$ for $n > 0$ and $\overset{\sim}{H}_0(X) \bigoplus \mathbb{Z}_2 = H_0(X)$. The reduced homology of a chain complex effectively reduces the dimension of the 0th homology group by one.
 
-In this augmented chain the function $\epsilon: C_0(X) \to \mathbb{Z}_2$ is defined as $\epsilon\big(\sum_{i}n_i\sigma_i\big) = \sum_{i}n_i$. The value of $\epsilon$ is equal to the parity of the number of simplicies in the chain. We will define the reduced homology as the homology of the augmented chain complex or $\overset{\sim}{H}_n(X)$. From \cite{algebraic-topology} we have that $\overset{\sim}{H}_n(X) = H_n(X)$ for $n > 0$ and $\overset{\sim}{H}_0(X) \bigoplus \mathbb{Z}_2 = H_0(X)$.
-
-Another crucial concept is that of relative homology. Relative homology aims to simplify the homology of a simplical complex $X$ by discarding all chains that belong to a subcomplex $A$ of $X$. We do so by taking the quotient of the chain groups of $X$ and the chain groups of $A$. We will define this quotients as $C_n(X, A) = C_n(X) / C_n(A)$ and call $C_n(X, A)$ the relative chain groups. As the boundary maps take $C_n(A)$ to $C_{n-1}(A)$ they induce relative boundary maps from $C_n(X, A)$ to $C_{n-1}(X, A)$. The relative bounday map takes a relative class from $[\sigma] \in C_n(X, A)$ to a relative class $[\partial_n(\sigma)] \in C_n(X, A)$. By taking the relative chain groups together with the relative chain maps we obtain the relative chain complex.
+Another crucial concept is that of relative homology. Relative homology aims to simplify the homology of a simplical complex $X$ by discarding all chains that belong to a subcomplex $A$ of $X$. We do so by taking the quotient of the chain groups of $X$ and the chain groups of $A$. We will define this quotients as $C_n(X, A) = C_n(X) / C_n(A)$ and call $C_n(X, A)$ the relative chain groups. As the boundary maps take $C_n(A)$ to $C_{n-1}(A)$ they induce relative boundary maps from $C_n(X, A)$ to $C_{n-1}(X, A)$. The relative bounday maps take a relative class from $[\sigma] \in C_n(X, A)$ to a relative class $[\partial_n(\sigma)] \in C_n(X, A)$. By taking the relative chain groups together with the relative chain maps we obtain the relative chain complex.
 
 $$ ... \longrightarrow C_n(X, A) \longrightarrow ... \longrightarrow C_1(X, A) \longrightarrow C_0(X, A) \longrightarrow 0. $$
 
-We will define the relative homology groups of the relative chain complex as $H_n(X, A) = ker(\partial_n) / im(\partial_{n-1})$ where we substitute $\partial_n$ and $\partial_{n-1}$ to be the relative boundary groups. The most important thing to note is that $H_n(X, A)$ is not the quotient $H_n(X) / H_n(A)$, but the homology of the relative chain complex.
+We will define the relative homology groups of the relative chain complex as $H_n(X, A) = ker(\partial_n') / im(\partial_{n-1}')$ where $\partial_n'$ and $\partial_{n-1}'$ are the relative boundary maps. The most important thing to note is that $H_n(X, A)$ is not the quotient $H_n(X) / H_n(A)$, but the homology of the relative chain complex.
 
 Intuitively here is how we can think of the relative homology classes \cite{algebraic-topology}.
 
 \begin{itemize}
-  \item A relative chain $\alpha$ is a relative cycle when it's boundary $\partial_n(\alpha)$ is in $C_n(A)$.
-  \item A relative cycle $\alpha$ is trivial in the homology when it's the sum of a boundary $\partial_n(\beta)$ of $\beta \in C_{n+1}(X)$ and a chain $\gamma \in C_n(A)$.
+  \item A relative chain $\alpha$ is a relative cycle when its boundary $\partial_n(\alpha)$ is in $C_{n-1}(A)$.
+  \item A relative cycle $\alpha$ is trivial in the homology when it is the sum of a boundary $\partial_{n + 1}(\beta)$ of $\beta \in C_{n+1}(X)$ and a chain $\gamma \in C_n(A)$.
 \end{itemize}
 
-There is a connection between the relative chain complex and the reduced chain complex \cite{elementary-applied-topology}. In fact they are equal when we quotient by a single vertex of $X$. Let $p$ be a 0-simplex of $X$ then $\overset{\sim}{H}_n(X) = H_n(X, p)$. The reason for this is that the 0th homology class $p$ becomes trivial in the homology relative to $p$.
+There is a connection between the relative chain complex and the reduced chain complex \cite{elementary-applied-topology}. In fact they are equal when we quotient by a single vertex of $X$. Let $p$ be a 0-simplex of $X$ then $\overset{\sim}{H}_n(X) = H_n(X, p)$. The reason for this is that the 0th homology class of $p$ becomes trivial when we quotient it out.
 
 The relative homology classes are a purely algebraic construction, but for simplical complexes there is an appropriate geometric intuition that goes along with them. It is expressed through the following theorem \cite{comp-topo}.
 
@@ -154,64 +153,66 @@ The relative homology classes are a purely algebraic construction, but for simpl
 \end{thm}
 
 % @TODO Should A be a closed subcomplex?
-A corollary of the Excision Theorem \cite{elementary-applied-topology} is that if $A$ is a subcomplex of $X$ then $H_n(X, A) \simeq H_n(X/A, A/A) \simeq \overset{\sim}{H}_n(X/A)$ where $A/A$ is a single point in $X/A$. This will allows us to leverage our geometric intuition about quotient spaces to compute homology groups. We will make use of this geometric intuition when we are presenting examples in the next chapter. In particular when $X$ is a small enough simplical complex we will use the Excision Theorem to compute the dimension of $\overset{\sim}{H}_0(X/A)$ by simply counting the number of connected components of $X/A$ and subtracting one.
+A corollary of the Excision Theorem \cite{elementary-applied-topology} is that if $A$ is a subcomplex of $X$ then $H_n(X, A) \simeq H_n(X/A, A/A) \simeq \overset{\sim}{H}_n(X/A)$ where $A/A$ is a single point in $X/A$. This will allows us to leverage our geometric intuition about quotient spaces to compute homology groups. The quotient space of a simplicial complex however is generally not a simplicial complex. Simplicial Homology is well defined for such spaces (known as $\Delta$ complexes), but we will not be able to cover this extension in detail.
 
-
-
+In this dissertation we will only need to compute the 0th homology of quotient spaces and for this we can use our geometric intuition to visuale them and count the number of connected components. We will make use of this geometric intuition when we are presenting examples in the next chapter. In particular when $X$ is a small enough simplical complex we will use the Excision Theorem to compute the dimension of $\overset{\sim}{H}_0(X/A)$ by simply counting the number of connected components of $X/A$ and subtracting one.
 
 
 \section{Inclusion Maps and Induced Maps on Homology}
 
 
-We will devote this final section to introducing inclusion maps between chain complexes and how they induce linear maps between the homology and relative homology groups of the chain complexes. We will begin by defining inclusion maps:
+We will devote this section to introducing inclusion maps between chain complexes and how they induce linear maps between the homology and relative homology groups of the chain complexes. We will begin by defining inclusion maps:
 
 \begin{defn} Let $X$ be a simplicial complex and $A$ be a subcomplex of $X$. A function $i: A \to X$ is an inclusion map when $i$ takes a simplex $\sigma$ in $A$ to $\sigma$ in $X$.
 \end{defn}
 
-In other words $i(\sigma) = \sigma$ and when $A = X$ then the inclusion maps is the identity map. Note that an inclusion maps is a special case of a simplicial map \cite{combinatorial-algebraic-topology}. A simplicial map between two simplical complexes takes simplicies from one to simplicies of the other. An inclusion map fits that cireria by simply mapping all simplicies to themselves. Furthermore inclusion maps will allows us to obtain maps between the chain groups of $A$ and $X$.
+In other words $i(\sigma) = \sigma$ and when $A = X$ then the inclusion maps is the identity map. Inclusion maps are a special case of a simplicial maps \cite{combinatorial-algebraic-topology}. A simplicial map between two simplical complexes takes simplicies from one to simplicies of the other. We are opting for introducing the special case directly because we will only use inclusion maps in the following sections.
+
+Inclusion maps between simplical complexes allow us to obtain inclusion maps maps between the groups of n-chains of $A$ and $X$.
 
 \begin{defn} Let $X$ be a simplicial complex and $A$ be a subcomplex of $X$ and $i: A \to X$ be an inclusion map. Then $i$ induces an inclusion map $i_\#: C_n(A) \to C_n(X)$ for all $n \in \mathbb{Z}$. \end{defn}
 
-In order to define $i_\#$ we just have to extend $i$ linearly to n-chains of $C_n(A)$ as follows: $i_\#(\sum a_\sigma \sigma) = \sum a_\sigma i(\sigma)$. Note that $i_\#$ is also an inclusion maps because every n-chain in $C_n(A)$ is also an n-chain of $C_n(X)$ and $i$ maps simplicies to themselves. Upon obtaining inclusion maps between the chain complexes of $A$ and $X$ we can take a step further and induce a linear map between the homology groups of $A$ and $X$.
+In order to define $i_\#$ we just have to extend $i$ linearly from simplices to n-chains of $C_n(A)$ as follows: $i_\#(\sum a_\sigma \sigma) = \sum a_\sigma i(\sigma)$. Note that $i_\#$ is also an inclusion maps because every n-chain in $C_n(A)$ is also an n-chain of $C_n(X)$ and $i$ maps simplicies to themselves. Upon obtaining inclusion maps between the chain complexes of $A$ and $X$ we can take a step further and use that inclusion map to induce a linear map between the homology groups of $A$ and $X$.
 
 \begin{defn} Let $X$ be a simplicial complex and $A$ be a subcomplex of $X$ and $i_\#: C_n(A) \to C_n(X)$ be an inclusion map. Then $i_\#$ induces an linear map $i_*: H_n(X) \to H_n(Y)$ such that $i_*([\sigma]) = [i_\#(\sigma)]$ for all $n \in \mathbb{Z}$.
 \end{defn}
 
-Where $[\sigma]$ is the homology group of a an n-chain $\sigma$ in $C_n(A)$ and $[i_\#(\sigma)]$ is the homology group of a an n-chain $i_\#(\sigma) = \sigma$ in $C_n(X)$. A crutial thing to note here is that $i_*$ does not have to be an inclusion map between the homology groups. Take for example a cycle which is not trivial in $H_n(A)$. The same cycle could become trivial in $H_n(A)$ if $X$ contain a simplex whos boundary is $\sigma$, but $A$ does not not.
+Where $[\sigma]$ is the homology class of the n-chain $\sigma$ in $C_n(A)$ and $[i_\#(\sigma)]$ is the homology class of the n-chain $i_\#(\sigma) = \sigma$ in $C_n(X)$. A crutial thing to note here is that $i_*$ does not have to be an inclusion map between the homology groups. Take for example a cycle which is not trivial in $H_n(A)$. The same cycle could become trivial in $H_n(X)$ if $X$ contain a simplex whos boundary is $\sigma$, but $A$ does not not.
 
-The last thing we will do it to expand the definitions we've made for far to relative homology groups.
+Lastly we will expand the definitions we have made so far to relative homology groups.
 
 \begin{defn} Let $X$ be a simplicial complex. Let $A$ and $B$ be two subcomplexes $X$ such that $A \subseteq B$. Then the identity map $i: X \to X$ induces a linear map $i_*: H_n(X, A) \to H_n(X, B)$ for all $n \in \mathbb{Z}$.
+\label{def:pairs}%
 \end{defn}
 
-This will call this inclusion of pairs. The pairs are $(X, A)$ and $(X, B)$. To see why this holds we refer the reader to \cite{algebraic-topology}. One just has to keep in mind that the identity map is a well defined continous map between topological pairs such as $(X, A)$ and $(X, B)$.
+The general case of this definition is for two topological spaces $X$ and $Y$, two subspaces $A \subseteq X$ and $B \subseteq Y$ and a continuous function $f: X \to Y$ such that $f(A) \subseteq B$. For a demonstration of how the map between $H_n(X, A) \to H_n(Y, B)$ is induced we refer to \cite[p.~118]{algebraic-topology}. The result shown here holds because inclusion maps are continuous and because as  $A \subseteq B$ then $i(A) \subseteq i(B)$. We will not have to construct such a maps exliciply we just need the reader to be aware of how they are defined.
 
 
 \section{Persistent Homology}
 
-We will now turn our attention to one of the tools that has made topological data analysis so viable in recent years. This tool is called Persistent Homology (PH) and it is primarily used for measuring the signicance of topological features. The primary motivation for introducing persistent homology in the first place was the practical need to cope with noise in data \cite{comp-topo}. The general idea is that once we extract the topological features from data we can attribute a metric to them. We can then use that metric to extract the important topological features by ignoring all features we deem of low significance (they are considered noise).
+We will now turn our attention to one of the tools that has made topological data analysis so viable in recent years. This tool is called Persistent Homology (PH) and it is primarily used for measuring the signicance of topological features \cite{what-is-ph}. The primary motivation for introducing persistent homology in the first place was the practical need to cope with noise in data \cite{ph-a-survey}. The general idea is that once we extract the topological features from data we can attribute a metric to them. We can then use that metric to extract the important topological features by ignoring all features we deem of low significance (they are considered noise).
 
 
 % @TODO Define filtrations.
 % @TODO Introduce filtrations and VR complexes.
 
-Persistent homology emerged in the early 2000s in the works of \cite{persistence-original} as a tool for automated topological simplification. The building blocks of persistent homoogy are sequences of nested simplicial complexes called filtrations. A filtration of a simplicial complex $X$ is a one parameter family of simplicial complexes $\{X_t\}_{t \in \{0, ..., n\}}$ where $X_i \subseteq X_j$ whenever $i \le j$ and $X = X_n$. If we arange the consequtive $X_i$ in a linear sequence we obtain the following:
+Persistent homology emerged in the early 2000s in the works of Herbert et. at \cite{persistence-original} as a tool for automated topological simplification. The building blocks of persistent homoogy are sequences of nested simplicial complexes called filtrations. A filtration of a simplicial complex $X$ is a one parameter family of simplicial complexes $\{X_t\}_{t \in \{0, ..., n\}}$ where $X_i \subseteq X_j$ whenever $i \le j$ and $X = X_n$. If we arange the consequtive $X_i$ in a linear sequence we obtain the following:
 
 % The original motivation for introducing it was to better model point cloud data through filtrations of Vietoris Ribs complexes. Persistent Homology has since grown into a general methodology that can be applied any filtration of a topological space. To best illustrate what persistent homology is let us consider a filtration of a simplical complex $X$.
 
-$$ X_0 \subseteq X_1 \subseteq ... \subseteq X_{n-1} \subseteq X_n = X$$
+$$ X_0 \subseteq X_1 \subseteq ... \subseteq X_{n-1} \subseteq X_n = X. $$
 
 \begin{figure}[h]%
     \centering
-    \subfloat[$X_1$]{{\includegraphics[scale=0.05]{./images/filtration/small/x1.eps}}}%
+    \subfloat[$X_0$]{{\includegraphics[scale=0.05]{./images/filtration/small/x1.eps}}}%
     \qquad
-    \subfloat[$X_2$]{{\includegraphics[scale=0.05]{./images/filtration/small/x2.eps}}}%
+    \subfloat[$X_1$]{{\includegraphics[scale=0.05]{./images/filtration/small/x2.eps}}}%
     \qquad
-    \subfloat[$X_3$]{{\includegraphics[scale=0.05]{./images/filtration/small/x3.eps}}}%
+    \subfloat[$X_2$]{{\includegraphics[scale=0.05]{./images/filtration/small/x3.eps}}}%
     \qquad
-    \subfloat[$X_4$]{{\includegraphics[scale=0.05]{./images/filtration/small/x4.eps}}}%
+    \subfloat[$X_3$]{{\includegraphics[scale=0.05]{./images/filtration/small/x4.eps}}}%
     \qquad
-    \subfloat[$X_5 = X$]{{\includegraphics[scale=0.05]{./images/filtration/small/x5.eps}}}%
+    \subfloat[$X_4 = X$]{{\includegraphics[scale=0.05]{./images/filtration/small/x5.eps}}}%
     \caption{Example of an filtration of a simplicial complex.}%
     \label{fig:example-filtration}%
 \end{figure}
@@ -229,51 +230,62 @@ Another way to think about a filtration is that we start with simplicial complex
 
 $$ X_0 \overset{i}{\longrightarrow} X_1 \overset{i}{\longrightarrow} ... \overset{i}{\longrightarrow} X_{n-1} \overset{i}{\longrightarrow} X_n .$$
 
-We have already shown in the previous chapter that inclusion maps induce linear maps between homology groups. By invoking this property we obtain the following sequence of homology groups:
+We have already shown in the previous chapter that inclusion maps induce linear maps between homology groups. By invoking this property we obtain the following sequence of homology groups and maps between them:
 
 $$ H_p(X_0) \overset{i_*}{\longrightarrow} H_p(X_1) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_p(X_{n-1}) \overset{i_*}{\longrightarrow} H_p(X_n) $$
-
 for all $p \in \{0, 1, 2, ...\}$. The induced linear maps encode the information about the topological changes in the homology of consecutive complexes in the filtration. We will introduce the following terminology to help us interpret this information \cite{elementary-applied-topology}:
 
 % @TODO You may not be right about death here
 \begin{itemize}
     \item A homology class is \textbf{born} if it is not in the image of the homology group of the previous complex in the filtration under $i_*$.
     \item A homology class \textbf{dies} if its image under $i_*$ is the zero element or it merges with an older class.
-    \item A homology class \textbf{persists} if its image under $i_*$ is not the zero element.
+    \item A homology class \textbf{persists} if its image under $i_*$ is not the zero element and it does not merge with an older class.
 \end{itemize}
 
-Let us now expand on the case when two classes merge in a filtration. Suppose that $[\alpha] \ne [\beta]$ are two homology classes of some $H_p(X_i)$ such that $i_*([\alpha]) = i_*([\beta])$ in $H_p(X_{i+1})$ because of the introduction of a new boundary. In such a situation we must make a choice on which one of the classes dies and which of the persists. It does not matter what we choose as long as we remember the choise in the future. In order to be consistent in choosing we will apply the Elder Rule \cite{comp-topo}. According to the elder rule the class whose birth time is smaller will persisnt and the other one will die. In the case of multiple classes we merging all will die except the oldest.
+Let us now expand on the case when two classes merge in a filtration. Suppose that $[\alpha] \ne [\beta]$ are two homology classes of some $H_p(X_i)$ such that $i_*([\alpha]) = i_*([\beta])$ in $H_p(X_{i+1})$ because of the introduction of a new boundary. For example the classes $[0]$ and $[1]$ in $H_0(X_1)$ are not equivalent. They represent two distinct connected components. By introducing the edge $01$ in $X_1$ they become one connected component and $[0] = [1]$ in $H_0(X_2)$. We must choose which one of the classes dies and which one of them persists. It does not matter what we choose as long as we commit to the choice in the future.
+
+In order to be consistent in choosing we will apply the Elder Rule \cite[p.~150]{comp-topo}. According to the elder rule the class whose birth time is smaller will persisnt and the other one will die. In the case of merging multiple classes all will die except the oldest. In the example whel $[0] = [1]$ in $H_0(X_2)$ we will pick $[0]$ as the representative of the homology class because it is older and say that $[1]$ dies at time $2$ because it merges with $[0]$.
 
 Using the language of birth and death we can define the persistence of a homology class. Let $\alpha$ be a homology class that is born in $X_i$ and dies in $X_j$. We call the difference $j - i$ the persistence of $\alpha$. Some classes however do not have a defined death time. These are the classes of the final complex in the filtration. We will call those classes essential and set their persistence to $\infty$. Classes that have persisted for a large number of timesteps are deemed significant. Ephemeral classes on the other hand are not. Such classes are often considered to correspond to statistical noise or sampling error.
 
 % @TODO Should you add X_i here istead of just t_i?
 
-One way to visualise persistent homology is by producing the so called persistence pairs and plotting them. A persistence pair $(t_1, t_2)$ of a homology class $\alpha$ is a pairing of two timestamps - the birth and death time of $\alpha$. The essential classes are the exception to this rule. A persistence pair of an essential class formed as $(t, \infty)$ where their birth time is $t$ and we set their death time to $\infty$ due ot the lack of one. We visualise the persistence pairs by plotting as points in the plane. This is called a persistence diagram.
+One way to visualise persistent homology is by producing the so called persistence pairs and plotting them. A persistence pair $(t_1, t_2)$ of a homology class $\alpha$ is a pairing of two timestamps - the birth and death time of $\alpha$. The essential classes are the exception to this rule. A persistence pair of an essential class is formed as $(t, \infty)$ where their birth time is $t$ and we set their death time to $\infty$ due to the lack of one.
 
-Another way to visualy persistent homology is via a barcode diagram \cite{barcodes}. A barcode diagram is a graphical representation of the persistent homology as a collection of horizontal line segments in the plane. The horizontal axis corresponds to the current homology we are in and the vertical axis coresponds to an arbitrarily chosen basis for the current homology group. A line is drawn between two basis elements $[\alpha] \in H_k(X_t)$ and $[\beta] \in H_k(X_{t+1})$ whenever $i_*[\alpha] = [\beta]$. A line is cut short when a basis element in $H_k(X_t)$ dies upon entering $H_k(X_{t+1})$. The persistent pairs correspond uniquely to lines in the barcode diagram. If there is a persistence pair $(t_1, t_2)$ then we draw a line from $t_1$ and cut it off at $t_2$. For example the barcode diagram for our working example of a filtration is on Figure \ref{fig:example-barcode}.
+Persistence pairs are visualied by plotting them as points in the plane. This is called a persistence diagram. We denote the essential classes as triangles above the last simplex in the filtration and other classes as circles (Figure \ref{fig:ph-viz} a, b). We can see that there are two pairs in the 0th persistent homology of the filtration on Figure \ref{fig:example-filtration}. The first pair is $(1, 2)$ and it corresponds to the birth of the second connected component in time $1$ and its death in time $2$ where it merges with the first connected component. The second pair $(0, \infty)$ is an essential class that corresponds to the single connected component of $X_0$ that persists until the end of the filtration at $X_4$.
 
-afasd
+In the 1st persistent homology we have two pairs. One is $(3, 4)$ and the other is $(3, \infty)$. These corespond to two 1-cycles that are born at time $3$. Those are $13 + 14 + 34$ and $23 + 24 + 34$. At time $4$ the cycle $13 + 14 + 34$ becomes trivial in $H_1(X_4)$ because we add the boundary $234$. The cycle $23 + 24 + 34$ however persists in $H_1(X_4)$ and therefore coresponds to the pair $(3, \infty)$.
+
+Another way to visualy persistent homology is via a barcode diagram \cite{barcodes}. A barcode diagram is a graphical representation of the persistent homology as a collection of horizontal line segments in the plane. The horizontal axis corresponds to the current homology group and the vertical axis coresponds to an arbitrarily chosen basis for the current homology group. A line is drawn between two basis elements $[\alpha] \in H_k(X_t)$ and $[\beta] \in H_k(X_{t+1})$ whenever $i_*[\alpha] = [\beta]$. A line is cut short when a basis element in $H_k(X_t)$ dies upon entering $H_k(X_{t+1})$. The persistent pairs correspond uniquely to lines in the barcode diagram. If there is a persistence pair $(t_1, t_2)$ then we draw a line from $t_1$ and cut it off at $t_2$. For example the barcode diagram for the persistent homology of the filtration on Figure \ref{fig:example-filtration} is depicted on Figure \ref{fig:ph-viz} c).
+
 \begin{figure}[h]%
     \centering
-    \subfloat[Barcode Diagram]{{\includegraphics[scale=0.12]{./images/filtration/small/barcode.pdf}}}%
-    \qquad \qquad\qquad\qquad
-    \subfloat[Pairs in $H_0$]{{\includegraphics[scale=0.1]{./images/filtration/small/diagram-h0.eps}}}%
+    \subfloat[Persistence pairs in $H_0$.]{{\includegraphics[scale=0.08]{./images/filtration/small/diagram-h0.eps}}}%
     \qquad
-    \subfloat[Pairs in $H_1$]{{\includegraphics[scale=0.1]{./images/filtration/small/diagram-h1.eps}}}%
-    \caption{Examples of visualising persistent homology of the filtration on Figure \ref{fig:example-barcode}.}%
-    \label{fig:example-filtration}%
+    \subfloat[Persistence pairs in $H_1$.]{{\includegraphics[scale=0.08]{./images/filtration/small/diagram-h1.eps}}}%
+    \subfloat[Barcode Diagram.]{{\includegraphics[scale=0.08]{./images/filtration/small/barcode.pdf}}}%
+    \caption{Examples of visualising persistent homology of the filtration on Figure \ref{fig:example-filtration}.}%
+    \label{fig:ph-viz}%
 \end{figure}
 
-
-You can see in the digram that one 0th homology class is born at time $1$ and another one at time $2$. In time $3$ the class born at time $1$ merges with the class that is born at time $1$ because it is the younger class. In time $4$ on the other hand two cycles or 1st homology classes are born. One of them dies at time $5$ and the other one pesists. These events corresponds to the persistent homology pairs $(2, 3), (4, 5), (1, \infty)$ and $(4, \infty)$.
-
+% You can see in the digram that one 0th homology class is born at time $1$ and another one at time $2$. In time $3$ the class born at time $1$ merges with the class that is born at time $1$ because it is the younger class. In time $4$ on the other hand two cycles or 1st homology classes are born. One of them dies at time $5$ and the other one pesists. These events corresponds to the persistent homology pairs $(2, 3), (4, 5), (1, \infty)$ and $(4, \infty)$.
 
 % @TODO What kind does the manifold have to be?
-Now let us apply the general theory of persistent homology to a more familiar domain. Let $M$ be a traingulation of a bounded area in $\mathbb{R}^2$ and let $f: M \to \mathbb{R}$ be our familiar linear interpolat. We would like to obtain a filtration of $M$ that we can analyse with persistent homology. The filtration that is proposed in the literature \cite{comp-topo} is of the sublevel sets $M$. As we have already shown in Chapter 2 Morse functions have finitely many critical points, changes in the topology of the sublevel sets happen only are critical points and critical points are at the vertices of $M$. Therefore we need only consider the sublevel sets at the critical values. Let $c_1 < c_2 < ... < c_n$ be all critical values and let $M_{c_i} = f^{-1}((-\infty, c_i])$ be the sublevel sets at the critical values where we do not include all simplices which are not intirely in $M_{c_i}$ in order to obtain a simplicial complex. This lets us obtain a filtration of the sublevel sets:
+Now let us apply the general theory of persistent homology to a more familiar domain. Let $M$ be a simplicial mesh that is the traingulation of a bounded area in $\mathbb{R}^2$ and let $f: M \to \mathbb{R}$ be a linear interpolat based on the vertices of $M$. We would like to obtain a filtration of $M$ that we can analyse with persistent homology. The filtration that is proposed in the literature \cite{comp-topo} for manifolds and morse functions is defined via the sublevel or superlevel sets of the manifold.
+
+From Chapter 3 we know that $M$ is a manifold and that $f$ is a Morse function. The following claims hold:
+
+\begin{itemize}
+    \item $f$ has finitely many critical points,
+    \item changes in the topology of the sublevel sets of $M$ happen only at critical points and
+    \item critical points are at the vertices of $M$.
+\end{itemize}
+
+Therefore we need only consider the sublevel sets at the critical values of $f$. Let $c_1 < c_2 < ... < c_n$ be all critical values and let $M_{c_i} = f^{-1}((-\infty, c_i])$ be the sublevel sets at the critical values where we do not include all simplices which are not intirely contained in $M_{c_i}$ in order to obtain a simplicial complex. This lets us obtain a filtration of the sublevel sets:
 
 $$ M_{c_1} \subseteq M_{c_2} \subseteq ... \subseteq M_{c_{n-1}} \subseteq M_{c_n} = M.$$
 
-From this filtration we can produce the following chain of homology groups:
+From this filtration we can produce the following sequence of homology groups and maps between them:
 
 $$ H_n(M_{c_1}) \overset{i_*}{\longrightarrow} H_n(M_{c_2}) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(M_{c_{n-1}}) \overset{i_*}{\longrightarrow} H_n(M_{c_n}) = H_n(M).$$
 
@@ -281,30 +293,58 @@ If we had taken the superlevel sets of $M$ we would have obtained a different fi
 
 $$ H_n(M^{c_1}) \overset{i_*}{\longrightarrow} H_n(M^{c _2}) \overset{i_*}{\longrightarrow} ... \overset{i_*}{\longrightarrow} H_n(M^{c_{n-1}}) \overset{i_*}{\longrightarrow} H_n(M^{c_n}) = H_n(M).$$
 
-We are now able to compute both the contour tree and its branch decomposition and persistent homology. Our motivation behind doing so has been sparked by a quote from the original paper that introduced branch decomposition of contour trees \cite{ct-branch-decomp}. Branch decomposition results in a set of branches or equivalently pairings of critiral points of the contour tree. In the branch decomposition paper the importance of branches is based on their persistence as defined in the original paper that introduced persistent homology \cite{persistence-original}.
+We can use both filtration to compute the persistent homology of the ascending and descending filtrations of $M$.
 
-This idea of the similarity between the two however has not been explained in detal nor explored further in the paper or in subsequent publications. We would like to explore it further. We would like to test whether the pairings produced from branch decomposition are the same as the pairings produced by persistent homology. We will do so by computing both on the same data sets and comparing the results to see how and why they differ. Before doing so however we must address an inconsistency between the two. The branch decomposition of the contour tree pair all critical points. Some critical points in persistent homology however are not "properly" paired. These are the ones that corespond to essential homology classes which have infinite persistence. To address this issue we will introduce an extension to persistent homology that "properly" pairs essential homology classes by assinging them with finite persistence.
+% We are now able to compute both the contour tree and its branch decomposition and persistent homology. Our motivation behind doing so has been sparked by a quote from the original paper that introduced branch decomposition of contour trees \cite{ct-branch-decomp}. Branch decomposition results in a set of branches or equivalently pairings of critiral points of the contour tree. In the branch decomposition paper the importance of branches is based on their persistence as defined in the original paper that introduced persistent homology \cite{persistence-original}.
+
+% This idea of the similarity between the two however has not been explained in detal nor explored further in the paper or in subsequent publications. We would like to explore it further. We would like to test whether the pairings produced from branch decomposition are the same as the pairings produced by persistent homology. We will do so by computing both on the same data sets and comparing the results to see how and why they differ. Before doing so however we must address an inconsistency between the two.
+%
+% The branch decomposition of the contour tree pair all critical points. Some critical points in persistent homology however are not "properly" paired. These are the ones that corespond to essential homology classes which have infinite persistence. To address this issue we will introduce an extension to persistent homology that "properly" pairs essential homology classes by assinging them with finite persistence.
 
 
 \section{Extended Persistence}
 
-We have seen from the definition and computations of persistent homology that not all critical points are paired. Those that give birth to the essential classes will not be paired because they are never destroyed pass the final simplex in the filtration. This leads to incompleteness in the persistence pairings which we would to remedy. Our goal in extending persistence it to devise a way to pair the essential homology classes with the remaining unpaired critical points \cite{persistence-extended}.
+
+
+% We have seen from the definition and computations of persistent homology that not all critical points of $M$ wil be paired.
+%
+% Furthermore the persistence of points that give birth to essential classes is not well defined because it is equal to $\infty$.
+%
+% Our goal in extending persistence it to devise a way to pair the essential homology classes with the remaining unpaired critical points \cite{persistence-extended}.
+
+% will not be paired because they are never destroyed pass the final simplex in the filtration.
+%
+% This leads to incompleteness in the persistence pairings because persistence for some pa
+
+% which we would to remedy. Our goal in extending persistence it to devise a way to pair the essential homology classes with the remaining unpaired critical points \cite{persistence-extended}.
 
 % @TODO Add reference
 
-Let $M$ be a traingulation of a bounded area in $\mathbb{R}^2$ and let $f: M \to \mathbb{R}$ be a linear interpolat. The main idea behind extended persistence is to follow the ascending filtration of persistent homology with a descending pass where once we reach a class that is homologous to a essential class in the ascending filtration we consider it to be destroyed and thus paired. Extended persistence consists of two consecutive sequences. The first sequence is the made up of absolute homology groups going up:
+% Let $M$ be a traingulation of a bounded area in $\mathbb{R}^2$ and let $f: M \to \mathbb{R}$ be a linear interpolat.
 
-$$ 0 = H_n(M_{c_1}) \rightarrow H_n(M_{c_2}) \rightarrow ... \rightarrow H_n(M_{c_{n-1}}) \rightarrow H_n(M_{c_n}) =  H_n(M) $$
+When $M$ is a traingulation of a bounded area in $\mathbb{R}^2$ and $f: M \to \mathbb{R}$ is a linear interpolat not all critical points are paired by persistent homology. Some are left out because pairs that include essential homology classes have infinite persistence. Such pairs only pair one critical point, not two. The purpose of extending persistence is to devise a way to pair the critical points that correspond to essential homology classes with remaining unpaired critical points \cite{persistence-extended}.
 
-Just like in orginary persistence the linear maps between consecutive absolute homology gruops are induced by the inclusion maps between $M_{c_i} \subseteq M_{c_{i+1}}$. The second sequence is made up of relative homology groups that come back down:
+The main idea behind extended persistence is to follow the ascending filtration of persistent homology with a descending filtration. In the descending filtration we remember which the essential homology classes are. While in the descending filtration once we reach a class that is homologous to an essential class we consider it to be destroyed and thus paired. Extended persistence consists of two consecutive sequences. The first sequence is the made up of homology groups going up
 
-$$ H_n(M) = H_n(M, M^{c_n}) \rightarrow H_n(M, M^{c_{n-1}}) \rightarrow... \rightarrow H_n(M, M^{c_{2}}) \rightarrow H_n(M, M^{c_{1}}) = 0.$$
+$$ 0 \rightarrow H_n(M_{c_1}) \rightarrow H_n(M_{c_2}) \rightarrow ... \rightarrow H_n(M_{c_{n-1}}) \rightarrow H_n(M_{c_n}) =  H_n(M) .$$
 
-The linear maps between the relative homology groups in the relative sequence are induced by inclusion of pairs. The pairs $(M, M^{c_i})$ and $(M, M^{c_{i-1}})$ are such that $M^{c_i} \subseteq M^{c_{i-1}}$ and by Definition [] induce linear maps between $H_n(M, M^{c_i})$ and $H_n(M, M^{c_{i-1}})$. When we combine the two sequences at $H_n(M_{c_n}) =  H_n(M) = H_n(M, M^{c_n})$ we obtain the following single sequence:
+Just like in orginary persistence the linear maps between consecutive homology groups are induced by the inclusion maps between $M_{c_i} \subseteq M_{c_{i+1}}$. The second sequence is made up of relative homology groups that come back down:
 
-$$ 0 = H_n(M_{c_1}) \rightarrow ... \rightarrow H_n(M_{c_n}) = H_n(M, M^{c_n}) \rightarrow ... \rightarrow H_n(M, M^{c_{1}}) = 0.$$
+$$ H_n(M) = H_n(M, M^{c_n}) \rightarrow H_n(M, M^{c_{n-1}}) \rightarrow... \rightarrow H_n(M, M^{c_{2}}) \rightarrow H_n(M, M^{c_{1}}) \rightarrow 0.$$
 
-The extended persistence sequence of homology groups start from the trivial group and ends at the trivial group. This means that all classes that are born will eventually die in a finite amount of time steps. A good way of picturing extendex persistence if through excision. Take a look at \cite{folded-molecules} for more details examples of this.
+The linear maps between the relative homology groups in the relative sequence are induced by inclusion of pairs. The pairs $(M, M^{c_i})$ and $(M, M^{c_{i-1}})$ are such that $M^{c_i} \subseteq M^{c_{i-1}}$ and by Definition \ref{def:pairs} induce linear maps between $H_n(M, M^{c_i})$ and $H_n(M, M^{c_{i-1}})$. When we combine the two sequences at $H_n(M_{c_n}) =  H_n(M) = H_n(M, M^{c_n})$ we obtain the following single sequence:
+
+$$ 0 \rightarrow H_n(M_{c_1}) \rightarrow ... \rightarrow H_n(M_{c_n}) = H_n(M, M^{c_n}) \rightarrow ... \rightarrow H_n(M, M^{c_{1}}) \rightarrow 0.$$
+
+The extended persistence sequence of homology groups start from the trivial group and ends at the trivial group. This means that all classes that are born will eventually die in a finite amount of time steps. Extended persistent is symmetric. If we instead start with a descending filtration
+
+$$ 0 \rightarrow H_n(M^{c_n}) \rightarrow H_n(M^{c_{n-1}}) \rightarrow ... \rightarrow H_n(M^{c_{2}}) \rightarrow H_n(M^{c_1}) =  H_n(M) $$
+and follow that with a relative ascending filtration
+$$ H_n(M) = H_n(M, M_{c_1}) \rightarrow H_n(M, M_{c_{2}}) \rightarrow... \rightarrow H_n(M, M_{c_{n-1}}) \rightarrow H_n(M, M_{c_{n}}) \rightarrow 0 $$
+we would get the extended persistence of the descending filtration of $M$
+$$ 0 \rightarrow H_n(M^{c_n}) \rightarrow ... \rightarrow H_n(M^{c_1}) = H_n(M, M_{c_1}) \rightarrow ... \rightarrow H_n(M, M_{c_n}) \rightarrow 0.$$
+
+A good aid in understanding extended persistence is the Excision Theorem. We can use it compute the relative homology groups $H_n(M, M^{c_k})$ by computing the reduced homology groups of the quotient space $\overset{\sim}{H}_n(M / M^{c_k})$. We refer the reader \cite{folded-molecules} for more details examples of this.
 
 % To see why this is true first observe that $i$ induces an identity map between $C(X)$ and $C(X)$. This idetity map takes $C_n(A)$ to $C_n(B)$ and so we can create a well defined map $i_\#: C(X, A) \to C(X, B)$ such that $i_\#([\sigma]_A) = [\sigma]_B$. This map clearly commuted with the relative boundary map, therefore it induces a linear map on the relative homology groups.
 

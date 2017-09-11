@@ -14,30 +14,32 @@
     <!-- - CH7. Make table for NxBFS Testing -->
 
 
+    Q For Hamish
+
+    - Could not find reference
+
     IMPORTANT
-        - !!! THINK OF A NAME!
-        - !!! Run Algorithms Correctness
-        - !!! Final Refactor. W-Structures, Homology, EP vs DP        
-        - !!! Say where you've done original research
+        <!-- - !!! THINK OF A NAME! -->
+        <!-- - !!! Run Algorithms Correctness -->
+        <!-- - !!! Final Refactor. W-Structures, Homology, EP vs DP         -->
+        <!-- - !!! Say where you've done original research -->
+
         - !!! Fix References in text.
         - !!! Fix Table and Figures.
 
         - !!! Check Spelling and Grammar.
+        <!-- - !!! Make better intro for homology. -->
 
 
     MEDIUM
         - CH4. Find references for 2xBFS and DP algorithms.
-        - CH4. Find references for Hamiltonia path reduction 4.@.
-        - CH7. Find Reference for GTOPO
-        - Picture of Reeb Graph
+
         - Add index of tables
-        - Add ref for first ct paper
-        - Put spacing before definitions.
         - Space complexity of DP.
         - Add figure in improving 2xBSF accuracy
 
-
     SMALL
+        - Put spacing before definitions.
         - Add triangles to simplicial mesh.
         - Add more references.
         - Add Murmuration
@@ -48,6 +50,12 @@
         - CH4. Check if you notation about time complexity see if it's called that.
         - Restart numbering in DP algorithm pseudocode.
         - Make definitions not em.
+        - Fix picture position EP VS BD
+        - Fix indentation after equation
+        - Add pages to book references.
+        - Picture of Reeb Graph
+        - Change numbers of ph diagram to start at 0 not 1
+        - CH7. Find Reference for GTOPO
 
 
     <!-- - CH2. Definitions about Reeb Graph should be taken directly from somewhere. Do not experiment. -->

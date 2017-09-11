@@ -1,24 +1,26 @@
 \chapter{Extended Persistence and Branch Decomposition}
 \label{chapter6}
 
-We can already see from this premise that the idea behind persistent homology is akin to that of contour tree simplification. In this chapter we will introduce persistent homology and in the next we will apply it to contour trees and explore its relation to contour tree splification via branch decomposition. In this chapter we will explore the relation between the pairs of critical points obained via branch decomposition and via extended persistence. We will introduce the historical relation between the two in the literature and the proceede to explore it with an example data set.
+We have seen in the previous chapter that the idea behind persistent homology is akin to that of contour tree simplification. Both are used to measures the topological significance of featurs in data, but persistent homology is a more general framework. The contribution we will make in this chapter is to explore the relation between the pairs of critical points obained via branch decomposition and via extended persistence. We will introduce the historical relation between the two in the literature and then proceeded to compare them by compute both on an example data set.
 
 \section{Persistence of Branches}
 
-In January of 2004 Pascucci at. al publish the original paper that introduces branch decomposition []. The authors of the paper clearly state that there is a similarity between their new method and the more general and recently established method of persistent homology (as it was originallly introduced in []). They do not go further in describing in detail how the persistence of branches is derived formally withing the framework of persistent homology. The relation between the two is not fully explored in the paper nor in subsequent publication. Describing it formally in a complete and rigrous manner is beyond the scope of this dissertation. We will however pose and answer one question that relates branch decomposition and persistent homology. Are the pairs of critical points produced by branch decomposition the same as the pairs produced by persistent homology of the zeroth homology?
+In 2004 Pascucci et. al published the original paper that introduced contour tree simplification through branch decomposition \cite{ct-branch-decomp}. In that paper it is clearly stated that there is a similarity between the new method they have developed and the more general and recently established method of persistent homology (as it was originally introduced in \cite{persistence-original}). They do not go further in describing in detail how the persistence of branches is derived formally withing the framework of persistent homology. The relation between the two is not fully explored in the paper nor in subsequent publications. Describing it formally in a complete and rigrous manner is beyond the scope of this dissertation. We will however pose and answer one question that relates branch decomposition and persistent homology. Are the pairs of critical points produced by branch decomposition the same as the pairs produced by the persistent homology of the zeroth homology?
 
-We can immediately see that they are not based solely on the fact that essential classes have infinite persistence and all branches have finite persistence. As we have seen this issue can be remedied by the use of extened persistence, but extended persistence was firmly established in a paper by Herbert et. al published five years later in 2009. It is however not the case the the concept of pairing the essential classes was not unheard of at the time of publishing of []. A previous paper \cite{extreme-elevation} by Herbert et. al published in early 2004 outlines a method of pairing the essential homology classes of two-manifolds. It is completely reasonable to assume that Pascucci et. al were aware of this recent devlopment. Since the method introduced in [] is a special case of what was later defined as extended peristence we will extend our comparison to the pairs of critical points obtain by extended persistence. Are the pairs of critical points produced by branch decomposition the same as the pairs produced by extended persistent of the zeroth homology?
+We can immediately show that they are not based solely on the fact that essential classes have infinite persistence and all branches have finite persistence. As we have seen this issue can be remedied by the use of extened persistence, but extended persistence was introduced in a paper by Herbert et. al \cite{persistence-extended} published five years later in 2009. However the concept of pairing essential classes was probably not unheard of at the time of publishing of \cite{ct-branch-decomp}. A previous paper \cite{extreme-elevation} by Herbert et. al first published in 2004 outlines a method of pairing the essential homology classes of 2-manifolds. It is completely reasonable to assume that Pascucci et. al were aware of this recent devlopment. Since the method introduced in \cite{extreme-elevation} is a special case of what was later defined as extended peristence we will extend our comparison to the pairs of critical points obtained by extended persistence. Are the pairs of critical points produced by branch decomposition the same as the pairs produced by the extended persistent of the zeroth homology?
 
 \section{Persistence Pairs vs Branch Decomposition Pairs}
 
-In this section we will present an example which demonstrates that at least one pair of critical points is different in branch decomposion and in extended persistence. This example will be based on Figure \ref{fig:simplicial-mesh} and our familir w-structures. A defining feature of this example is that the w-structure in the contour tree of the simplicial mesh prevents the existence of a monotone path between the global minimum and global maximum. Since monotone paths in the contour tree correspond to monotone paths in the simplicial mesh [] then branches obtained via branch decomposition correspond to valid topological cancelation in the simplicial mesh as well []. Therefore we can compare it with extended persistence of the simplicial mesh. For completeness we will compute and compare the following:
+In this section we will present an example which demonstrates that at least one pair of critical points is different in branch decomposion and in extended persistence. This example will be based on the simplicial mesh we presented in Figure \ref{fig:simplicial-mesh} and our familiar w-structures. A defining feature of this example is that the w-structure in the contour tree of the simplicial mesh prevents the existence of a monotone path between the global minimum and global maximum. Since monotone paths in the contour tree correspond to monotone paths in the simplicial mesh \cite{ct-big-paper} then branches obtained via branch decomposition correspond to valid topological cancelations in the simplicial mesh \cite{ct-branch-decomp}. Therefore the critical points obtained via branch decomposition will correspond to critical points in the simplicial mesh and as such will be directly comparable to critical points produces by the extended persistence of a filtration of the mesh.
+
+Conversely the 0th persistence homology can be computed either on a filtration of the simplicial mesh or on a filtration of the contour tree directly. The output will be the same because the contour tree records the changes in connectivity of level sets of the simplicial mesh. For completeness we will present the ascending and descending filtration of the contour tree in the Appendix [], but we will not use the directly here. To conclude we will compute and compare the following:
 
 % @TODO Make sure these are correct
 \begin{itemize}
 
     \item The join tree (Figure \ref{fig:join-tree-decomp} a), split tree (Figure \ref{fig:split-tree-decomp} a) and contour tree (Figure \ref{fig:contour-tree-decomp} a).
 
-    \item The branch decomposition of the join tree (Figure \ref{fig:join-tree-decomp} b), split tree (Figure \ref{fig:split-tree-decomp} d) and contour tree (Figure \ref{fig:contour-tree-decomp} b).
+    \item The branch decomposition of the join tree (Figure \ref{fig:join-tree-decomp} b), split tree (Figure \ref{fig:split-tree-decomp} b) and contour tree (Figure \ref{fig:contour-tree-decomp} b).
 
     \item Ascending filtration (Figure \ref{fig:asc-filtration}) and Descending filtration (Figure \ref{fig:desc-filtration}) of the simplicial mesh.
 
@@ -33,58 +35,58 @@ In this section we will present an example which demonstrates that at least one 
 \end{itemize}
 
 % @TODO Remove places thay say master branch.
-We will examine the join, split and contour trees first. We already computed the branch decomposition of the contour tree in chapter []. For the join tree the candidate branches are $5-2$, $7-3$ and $8-3$. We remove them in order of persistence. First we remove $5-2$, then $7-3$ and afterwards we remove the root branch $8-0$ as only remaining branch. In the split tree there are only two candidate branches. Those are $0-4$ and $1-4$. We remove $1-4$ because it has lower persistence. This leaves us with the root branch $0-8$.
+We will compute the branch decomposition of the join, split and contour trees first. We already computed the branch decomposition of the contour tree in chapter []. For the join tree the candidate branches are $(2, 5)$, $(3, 7)$ and $(3, 8)$. We remove them in order of persistence. First we remove $(2, 5)$, then $(3, 7)$ and afterwards we remove the root branch $(0, 8)$ as only remaining branch. In the split tree there are only two candidate branches. Those are $(0, 4)$ and $(1, 4)$. We remove $(1, 4)$ because it has lower persistence. This leaves us with the root branch $(0, 8)$.
 
-\begin{figure}[]%
+\begin{figure}[h]%
     \centering
-    \subfloat[Join Tree]{{\includegraphics[scale=0.11]{./images/w3x3/w3x3-join-tree.pdf}}}%
-    \subfloat[Branch Decomposition]{{\includegraphics[scale=0.11]{./images/w3x3/w3x3-join-tree-decomposition.pdf}}}%
+    \subfloat[Join Tree.]{{\includegraphics[scale=0.1]{./images/w3x3/w3x3-join-tree.pdf}}}%
+    \subfloat[Branch Decomposition.]{{\includegraphics[scale=0.1]{./images/w3x3/w3x3-join-tree-decomposition.pdf}}}%
     \caption{Branch Decomposition of the join tree.}%
     \label{fig:join-tree-decomp}%
 \end{figure}
 
-\begin{figure}[]%
+\begin{figure}[h]%
     \centering
-    \subfloat[Split Tree]{{\includegraphics[scale=0.11]{./images/w3x3/w3x3-split-tree.pdf}}}%
-    \subfloat[Branch Decomposition]{{\includegraphics[scale=0.11]{./images/w3x3/w3x3-split-tree-decomposition.pdf}}}%
+    \subfloat[Split Tree.]{{\includegraphics[scale=0.1]{./images/w3x3/w3x3-split-tree.pdf}}}%
+    \subfloat[Branch Decomposition.]{{\includegraphics[scale=0.1]{./images/w3x3/w3x3-split-tree-decomposition.pdf}}}%
     \caption{Branch Decomposition of the split tree.}%
     \label{fig:split-tree-decomp}%
 \end{figure}
 
-\begin{figure}[]%
+\begin{figure}[h]%
     \centering
-    \subfloat[Contour Tree]{{\includegraphics[scale=0.11]{./images/w3x3/w3x3-contour-tree.pdf}}}%
-    \subfloat[Branch Decomposition]{{\includegraphics[scale=0.11]{./images/w3x3/w3x3-contour-tree-h-decomposition.pdf}}}%
+    \subfloat[Contour Tree.]{{\includegraphics[scale=0.1]{./images/w3x3/w3x3-contour-tree.pdf}}}%
+    \subfloat[Branch Decomposition.]{{\includegraphics[scale=0.1]{./images/w3x3/w3x3-contour-tree-h-decomposition.pdf}}}%
     \caption{Branch Decomposition of the contour tree.}%
     \label{fig:contour-tree-decomp}%
 \end{figure}
 
-Next we will present the ascending filtration of the simplicial mesh and its extened persistence. The ascending filtration of the mesh is obtained by adding all the vertices one at a time (and edges between them) in order of their height. We can obtain the persistence pairs through inspection because connected components correspond to persistence homology classes. Obsertve that a connected component is born at time $0$ and at time $1$. Those connected components merge at time $4$. By enforcing the Elder Rule the component born at time $1$ will die at time $0$. Therefore the first persistence pair is $(1, 4)$. The following complexes of the filtration consisnt of a single connected component. Therefore the component born at time $0$ is an essential class that never dies. We have to use extended persistence to obtain a pairing.
+The next thing we will present is the ascending filtration of the simplicial mesh and its extened persistence. The ascending filtration of the mesh is obtained by adding all vertices (and edges between them) one at a time in order of their height. We can obtain the persistence pairs by inspection because connected components correspond to persistence homology classes. Obsertve that a connected component is born at time $0$ and at time $1$. Those connected components merge at time $4$. By enforcing the Elder Rule the component born at time $1$ will die at time $4$ and $0$ will perist. The first persistence pair is $(1, 4)$. The following complexes of the filtration consisnt of a single connected component. Therefore the component born at time $0$ is an essential class that never dies. We have to use extended persistence to obtain a pairing.
 
 \begin{figure}[h]%
     \captionsetup[subfigure]{labelformat=empty}
     \centering
-    \subfloat[$X_0$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x1.pdf}}}%
+    \subfloat[$X_0$]{{\includegraphics[scale=0.04]{./images/filtration/asc/x1.pdf}}}%
     \qquad
-    \subfloat[$X_1$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x2.pdf}}}%
+    \subfloat[$X_1$]{{\includegraphics[scale=0.04]{./images/filtration/asc/x2.pdf}}}%
     \qquad
-    \subfloat[$X_2$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x3.pdf}}}%
+    \subfloat[$X_2$]{{\includegraphics[scale=0.04]{./images/filtration/asc/x3.pdf}}}%
 
     \par\bigskip
 
-    \subfloat[$X_3$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x4.pdf}}}%
+    \subfloat[$X_3$]{{\includegraphics[scale=0.04]{./images/filtration/asc/x4.pdf}}}%
     \qquad
-    \subfloat[$X_4$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x5.pdf}}}%
+    \subfloat[$X_4$]{{\includegraphics[scale=0.04]{./images/filtration/asc/x5.pdf}}}%
     \qquad
-    \subfloat[$X_5$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x6.pdf}}}%
+    \subfloat[$X_5$]{{\includegraphics[scale=0.04]{./images/filtration/asc/x6.pdf}}}%
 
     \par\bigskip
 
-    \subfloat[$X_6$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x7.pdf}}}%
+    \subfloat[$X_6$]{{\includegraphics[scale=0.04]{./images/filtration/asc/x7.pdf}}}%
     \qquad
-    \subfloat[$X_7$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x8.pdf}}}%
+    \subfloat[$X_7$]{{\includegraphics[scale=0.04]{./images/filtration/asc/x8.pdf}}}%
     \qquad
-    \subfloat[$X_8$]{{\includegraphics[scale=0.05]{./images/filtration/asc/x9.pdf}}}%
+    \subfloat[$X_8$]{{\includegraphics[scale=0.04]{./images/filtration/asc/x9.pdf}}}%
 
     \caption{Ascending Filtration of the Dataset.}%
     \label{fig:asc-filtration}%
@@ -96,44 +98,44 @@ Next we will present the ascending filtration of the simplicial mesh and its ext
 % The next homology group in the sequence is $H_0(X, X^9)$. From the Excision Theorem we have that $H_0(X, X^9) = \overset{\sim}{H}_0(X / X^9)$. However $X / X^9 = X / \{9\} = X$ because quotienting by a single points leaves the complex unchanged. Therefore $H_0(X, X^9) =
 % \overset{\sim}{H}_0(X)$. We have already explained that $H_0(X) = \mathbb{Z}_2$, so $\overset{\sim}{H}_0(X) = 0$ and consequently $H_0(X, X^9) = 0$. This means that the induced map $i_* : H_0(X_9) \to H_0(X, X^9)$ is the zero map. The conclusion we draw is that the homology class that is born at time $0$ at the global minimum dies at time $8$. Extended persistence produces the pair pair $(0, 8)$.
 
-In order to do so we must find where in the relative filtration the homology class $0$ dies. Let us first consider the last homology group of he ascending filtration $H_0(X_8) = H_0(X)$. Since $X$ has one connected component $H_0(X_8) = \mathbb{Z}_2$. Now let us consider the next homology group in the extended filtration and obtain the induced map between them. The next homology group is $H_0(X, X^8) = H_0(X, \{8\})$. By the Excision Theorem we have that $H_0(X, \{8\}) = \overset{\sim}{H}_0(X / \{8\})$. By [] we know that a quotient space of a path connected topological space is path connected. Therefore $X / \{8\}$ has a single connected component and consequently $H_0(X / \{8\}) =\mathbb{Z}_2$.
+In order to do so we must find where in the relative filtration the homology class $0$ dies. Let us first consider the last homology group of he ascending filtration $H_0(X_8) = H_0(X)$. Since $X$ has one connected component $H_0(X_8) = \mathbb{Z}_2$. Now let us consider the next homology group in the extended filtration and obtain the induced map between them. The next homology group is $H_0(X, X^8) = H_0(X, \{8\})$. By the Excision Theorem we have that $H_0(X, \{8\}) = \overset{\sim}{H}_0(X / \{8\})$. We also know that a quotient space of a path connected topological space is path connected. Therefore $X / \{8\}$ has a single connected component and consequently $H_0(X / \{8\}) =\mathbb{Z}_2$.
 By the definition of reduced homology we know that $dim(\overset{\sim}{H}_0(X / \{8\})) = dim(H_0(X / \{8\})) - 1 = 0$.
-A zero dimensional vector space is the trivial vector space consisting only of the zero vector. The map $i_* : H_0(X_8) \to H_0(X, X^8)$ is the zero map because $H_0(X, X^8) = H_0(X, \{8\}) = \overset{\sim}{H}_0(X / \{8\}) = 0$. Therefore the homology class that persists in $H_0(X_8)$ dies in $H_0(X, X^8)$ and the final pair we obtain from extended persistence is $(0, 8)$.
+A zero dimensional vector space is the trivial vector space consisting only of the zero vector. The map $i_* : H_0(X_8) \to H_0(X, X^8)$ is the zero map because $H_0(X, X^8) = H_0(X, \{8\}) = \overset{\sim}{H}_0(X / \{8\}) = 0$. Therefore the homology class that persists in $H_0(X_8)$ dies in $H_0(X, X^8)$ and the final pair we obtain from extended persistence is $(0, 8)$. The two extended persistence pairs of the ascending filtration are $(1, 4)$ and $(0, 8)$.
 
 
 \begin{figure}[h]%
     \captionsetup[subfigure]{labelformat=empty}
     \centering
-    \subfloat[$X^9$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x1.pdf}}}%
+    \subfloat[$X^9$]{{\includegraphics[scale=0.04]{./images/filtration/desc/x1.pdf}}}%
     \qquad \qquad
-    \subfloat[$X^8$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x2.pdf}}}%
+    \subfloat[$X^8$]{{\includegraphics[scale=0.04]{./images/filtration/desc/x2.pdf}}}%
     \qquad \qquad
-    \subfloat[$X^7$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x3.pdf}}}%
+    \subfloat[$X^7$]{{\includegraphics[scale=0.04]{./images/filtration/desc/x3.pdf}}}%
 
     \par\bigskip
 
-    \subfloat[$X^6$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x4.pdf}}}%
+    \subfloat[$X^6$]{{\includegraphics[scale=0.04]{./images/filtration/desc/x4.pdf}}}%
     \qquad \qquad
-    \subfloat[$X^5$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x5.pdf}}}%
+    \subfloat[$X^5$]{{\includegraphics[scale=0.04]{./images/filtration/desc/x5.pdf}}}%
     \qquad \qquad
-    \subfloat[$X^4$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x6.pdf}}}%
+    \subfloat[$X^4$]{{\includegraphics[scale=0.04]{./images/filtration/desc/x6.pdf}}}%
 
     \par\bigskip
 
-    \subfloat[$X^3$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x7.pdf}}}%
+    \subfloat[$X^3$]{{\includegraphics[scale=0.04]{./images/filtration/desc/x7.pdf}}}%
     \qquad \qquad
-    \subfloat[$X^2$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x8.pdf}}}%
+    \subfloat[$X^2$]{{\includegraphics[scale=0.04]{./images/filtration/desc/x8.pdf}}}%
     \qquad \qquad
-    \subfloat[$X^1$]{{\includegraphics[scale=0.05]{./images/filtration/desc/x9.pdf}}}%
+    \subfloat[$X^1$]{{\includegraphics[scale=0.04]{./images/filtration/desc/x9.pdf}}}%
 
     \caption{Descending Filtration of the Dataset.}%
     \label{fig:desc-filtration}%
 \end{figure}
 
-We will compute the persistence pairs of the descending filtration in the same manner. Observe that one Figure \ref{fig:desc-filtration} three 0th homology homology classes are born. They are born at times $0, 1$ and $3$. The component $1$ dies at time $5$ when it is merges with the components born at time $0$. The component $3$ dies at time $6$ when it is merged with component $0$. The component $0$ is the essential homology class that does not die. We can compute its extended persistence pair in a completely analogus way to that of the ascending filtration. We obtain that the extended persistence pairs of the descending filtration are $(1, 5), (3, 6)$ and $(0, 8)$. Those pairs correspond to vertex pairs $(7, 3), (2, 5)$ and $(8, 0)$
-because the vertex $7$ is added at time $1$, $3$ is added at time $5$, $2$ at time $3$, $5$ at time $6$, $8$ at time $0$ and $0$ and time $8$.
+We will compute the extended persistence pairs of the descending filtration in the same manner. Observe that one Figure \ref{fig:desc-filtration} three 0th homology homology classes are born. They are born at times $0, 1$ and $3$. The component $1$ dies at time $5$ when it is merges with the component born at time $0$. The component $3$ dies at time $6$ when it is merged with component $0$. The component $0$ is the only essential homology class. We can compute its extended persistence pair in a completely analogus way to that of the ascending filtration. We obtain that the extended persistence pairs of the descending filtration are $(1, 5), (3, 6)$ and $(0, 8)$. Those pairs correspond to vertex pairs $(3, 7), (2, 5)$ and $(0, 8)$
+because the vertex $3$ is added at time $5$, $7$ is added at time $1$, $2$ at time $3$, $5$ at time $6$, $0$ at time $8$ and $8$ and time $0$.
 
-The barcode diagrams of the of the ascending and descending filtrations are presented on Figure \ref{fig:barcode-asc-desc}.
+The barcode diagrams of the ascending and descending filtrations are presented on Figure \ref{fig:barcode-asc-desc}.
 
 
 \begin{figure}[h]%
@@ -146,9 +148,9 @@ The barcode diagrams of the of the ascending and descending filtrations are pres
     \label{fig:barcode-asc-desc}%
 \end{figure}
 
-We are now ready to answear the primary question set forth in the begining of the section. Are the pairs of critical points produced by branch decomposition the same as the pairs produced by extended persistent of the zeroth homology? They are not. In both the ascending and descending filtrations the global minimum $0$ pairs with the global maximum $8$. In the contour tree however there is no monotone path between them. Therefore they cannot be a pair in the branch decomposition.
+We are now ready to answear the primary question set forth in the begining of the section. Are the pairs of critical points produced by branch decomposition the same as the pairs produced by the extended persistent of the zeroth homology? They are not. In both the ascending and descending filtrations the global minimum $0$ pairs with the global maximum $8$. In the contour tree however there is no monotone path between them. Therefore they cannot be a pair in the branch decomposition.
 
-To go a step further we will also examine the similarity of the join tree branch decomposition to the extended persistence of the descending filtration and the split tree branch decomposition to the extended persistence of the ascending filtration. We have depicted each of these side by side on Figure []. The only change we have made is to relabel the time component of the descending filtration to corespond to the vertex that appears at that time.
+To go a step further we will also examine the similarity of the join tree branch decomposition to the extended persistence of the descending filtration and the split tree branch decomposition to the extended persistence of the ascending filtration. We have depicted each of these side by side on Figure \ref{fig:all-in-one}. The only change we have made is to relabel the time component of the descending filtration to corespond to the vertex that appears at that time.
 
 \begin{figure}[h]%
     \centering
@@ -163,9 +165,9 @@ To go a step further we will also examine the similarity of the join tree branch
     \label{fig:all-in-one}%
 \end{figure}
 
-We can see that in this example the two computations are equvalent. This does indeed make intuitive sense. The join tree captures topological information of how the connectivity of superlevel sets changes and so does the 0th persistent homology of the descending filtration. The same holds for the split tree. This is further supported by the fact that the book [] gives an algorithm that is specific to computing the 0th persistent homology that almost identical to the algorithm for computing join/split trees.
+We can see that in this example the two computations are equvalent. This does indeed make intuitive sense. The join tree captures topological information of how the connectivity of superlevel sets changes and so does the 0th extended persistent homology of the descending filtration. The same holds for the split tree and the 0th extended persistence of the ascending filtration. This is further supported by the fact that the book \cite{comp-topo} describes an algorithm for computing the 0th persistent homology that is almost identical to the algorithm for computing join/split trees.
 
-To conclude extended persistence is not equivalent to branch decomposition of the contour tree, but there is evidence to suggest that it may be equivalent for the branch decomposition of the join and split trees. The latter remains to be proven rigorously in the general case.
+To conclude extended persistence is not equivalent to the branch decomposition of the contour tree, but there is evidence to suggest that it may be equivalent to the branch decomposition of the join and split trees. The latter remains to be proven rigorously in the general case.
 
 
 

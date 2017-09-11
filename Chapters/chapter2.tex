@@ -211,9 +211,9 @@ In Chapter [] we will be interested in finding the longest path in a tree. This 
 
 The first algorithm we will discuss is based on the following theoretical result [].
 
-\begin{lem} Let $s$ be any vertex in a tree. The most distant vertex from $s$ is an endpoint of a tree diameter. \end{lem}
+\begin{lem} \label{2xbfs-lemma} Let $s$ be any vertex in a tree. The most distant vertex from $s$ is an endpoint of a tree diameter. \end{lem}
 
-To implement this algorithm we require a way of finding the most distant vertex from a given vertex. This can be done using Breadth First Search (BFS). Let $T$ be a tree and $s \in V(T)$ be any vertex. We can run BFS with $s$ as its root to find a vertex $u$ such that $d(s, u) \ge d(s, t)$ for all $t \in V(T)$. We can then run a second BFS with root $u$ to obtain a vertex $v$ such that $d(u, v) \ge d(u, t)$ for all $t \in V(T)$. Since $u$ is the farthest vertex from $s$ by Lemma [] it must be the endpoint of a diameter. The diameter of $T$ is the longest path in $T$. Therefore the second BSF produces a path whose length as much as the diameter of $T$. Therefore $d(u, v) \ge d(a, b)$ for all $a,b \in V(T)$.
+To implement this algorithm we require a way of finding the most distant vertex from a given vertex. This can be done using Breadth First Search (BFS). Let $T$ be a tree and $s \in V(T)$ be any vertex. We can run BFS with $s$ as its root to find a vertex $u$ such that $d(s, u) \ge d(s, t)$ for all $t \in V(T)$. We can then run a second BFS with root $u$ to obtain a vertex $v$ such that $d(u, v) \ge d(u, t)$ for all $t \in V(T)$. Since $u$ is the farthest vertex from $s$ by Lemma~\ref{2xbfs-lemma} it must be the endpoint of a diameter. The diameter of $T$ is the longest path in $T$. Therefore the second BSF produces a path whose length as much as the diameter of $T$. Therefore $d(u, v) \ge d(a, b)$ for all $a,b \in V(T)$.
 
 The space and time complexity of BSF are linear \cite{intro-to-algo} and therefore the space and time complexity of this algorithm are linear as well. This follows from that fact that the algorithm consists of running BFS two consecutive times.
 
