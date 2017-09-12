@@ -83,7 +83,7 @@ To see why this property is true observe that $u_i$ can be a kink in the path fr
 
 \section{Linear Time Algorithm - 2xBFS}
 
-Let us first explore how the Breadth First Search based tree diameter algorithm can be adapted to compute the w-diameter of a height tree. We will call the adaptation 2xBFS for short and it will follow exactly the same steps. The difference is that it will make use of a modified version of BFS that computes w-distances from a given root vertex to all other vertices in the tree. The algorithm works by first running the modified BFS from any vertex in the height tree and then records the leaf that is farthest in terms of w-length. It then runs the modified BFS a second time from that vertex and again records the farthest vertex from it.
+Let us first explore how the Breadth First Search based tree diameter algorithm can be adapted to compute the w-diameter of a height tree. We will call the adaptation 2xBFS for short and it will follow exactly the same steps. The difference is that we will make a modificatin of the standard BFS algorithm. We will modifty if to compute w-distances from a given root vertex to all other vertices in the tree. The algorithm works by first running the modified BFS from any vertex in the height tree and then records the leaf that is farthest in terms of w-length. It then runs the modified BFS a second time from that vertex and again records the farthest vertex from it.
 
 The pseudocode for this algorithm is presented in Algorithm 1. In the algorithm we use two properties of vertices. The property $u.d$ for $u \in V(T)$ is the w-distance of a vertex from the root and the property $u.\pi$ is the parent of a vertex in the modified BFS. We use the function $h(u)$ for the height of a vertex and we use the variable $furthest$ to record the furthest vertex from the root in terms of w-length. Note that because of the comparison u.d $\ge$ furthest.d the furthest vertex will always be a leaf of tree. This comparison forces us to break ties in w-distance with distance. Theoretically it does not have to, but it will simplify some of our notation and proofs. Therefore we will assume that the w-diameter in a height tree is always between two leaves.
 
@@ -308,7 +308,7 @@ Here we will present some examples of pathological cases where the w-diameter ou
     \subfloat[Pathological Example for Case 1.2 (-2 of actual w-diameter).]{{\includegraphics[scale=0.3 ]{./images/2xbfs-path-case-1-2.eps}}}%
     \qquad
     \subfloat[Pathological Example for Case 2 (-2 of actual 2-diameter).]{{\includegraphics[scale=0.3 ]{./images/2xbfs-path-case-2.eps}}}%
-    \caption{Branch Decomposition of a Contour tree (dotted lines are \textbf{monotone} paths of length at least three).}%
+    \caption{Pathological cases in the 2xBFS algorithm (dotted lines are \textbf{monotone} paths of length at least three).}%
     \label{fig:path-cases}%
 \end{figure}
 
@@ -324,7 +324,15 @@ If we modified the algorithm to output the closest vertex to the root with maxim
 
 Here we will present two possible ways of improving the accuracy of the output of the 2xBFS algorithm and explain why were not able improve upon the theoretical bound of Lemma \ref{lem:2xbfs-proof}.
 
-One key observation we can make is that on the second run of the BFS we get a w-path that is necessarily longer or equal to one found in the first BFS search. A natural question to ask is whether running the BFS a third, fourth or for that matter nth time would result in the actual w-diameter. On every successive iteration we get a w-path that is longer or equal to the previous one, because w-length is a symmetric path property ($w(a, b) = w(b, a)$). By doing this we can hope that we will eventually obtain a w-path closer to the w-diameter. However there is no guarantee that this will happen. In some cases it is possible that each successive BFS returns the same path over and over again.
+One key observation we can make is that on the second run of the BFS we get a w-path that is necessarily longer or equal to one found in the first BFS search. A natural question to ask is whether running the BFS a third, fourth or for that matter nth time would result in the actual w-diameter. On every successive iteration we get a w-path that is longer or equal to the previous one, because w-length is a symmetric path property ($w(a, b) = w(b, a)$). By doing this we can hope that we will eventually obtain a w-path closer to the w-diameter. However there is no guarantee that this will happen. In some cases it is possible that each successive BFS returns the same path over and over again. As an example consider Figure \ref{fig:case3}. If the algorithm starts at $s$ then every successive iterrations will go between $u$ and $v$ and then $v$ and $u$ and so on.
+This is because $w(u,v) > w(u, a) = w(u, b)$ and $w(v, u) = w(v, a) = w(v, b)$, but $d(v, u) > d(v, a) = d(v, b)$.
+
+\begin{figure}[h]%
+    \centering
+    \includegraphics[center, scale=0.3]{./images/2xbfs-path-case-3.eps}
+    \caption{Infinite cycle between $u$ and $v$ (dotted lines are monotone paths of length at least 3). }%
+    \label{fig:case3}%
+\end{figure}
 
 % Obverse how in Figure [] all iterations of BFS go from the vertex $u$ to the vertex $v$ and then from $v$ to $u$ and so on.
 
@@ -392,7 +400,7 @@ We will prove the correctness of the algorithm with the following Lemma.
 
    $$w(u', v') = w(u', u) + w_{u' \rightsquigarrow s}(u) + w(v', v) + w_{v' \rightsquigarrow s}(v) + w_{u \rightsquigarrow v}(s). $$
 
-   This equation is similar to Equation []. By observing the two carefully we can infer that
+   This equation is similar to the expression for the optimal solution. By observing the two carefully we can infer that
    $$w(u', u) + w_{u' \rightsquigarrow s}(u) = h(u) + \max\limits_{t \in L_u}\Big(w_{s \rightsquigarrow t}(u)\Big)$$
    and
    $$w(v', v) + w_{v' \rightsquigarrow s}(v) = h(v) + \max\limits_{t \in L_v}\Big(w_{s \rightsquigarrow t}(v)\Big).$$
@@ -421,7 +429,7 @@ The pseudocode of the proposed w-diameter algorithms is shown in Algorithm 2. Th
     \item u.$\pi$ - stores the parent of a vertex (or itself if is the root).
 \end{itemize}
 
-The algorithm is a modification of the standard DFS algorithm \cite{intro-to-algo}. In the forward phase of the DFS we set the parents of all vertices in order to root tree and sets the optimal solution to all leaves to 0 as they are bases cases. In the backtracking phase of the algorithm was know that all children of the vertex we are at have been solved for. This is where we implement the recursive formula we developed. The steps of the algorithm are described via comments in the pseudocode.
+The algorithm is a modification of the standard DFS algorithm. In the forward phase of the DFS we set the parents of all vertices in order to root tree and sets the optimal solution to all leaves to 0 as they are bases cases. In the backtracking phase of the algorithm was know that all children of the vertex we are at have been solved for. This is where we implement the recursive formula we developed. The steps of the algorithm are described via comments in the pseudocode.
 
 % The steps are the following. Suppose that the current vertex is $s$.
 

@@ -1,9 +1,10 @@
 \chapter{Conclusion}
 \label{chapter8}
 
-In this dissertation we examined a particular tree structure that hindered parallel algorithmic performance of one of the state of the art data-parallel contour tree algorithm. These structures are long paths in height trees with a characteristic zigzag pattern. We call them the w-structures. In order to better understand them we developed three algorithms for the detection of the largest w-structure in a height tree. We proved those algorithm are correct and showed formal bounds on their time and space complexity. We implemented these algorithms and used them to establish the existence of w-structures in contour trees of real life data. By defining a metric on these w-structures we showed empirically that the longest w-structure impacts does impact available parallelism in the data-parallel contour tree algorithm.
+In this dissertation we examined a particular tree structure that hinders the parallel algorithmic performance of the state of the art data-parallel contour tree algorithm. These structures are long paths in height trees with a characteristic zigzag pattern. We call them w-structures. In order to better understand them we developed three algorithms for the detection of the largest w-structure in a contour tree. We proved those algorithm are correct and showed formal bounds on their time and space complexity. We implemented these algorithms and used them to establish the existence of w-structures in contour trees of real life data.
+An empirical study releaved that that the largest w-structure in a height tree does impact available parallelism in one of the two phases of the data-parallel contour tree algorithm.
 
-In addition to this we explored the use of a tool from Topological Data Analysis called Persistent Homology. Persistent homology is a general framework for topological simplification and were interested in whether it is equivalent to a contour tree specific tool for topological simplification called branch decomposition. We demonstrated that they are not equivalent by computing both on a counter example based on the w-structures.
+In addition to this we explored the use of a tool from Topological Data Analysis called Persistent Homology. Persistent homology is a general framework for topological simplification. Our interest was in whether it is equivalent to a contour tree specific tool for topological simplification called branch decomposition. We demonstrated that they are not equivalent by computing both on a counter example based on the w-structures.
 
 
 
@@ -13,54 +14,79 @@ In addition to this we explored the use of a tool from Topological Data Analysis
 
 \section{Personal Reflection}
 
-The most difficult part of the project was learning the prerequisite mathematics - Topology, Algebraic Topology and Computational Algebraic Topology. I had covered some of these topics in my second semester with a module on Topology that included an introduction to Algebraic Topology. Throughout the summer the most time consuming part was to learn Homology and to then learn how to apply it via Persistent Homology. The most challenging part was to understand how and why exactly Extended Persistence works. The main difficulty was making sense of the great deal of moving components that enable extended persistence. Those are Morse Theory, Point Set Topology, Homology, Cohomology, Spectral Sequences and the Poincare-Lefschetz duality. In the end I did not have to use all of them for the specific problem I was trying to solve. I had to learn how the ideas borrowed from those fields work and relate to one another and to pick out exactly the ones I need for my specific proofs.
+The most difficult part of the project was learning the prerequisite mathematics. Those spanned the fields of  Topology, Algebraic Topology and Computational Algebraic Topology. I had covered some of these topics in my second semester with a module on Topology that included an introduction to Algebraic Topology. Throughout the summer the most time consuming part was to learn Homology and to then learn how to apply it via persistent homology and by extension extended persistence. The main difficulty was in making sense of the all the moving components that enable extended persistence. Those are Morse Theory, Point Set Topology, Homology, Cohomology, Spectral Sequences and the Poincare-Lefschetz duality. In the end I did not have to use all of them for the specific problem I was trying to solve. Despite this I still had to learn how the ideas borrowed from those fields work and relate to one another and I had to pick out exactly the ones I needed for my specific proofs.
 
-My approach to learning those fields was not optimal. I overcommitted a lot of my time and energy by trying to immediately learn how extended persistence is computed. Without sufficient prerequisite knowledge this attempt was futile. Henceforth I decided to make my approach more systematic and disciplined. I did this by outlining all of the different ideas, definitions and theorems that build the foundation of extended persistence. I used this to going through all of them in a bottom up fashion. I went through the relevant books and papers slowly and carefully and I made sure I can convince myself of the theory by creating small scale examples and giving myself simple problems to prove. Overall I am satisfied with the results I have obtained. This gave me valuable experience in teaching myself new mathematics and approaching novel research areas.
+My approach to learning those fields was not optimal. I overcommitted a lot of my time and energy by trying to immediately learn how extended persistence is computed. Without sufficient prerequisite knowledge this attempt was futile. Henceforth I decided to make my approach more systematic and disciplined. I did this by outlining all of the different ideas, definitions and theorems that build the foundation of extended persistence. I used this to go through all of them in a bottom up fashion. I went through the relevant books and papers slowly and carefully and I made sure I can convince myself of the theory by creating small scale examples and giving myself simple problems to prove. Overall I am satisfied with the results I have obtained. This gave me valuable experience in teaching myself new mathematics and approaching novel research areas.
 
-What I am most proud with in this dissertation is creating and implementing the w-diameter algorithms. I started off with a well-defined problem that had not been solved before and I had to come up with an algorithm for it. The first thing I did was to try and come up with definitions that capture the problem statement and allow me to work with it in a formal setting. It took me some experimentation to come up with the characterisation of w-paths via kinks and to realise this characterisation can be used as a metric much like path length. Upon realising this I immediately that it may be possible to modify existing tree diameter algorithms.
+What I am most proud with in this dissertation is creating and implementing the w-diameter algorithms. I started off with a well-defined problem that had not been solved before and I had to come up with an algorithm for it. The first thing I did was to try and come up with definitions that capture the problem statement and allow me to work with it in a formal setting. It took me some experimentation to come up with the characterisation of w-paths via kinks and to realise this characterisation can be used as a metric much like path length. This helped me recognise that it may be possible to modify existing tree diameter algorithms.
 
-The first algorithm I worked on was the 2xBFS algorithm. I started off with just the idea and first implemented it to test whether it holds in practise. Upon obtained obtaining satisfactory results I began to look for ways to modify the proofs of correctness of the original tree diameter algorithm. The most challenging part of constructing the proof was to dissect proofs of tree diameter algorithms and see exactly which of their components I have to modify. The most challenging aspects of proving the correctness of 2xBSF was in working around the pathological cases where it did not return the correct output.
+The first algorithm I worked on was the 2xBFS algorithm. I started off with just the idea and first implemented it to test whether it holds in practise. Upon obtaining satisfactory results I began to look for ways to modify the proofs of correctness of the original tree diameter algorithm. My intial plan was to dissect proofs of tree diameter algorithms and see exactly which of their components I have to modify. The most challenging aspect of proving the correctness of 2xBSF was in discovering all of its pathological cases and working on adjusting the proof to accomodate them.
 
 % I was puzzled when I realised that there are pathological cases where the algorithm does not return the correct answear. I initially though they could be arbitrarily bad and that would make the algorithm useless. Despite this I managed to formalise the ideas of w-path combinations and give a strict lower bound on the correctness of the algorithm.
 %
 % The DP alorithm on the other hand proved to be more challenging. I could not figure out exactly how to combine paths that go through the vertex  of the tree and my implementation was not returning the correct resutls. It took me alot of trial and error and manually checking the output of the algorithm on small graphs. In the initial version of the algorithm I was considering all children of children of the root and I could not determine why I was not getting the correct output. Upon formalising the algorithm and attempting the proove its correctness I realised that I had made a wrong assumption. After this I determined that I must only check the children of children that contribute to a maximum w-path.
 
-With the DP algorithm on the other I did not even have a clear idea of how to implement it initially. Through trial and error on numerous small scale example height trees I came up with the formulation of the solution. In the case of this algorithm my mathematical proof preceded my implementation. It was the case however that my initial proof was not correct and it was though a discrepancy in the output that I noticed and corrected that.
 
-The only part of the dissertation I believe I could have developed more is the empirical study. Initially that chapter was supposed to be the backbone of the dissertation. Especially if I had failed to produce meaningful results with the extended persistence. After committing so much time to the w-detection algorithms and extended persistence I had already covered too much ground and had little time to produce a more detailed and insightful empirical study.
+Initially I did not have a clear idea how I can implement the DP algorithm. Through trial and error on numerous small scale example height trees I came up with the theoretical formulation of the solution. For this algorithm my mathematical proof preceded my implementation. My initial proof however was not correct. The way I reaslied this was by implementing it and observing a discrepancy in the output. I used that discrepancy to trace my mistake and correct my proof.
 
-Overall the project evolved as I was working on it and my ideas for what exactly I would put in it changed throughout the course of he summer. This approach was more risky than I would have liked, but in the end I was confident in my ability to finish it as I had planned. The project also turned out to be more theoretical than I had originally planned. I am satisfied that this is the case. This gave me the opportunity to advance my mathematical and analytical skills. It has also opened the door for more future research directions and made me more flexible.
+The part of the dissertation I believe I could have developed more is the empirical study. The empirical study was supposed to be a more central topic, in the case that I failed to produce meaningful results with extended persistence. After committing more time that I had planned on the w-diameter algorithms and extended persistence I had already covered enough material and I had little time to produce a more detailed and insightful empirical study.
+
+Overall I believe that the project was successful. I acomplished all of the tasks I set out to do. In the end it turned out to be more theoretical than I had originally planned. I am glad that this is the case. This gave me the opportunity to advance my mathematical and analytical skills. It has also given me the foundation to continue my research in new research directions.
+
+% It has also opened the door for more future research directions and made me more flexible.
+
+% the project evolved as I was working on it and my ideas for what exactly I would put in it changed throughout the course of he summer.
+%
+% This approach was more risky than I would have liked, but in the end I was confident in my ability to finish it as I had planned.
+%
+% The project also turned out to be more theoretical than I had originally planned.
+%
+% I am satisfied that this is the case.
+%
+% This gave me the opportunity to advance my mathematical and analytical skills. It has also opened the door for more future research directions and made me more flexible.
+
+
+% Initially that chapter was supposed to be the backbone of the dissertation.
+%
+% Especially if I had failed to produce meaningful results with the extended persistence.
 
 % Overall I feel that my approach to doing was not optimal. I struggled in the begining and overcommited alot of my time and energy to it.
 
 
 \section{Future Work}
 
-Finally we will present possible direction for future work. They will be presented in two part on part related to the empirical study of the w-structures and another to the relation of extended persistence to the contour tree.
+In this section we will present a number of possible direction for future work. They will be split in two parts. The first part will be related to the empirical study of the w-structures and second part to the further exploration of the use of extended persistence in contour tree simplification.
 
+One obvious starting point would be to extend the empirical study by obtaining more real life data to analyse. Before doing so however we would need to develop better tools to analyse the w-structures in that data. One way to advance our w-diameter algorithms would be to integrate them with the contour tree algorithm and use them to analyse how different w-structres interact with one another in the merge phase. This would require us to modify our algorithms to find more than just the w-diameter of the tree. It would be most useful to use them to obtain the first few biggest w-structres.
 
+Another useful direction we can take is to try and develop an algorithm that can compute the w-diameter from input data directly, without having to compute the contour tree first. One hope we have is that this will enable us to spot patterns in data that correspond to w-structures in the contour tree and use this prior knowledge in the contour tree construction to obtain better parallel performance. By spotting these patterns in data we would hopefully be able to cateogrize them. This would ideally lead to a formal proof that limits the number of patterns in data that produce large w-structures.
 
-\subsection{Practical Future Directions}
+Finally we would like to propose an idea for a future direction a purely theoretical line of research can take. We saw that we can express the branch decomposition of the join and split tree with the extended persistence of the ascending and descending filtration. But is it possible to also express the branch decomposition of the contour tree with some other filtration?
 
-One obvious direction is to extend the empirical study by obtaining more real life data to analyse. This would require gathering and analysing more data.
+Consider for example a simplicial mesh $M$ and its level sets $M_i$. Homology gives us tools to identify the connected components of the $M_i$ by computing their 0th homology. In order to track how the homology classes evolve as we vary the parameter $i$ we would need a way of relating the homology classes of different level sets. This can take the form of a squence:
 
-Can we obtain the w-diameter of a contour tree directly from raw data? Computing the w-diameter of the contour tree itself is useful, but it is like port mortem analysis. If we are able to obtain the w-diameter without constructing the contour tree explicitly we may be able to use the information to speed up the construction around the w-diameter.
+$$ ... \rightarrow H_0(M_i) \rightarrow H_0(M_{i+1}) \rightarrow ... \rightarrow H_0(M_{j}) \rightarrow H_0(M_{j+1}) \rightarrow ...~.$$
 
-Are there other ways of generating w-structures? Can we devise a general way that would work in any number of dimensions?
+The question is what the linear maps between the homology groups would be. We cannot induce them via inclusion maps because the level sets are not subsets of one another. A research direction is this area would be to find another way of obtaining simplicial maps between the level sets. Obtaining such maps will allows us to induce  linear maps between their respective homology groups.
 
-We did not have a chance to investigate how different w-structures interact with one another during the merge phase. This will probably be the next best step.
+%  proof that there is only a limited number of them.
+%
+% In this line of research it would also be useful to work on ways of generating data sets with an arbitrarily large w-diameter. This would involve figuring out what kinds of patterns in data enforce w-structures. Such research would lead to the classification of these patterns and ideally a proof that there is only a limited number of them.
 
-\subsection{Practical Theoretical Directions}
+% This would require gathering and analysing more data.
+%
+% Can we obtain the w-diameter of a contour tree directly from raw data? Computing the w-diameter of the contour tree itself is useful, but it is like port mortem analysis. If we are able to obtain the w-diameter without constructing the contour tree explicitly we may be able to use the information to speed up the construction around the w-diameter.
+%
+% Are there other ways of generating w-structures? Can we devise a general way that would work in any number of dimensions?
+%
+% We did not have a chance to investigate how different w-structures interact with one another during the merge phase. This will probably be the next best step.
 
 % There are many unansweared question on the relations of contour tree simplification and persistent homology. For example notice that the way the 0th persistence of an ascending filtration is computed is similar to how a join tree is computer. The similarity is in that joining components correspond to connected components in sublevel sets which in turn correspond to homology classes in the 0th homology. The joining of components coresponds to merging of homology classes. Consequently the persistent pairs correspond to branches in the join tree. If we instead take a descending filtration we obtain a similarity between the split tree and the persistent homology of the descending filtration. Further work can be done in showing whether the computations are equivalent formally and in translating idea from each of the frameworks to the other.
 
-The primary direction this can take is to further explore the connection between contour tree simplification and branch decomposition. A way to do this would be to explore both in a broader context and produce results on whether the two are equivalent in general in the case of join/split trees and descending/descending filtrations.
+% The primary direction this can take is to further explore the connection between contour tree simplification and branch decomposition.
+%
+% A way to do this would be to explore both in a broader context and produce results on whether the two are equivalent in general in the case of join/split trees and descending/descending filtrations.
 
-Another question is whether contour tree simplification can be expressed through another filtration that is not the ascending or descending filtration. Consider for example a simplicial mesh $M$ and its level sets $M_i$. Homology gives us tools of identifying the connected components of the $M_i$ by computing the 0th homology. It is possible however to somehow relate the homology classes of different level sets. This would require a sequence of the form
-
-$$ ... \rightarrow H_0(M_i) \rightarrow H_0(M_{i+1}) \rightarrow ... \rightarrow H_0(M_{j}) \rightarrow H_0(M_{j+1}) \rightarrow ...$$
-
-But what would the function between the homology groups be? Can me somehow induce them through function between the sublevel sets themselves? We certainly cannot use inclusion maps because level sets are not subsets of one another. It is worth contemplating whether this is feasible. Another question is whether it would be practical at all. Even if we do so all we will obtain is a mathematical reformulation of a problem we already have. Will that lead to more efficient algorithms or to better understanding of the subject?
 
 % This is the conclusion.
 %

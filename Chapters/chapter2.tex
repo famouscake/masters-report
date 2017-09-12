@@ -120,7 +120,7 @@ Algebraic Topology is a branch of topology that uses tools from the field of abs
 
 \subsection{Simplicial Complexes}
 
-Simplical Complexes are one of the first combinatorially flavoured topological spaces one encounters in Algebraic Topology. A simplicial complex is a subset of $\mathbb{R}^n$ that consists of points, line segments, triangles and their higher dimensional analogues attached to one another in a single geometric object. In order to understand simplicial complexes we must first define their basic building blocks \cite{comp-topo}.
+Simplical Complexes are one of the first combinatorially flavoured topological spaces one encounters in Algebraic Topology. A simplicial complex is a subset of $\mathbb{R}^n$ that consists of points, line segments, triangles and their higher dimensional analogues attached to one another in a single geometric object. In order to understand simplicial complexes we must first define their basic building blocks \cite[p. 51]{comp-topo}.
 
 \begin{defn} Let $\{v_0, ..., v_k\}$ be $k$ points in $\mathbb{R}^n$. The convex combination of the points is the sum $\sum_{i=0}^k{\lambda_iv_i}$ where $\lambda_i \ge 0$ and $\sum_{i=0}^n{\lambda_i} = 1$.  \end{defn}
 
@@ -130,10 +130,10 @@ If we decide to take the subset of $\mathbb{R}^n$ covered by all possible convex
 
 \begin{figure}[h]%
     \centering
-    \subfloat[Vertex]{{\includegraphics[scale=0.025]{./images/simplex/vertex.eps}}}%
-    \subfloat[Edge]{{\includegraphics[scale=0.025]{./images/simplex/edge.eps}}}%
-    \subfloat[Triangle]{{\includegraphics[scale=0.025]{./images/simplex/triangle.eps}}}%
-    \subfloat[Tetrahedron]{{\includegraphics[scale=0.025]{./images/simplex/tet.eps}}}%
+    \subfloat[Vertex.]{{\includegraphics[scale=0.025]{./images/simplex/vertex.eps}}}%
+    \subfloat[Edge.]{{\includegraphics[scale=0.025]{./images/simplex/edge.eps}}}%
+    \subfloat[Triangle.]{{\includegraphics[scale=0.025]{./images/simplex/triangle.eps}}}%
+    \subfloat[Tetrahedron.]{{\includegraphics[scale=0.025]{./images/simplex/tet.eps}}}%
 
     \caption{Simplices of dimension $0, 1, 2$ and $3$.}%
     \label{fig:example}%
@@ -161,7 +161,7 @@ We obtain the topology of a simplicial complex by embedding it in Euclidean spac
 
 \subsection{Euler Characteristic}
 
-The first topological invariant of algebraic nature we shall encounter is the Euler Characteristic. It is denoted as $\chi$ and it assigns an integer to simplical complexes through a generalisation of counting \cite{elementary-applied-topology}. The concept was originally defined for polyhedra as an alternating sum of the form $|V| - |E| + |F|$, where $V$ is the set of vertices, $E$ the set of edges and $F$ the set of faces. The Euler Characteristic can be generalized to simplical complexes as as a infinite alternating sum 3-dimensional simplices, 4-dimensional simplices and so on.
+The first topological invariant of algebraic nature we shall encounter is the Euler Characteristic. It is denoted as $\chi$ and it assigns an integer to simplical complexes through a generalisation of counting \cite[p. 44]{elementary-applied-topology}. The concept was originally defined for polyhedra as an alternating sum of the form $|V| - |E| + |F|$, where $V$ is the set of vertices, $E$ the set of edges and $F$ the set of faces. The Euler Characteristic can be generalized to simplical complexes as as a infinite alternating sum 3-dimensional simplices, 4-dimensional simplices and so on.
 
 % continue it indefinitely with the number of 3-cells, then 4-cells, etc., as follows
 %
@@ -199,11 +199,11 @@ The first algorithm we will discuss is based on the following theoretical result
 
 \begin{lem} \label{2xbfs-lemma} Let $s$ be any vertex in a tree. The most distant vertex from $s$ is an endpoint of a tree diameter. \end{lem}
 
-To implement this algorithm we require a way of finding the most distant vertex from a given vertex. This can be done using Breadth First Search (BFS). Let $T$ be a tree and $s \in V(T)$ be any vertex. We can run BFS with $s$ as its root to find a vertex $u$ such that $d(s, u) \ge d(s, t)$ for all $t \in V(T)$. We can then run a second BFS with root $u$ to obtain a vertex $v$ such that $d(u, v) \ge d(u, t)$ for all $t \in V(T)$. Since $u$ is the farthest vertex from $s$ by Lemma~\ref{2xbfs-lemma} it must be the endpoint of a diameter. The diameter of $T$ is the longest path in $T$. Therefore the second BSF produces a path whose length as much as the diameter of $T$. Therefore $d(u, v) \ge d(a, b)$ for all $a,b \in V(T)$.
+To implement this algorithm we require a way of finding the most distant vertex from a given vertex. This can be done using Breadth First Search (BFS) \cite[p. 594]{intro-to-algo}. Let $T$ be a tree and $s \in V(T)$ be any vertex. We can run BFS with $s$ as its root to find a vertex $u$ such that $d(s, u) \ge d(s, t)$ for all $t \in V(T)$. We can then run a second BFS with root $u$ to obtain a vertex $v$ such that $d(u, v) \ge d(u, t)$ for all $t \in V(T)$. Since $u$ is the farthest vertex from $s$ by Lemma~\ref{2xbfs-lemma} it must be the endpoint of a diameter. The diameter of $T$ is the longest path in $T$. Therefore the second BSF produces a path whose length as much as the diameter of $T$. Therefore $d(u, v) \ge d(a, b)$ for all $a,b \in V(T)$.
 
-The space and time complexity of BSF are linear \cite{intro-to-algo} and therefore the space and time complexity of this algorithm are linear as well. This follows from the fact that the algorithm consists of running BFS two consecutive times. For the implementational details we refer the reader to \cite{2bfs-implementation}.
+The space and time complexity of BFS are linear and therefore the space and time complexity of this algorithm are linear as well. This follows from the fact that the algorithm consists of running BFS two consecutive times. For the implementational details we refer the reader to \cite{2bfs-implementation}.
 
-The second approach is based on the Dynamic Programming paradigm \cite{dp-poof}. Dynamic programming is a method that is used to solve optimisation problems whose solution can be reformulated recursively through solutions of subproblems of the original problem. The key ingredients in developing a dynamic programming algorithm are \cite{intro-to-algo}:
+The second approach  \cite{dp-poof} is based on the Dynamic Programming paradigm. Dynamic programming is a method that is used to solve optimisation problems whose solution can be reformulated recursively through solutions of subproblems of the original problem. The key ingredients in developing a dynamic programming algorithm are \cite[p. 359]{intro-to-algo}:
 
 \begin{enumerate}
     \item Characterise the structure of the optimal solution.
@@ -219,7 +219,7 @@ $$ D(s) = max\bigg\{ \max\limits_{u \in N(s)}\bigg(D(u)\bigg), \max\limits_{\sub
 
 The first terms describes the case when the longest path is contained entirely in one of the subtrees rooted at a child of $s$. The second terms combines the two longest height paths in two distinct children $u, v$ of $s$ and adds an additional $2$ to account for the edges $us$ and $vs$. The last term is given in the case where $s$ has exactly on child and we cannot combine two height paths.
 
-The base case for this recursive formula is at the leaves of $T$. If $u$ is a leaf of $T$ then $V(T_u) = \{u\}$. This allows us to set $h(u) = 0$ and $D(u) = 0$ and consider all leaves as base cases for the recursive formula. This algorithm can be implemented in linear time using Depth First Search (DFS) by using two auxiliary arrays that hold the values for $h(u)$ and $D(u)$ for every $u \in V(T)$. For the implementational details we refer the reader to \cite{dp-implementation}.
+The base case for this recursive formula is at the leaves of $T$. If $u$ is a leaf of $T$ then $V(T_u) = \{u\}$. This allows us to set $h(u) = 0$ and $D(u) = 0$ and consider all leaves as base cases for the recursive formula. This algorithm can be implemented in linear time using Depth First Search (DFS)  \cite[p. 603]{intro-to-algo} by using two auxiliary arrays that hold the values for $h(u)$ and $D(u)$ for every $u \in V(T)$. For the implementational details we refer the reader to \cite{dp-implementation}.
 
 % We will elaborate more on the imeplementational details in the final section of this chapter.
 
