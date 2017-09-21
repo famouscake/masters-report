@@ -3,7 +3,7 @@
 
 This chapter continues our discussion on the w-structures in a more formal setting. Our contribution in this chapter is to develop new theory that captures their informal description we outlined previously and to use it to construct three algorithms for the detection of the largest w-structure in a height tree. We will describe the algorithms with pseudocode and provide the reader with proofs of their correctness. Finally we will also derive formal bounds on the time and space complexity of the proposed algorithms.
 
-\section{Formal Description of the w-structures}
+\section{Formal Description of the W-Structures}
 
 We are interested in describing paths in height trees which form a characteristic zigzag pattern we described in Chapter 3. Let us first establish some of the basic notation we shall make use of. A path in a graph is a sequence of distinct and adjacent vertices. When dealing with paths in trees we will refer to them through their first and last vertex, because there is a unique path between any two vertices in a tree. For example when dealing with the path $v_1, v_2, v_3, v_4$ we will denote it with the shorthand $v_1 \rightsquigarrow v_4$. A subpath $P'$ of a path $P$ is a path whose vertices are also vertices of $P$. We will denote it as $P' \subseteq P$.
 
@@ -59,7 +59,7 @@ In Chapter 2 we described two algorithms for obtaining the diameter of a tree. T
 
 \begin{defn} (Symmetry Property) Let $a \rightsquigarrow b$ be a path. Then $w(a, b) = w(b, a)$. \end{defn}
 
-This property if true because the path $a \rightsquigarrow b$ contains the same vertices as the path $b \rightsquigarrow a$.
+This property is true because the path $a \rightsquigarrow b$ contains the same vertices as the path $b \rightsquigarrow a$.
 
 \begin{defn} (Subpath Property) Let $a \rightsquigarrow b$ be a path and $c \rightsquigarrow d$ its subpath. Then $w(a, b) \le w(c, d)$. \end{defn}
 
@@ -315,7 +315,7 @@ Here we will present some examples of pathological cases where the w-diameter ou
 If we modified the algorithm to output the closest vertex to the root with maximum w-distance we would obtain the correct output on these example. If however we replace the dotted monotone path with a single edge then $u$ becomes the closest vertex to $s$ and as such will be the one outputted by the first BFS. In that case the algorithm will still output smaller w-path than the w-diameter.
 
 
-\subsection{Attempts at resolving the accuracy of 2xBFS}
+\subsection{On Resolving the Accuracy of 2xBFS}
 
 
 %For the intents and purposes of this dissertation the accuracy of this algorithm is sufficient. In large enough data sets this estimate provides enough insight to correlate the observed iterations needed to collapse the split and join trees and the resulting w-diameter of the tree. This is demonstrated empirically in Chapter 3. Regardless of such practical considerations it is still of inherent theoretical interest to investigate how we may be able to obtain a more accurate modification of this algorithm.

@@ -17,7 +17,7 @@ Many scientific and medical applications require the sampling of scalar values f
 \end{figure}
 For simplicity and without loss of generality we will work with two-dimensional domains where the value samples are evenly spaced out in a grid-like fashion (Figure \ref{fig:simplicial-mesh}). The values of the approximation function at the simplicies are obtained via linear interpolation between the vertices of each simplex. As long as the original values we have sampled are unique it can be shown that the linear interpolation function is a Morse function and that all critical points are the vertices of the mesh \cite{curvature-embeded-polyhedra}.
 
-\section{Contour Tree Computation}
+\section{Existing Contour Tree Algorithms}
 
 
  % @TODO What about higher dimensions and expand parallel stuff?
@@ -53,7 +53,7 @@ The contour tree is a tree that consists of \cite{first-ct-algo}:
 \end{itemize}
 
 % @TODO Think about this contruction and destruction business
-The contour tree contains information of two types of events - joining and splitting of contours. We can derive two other height trees from the contour tree that each contain the information of the joining and splitting events separately. These are called the join and split trees \ref{ct-big-paper}. The join tree contains information for the contours that join together and the split tree holds the information for the contours that split apart. The join tree of a contour tree summarises the evolution of the connectivity of the sublevel sets of the interpolation function and the split tree of the superlevel sets. You can find an example of the join and split trees of Figure \ref{fig:mesh-join-split-contour}.
+The contour tree contains information of two types of events - joining and splitting of contours. We can derive two other height trees from the contour tree that each contain the information of the joining and splitting events separately. These are called the join and split trees \cite{ct-big-paper}. The join tree contains information for the contours that join together and the split tree holds the information for the contours that split apart. The join tree of a contour tree summarises the evolution of the connectivity of the sublevel sets of the interpolation function and the split tree of the superlevel sets. You can find an example of the join and split trees of Figure \ref{fig:mesh-join-split-contour}.
 
 % The two are symmetric in that the join tree of the function $f$ is isomorphic to the split tree of the negative of the function $-f$.
 
@@ -155,7 +155,7 @@ The produced pairs of critical points are $(2, 5), (0, 4), (3, 7)$ and $(1,8)$.
 
 \begin{figure}%
     \centering
-    \subfloat[Branch decomposition.]{{\includegraphics[scale=0.11]{./images/w3x3-ct-decomp.eps}}}%
+    \subfloat[Branch decomposition.]{{\includegraphics[scale=0.10]{./images/w3x3-ct-decomp.eps}}}%
     \subfloat[Heirarchical view of the branches.]{{\includegraphics[scale=0.11]{./images/w3x3-ct-h-decomp.eps}}}%
     \caption{Hierarchical branch decomposition of the contour tree from Figure \ref{fig:mesh-join-split-contour} b.}%
     \label{fig:branch-decomp}%
